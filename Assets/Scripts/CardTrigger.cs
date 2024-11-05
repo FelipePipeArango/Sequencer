@@ -18,7 +18,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler
     {
         Move, PickUp, Throw, Enable
     }
-    [SerializeField] Dropdown dropdown;
+    [SerializeField] Dropdown action;
 
     public void OnDrop(PointerEventData eventData)
     {
@@ -33,7 +33,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler
             usedText.gameObject.SetActive(true);
             //cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 0.5f);
             usedText.text = draggableItem.value.ToString();
-            cardManager.RecieveInfo(draggableItem.value, dropdown);
+            cardManager.RecieveInfo(draggableItem.value, action);
             available = false;
 
             cardManager.ManageSequenceText(0, false);

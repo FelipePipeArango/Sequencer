@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 
 public class DraggableItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
@@ -10,6 +11,13 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, 
     public int value;
     [HideInInspector] public Transform parentTransform;
     [SerializeField] Sequencer sequence;
+    [SerializeField] TextMeshProUGUI numberText;
+
+    void Awake()
+    {
+        numberText.text = value.ToString();
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
         parentTransform = transform.parent;
