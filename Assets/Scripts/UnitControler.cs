@@ -11,7 +11,6 @@ public class UnitControler : MonoBehaviour
     [SerializeField] Vector2Int goalPosition;
     [SerializeField] Vector2Int numberPosition;
 
-    Vector2Int target = new Vector2Int (0,0);
     int maxAmount = 0;
     public bool hasItem = false;
     int distaceToItem;
@@ -67,41 +66,36 @@ public class UnitControler : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.W))
             {
-                Movement(1, true);
+                Movement(Vector2Int.up); //Used constant vectors instead of hard coded numbers
             }
 
             if (Input.GetKeyDown(KeyCode.S))
             {
-                Movement(-1, true);
+                Movement(Vector2Int.down);
             }
 
             if (Input.GetKeyDown(KeyCode.D))
             {
-                Movement(1, false);
+                Movement(Vector2Int.right);
             }
 
             if (Input.GetKeyDown(KeyCode.A))
             {
-                Movement(-1, false);
+                Movement(Vector2Int.left);
             } 
         }
     }
 
-    void Movement(int var, bool direction)
+    //Changed the previous movement implementation to make it more easy to calculate
+    void Movement(Vector2Int direction)
     {
-        if (direction == true)
-        {
-            target.y = target.y + var;
-            playerPosition.position = new Vector3(target.x, playerPosition.position.y, target.y);
-        }
+        playerPosition.position += new Vector3(direction.x, 0, direction.y);
 
-        else if (direction == false)
-        {
-            target.x = target.x + var;
-            playerPosition.position = new Vector3(target.x, playerPosition.position.y, target.y);
-        }
         maxAmount = maxAmount - 1;
 
+        //Change the rest of the function to detect the distance to items with collisions instead
+
+        //With collisions there is no need to make this calculations
         distaceToItem = (int)Mathf.Abs(playerPosition.position.x - itemPosition.x) + (int)Mathf.Abs(playerPosition.position.z - itemPosition.y);
         distaceToGoal = (int)Mathf.Abs(playerPosition.position.x - goalPosition.x) + (int)Mathf.Abs(playerPosition.position.z - goalPosition.y);
         distaceToNumber = (int)Mathf.Abs(playerPosition.position.x - numberPosition.x) + (int)Mathf.Abs(playerPosition.position.z - numberPosition.y);
