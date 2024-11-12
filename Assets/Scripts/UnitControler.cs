@@ -12,7 +12,7 @@ public class UnitControler : MonoBehaviour
     [SerializeField] Vector2Int numberPosition;
 
     int maxAmount = 0;
-    public bool hasItem = false;
+    public bool hasItem = false; //Could be changed to an int, to make it possible to have multiple items in a level
     int distaceToItem;
     int distaceToGoal;
     int distaceToNumber;
@@ -45,44 +45,71 @@ public class UnitControler : MonoBehaviour
     }
     public void PickUpReceiver(int range)
     {
-        if (!hasItem)
+        Collider[] hitColliders = Physics.OverlapBox(transform.position, Vector3.one * range);
+
+        int i = 0;
+        while (i < hitColliders.Length) //Bad implementation, fix number collection in next task, maybe with interfaces
         {
-            if (range >= distaceToItem)
+            if(range+0.1f <= (int)Mathf.Abs(transform.position.x - hitColliders[i].transform.position.x)+ (int)Mathf.Abs(transform.position.z - hitColliders[i].transform.position.z))
             {
-                hasItem = true;
-                item.SetActive (false);
+                i++;
+                continue;
             }
 
-            if (range >= distaceToNumber)
+            Debug.Log("Tried to pick up " + hitColliders[i].gameObject.name);
+            switch (hitColliders[i].tag)
             {
-                number.SetActive (false);
-                numberHUD.SetActive (true);
+                case "Item":
+                    hasItem = true;
+                    hitColliders[i].gameObject.SetActive(false);
+                    break;
+
+                case "Number":
+                    hitColliders[i].gameObject.SetActive(false);
+                    numberHUD.SetActive(true); 
+                    break;
+
+                default:
+                    break;
             }
+
+            i++;
         }
+
+
+        //if (range >= distaceToItem)
+        //{
+        //    hasItem = true;
+        //    item.SetActive(false);
+        //}
+
+        //if (range >= distaceToNumber)
+        //{
+        //    number.SetActive(false);
+        //    numberHUD.SetActive(true);
+        //}
     }
+
     void Update()
     {
-        if (maxAmount > 0)
+        if (maxAmount <= 0) return; //Inverted if to reduce nesting
+
+        //Not the best implementation, can be changed with better input mapping in the future to reduce yandere elifs
+        if (Input.GetKeyDown(KeyCode.W))
         {
-            if (Input.GetKeyDown(KeyCode.W))
-            {
-                Movement(Vector2Int.up); //Used constant vectors instead of hard coded numbers
-            }
-
-            if (Input.GetKeyDown(KeyCode.S))
-            {
-                Movement(Vector2Int.down);
-            }
-
-            if (Input.GetKeyDown(KeyCode.D))
-            {
-                Movement(Vector2Int.right);
-            }
-
-            if (Input.GetKeyDown(KeyCode.A))
-            {
-                Movement(Vector2Int.left);
-            } 
+            Movement(Vector2Int.up); //Used constant vectors instead of hard coded numbers, easy to know where the player is going
+        }
+        else if (Input.GetKeyDown(KeyCode.S))
+        {
+            Movement(Vector2Int.down);
+        }
+        else if (Input.GetKeyDown(KeyCode.D))
+        {
+            Movement(Vector2Int.right);
+        }
+        else if (Input.GetKeyDown(KeyCode.A))
+        {
+            Movement(Vector2Int.left);
         }
     }
 
@@ -93,26 +120,38 @@ public class UnitControler : MonoBehaviour
 
         maxAmount = maxAmount - 1;
 
-        //Change the rest of the function to detect the distance to items with collisions instead
+        //Checking collision after moving to know what the player just touched
 
-        //With collisions there is no need to make this calculations
-        distaceToItem = (int)Mathf.Abs(playerPosition.position.x - itemPosition.x) + (int)Mathf.Abs(playerPosition.position.z - itemPosition.y);
-        distaceToGoal = (int)Mathf.Abs(playerPosition.position.x - goalPosition.x) + (int)Mathf.Abs(playerPosition.position.z - goalPosition.y);
-        distaceToNumber = (int)Mathf.Abs(playerPosition.position.x - numberPosition.x) + (int)Mathf.Abs(playerPosition.position.z - numberPosition.y);
+        Collider[] hitColliders = Physics.OverlapBox(transform.position, transform.localScale/2);
 
-        if (distaceToNumber == 0)
+        int i = 0;
+        while (i < hitColliders.Length)
         {
-            PickUpReceiver(0);
-        }
+            Debug.Log("Collided with " + hitColliders[i].gameObject.name);
+            switch (hitColliders[i].tag)
+            {
+                case "Goal":
+                    if (hasItem == true)
+                    {
+                        Debug.Log("you win");
+                    }
+                    break;
 
-        if (distaceToGoal == 0 && hasItem == true)
-        {
-            Debug.Log("you win");
-        }
+                case "Item":
+                    hasItem = true;
+                    item.SetActive(false);
+                    break;
 
-        if (distaceToItem == 0)
-        {
-            PickUpReceiver(0);
+                case "Number":
+                    number.SetActive(false);
+                    numberHUD.SetActive(true); //Bad implementation, fix number collection in next task
+                    break;
+
+                default:
+                    break;
+            }
+            
+            i++;
         }
     }
 }
