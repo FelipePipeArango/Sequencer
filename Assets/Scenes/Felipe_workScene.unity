@@ -1268,6 +1268,10 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3851964850037643292, guid: 4393309c88483be419c637e8d1b4ff4d, type: 3}
+      propertyPath: actionsTest
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3851964850037643292, guid: 4393309c88483be419c637e8d1b4ff4d, type: 3}
       propertyPath: cardManager
       value: 
       objectReference: {fileID: 1778812630}
@@ -2442,10 +2446,10 @@ RectTransform:
   - {fileID: 547747984}
   m_Father: {fileID: 154370036}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 4, y: -124.05827}
-  m_SizeDelta: {x: 609.2485, y: 51.8835}
+  m_AnchorMin: {x: 0.29531926, y: 0.29237553}
+  m_AnchorMax: {x: 0.7083193, y: 0.36524898}
+  m_AnchoredPosition: {x: 1.5, y: 0.44172668}
+  m_SizeDelta: {x: 0.24847412, y: -1.1165009}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &534631000
 MonoBehaviour:
@@ -2607,6 +2611,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3851964850037643292, guid: 4393309c88483be419c637e8d1b4ff4d, type: 3}
       propertyPath: dropdown
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3851964850037643292, guid: 4393309c88483be419c637e8d1b4ff4d, type: 3}
+      propertyPath: actionsTest
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3851964850037643292, guid: 4393309c88483be419c637e8d1b4ff4d, type: 3}
@@ -3506,17 +3514,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 764401967}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &773937510 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3851964850037643292, guid: 4393309c88483be419c637e8d1b4ff4d, type: 3}
-  m_PrefabInstance: {fileID: 538024792}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec0e9122837adab42b2b4c57d7d430dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &787856162
 GameObject:
   m_ObjectHideFlags: 0
@@ -5413,17 +5410,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2691492370524542098, guid: 4393309c88483be419c637e8d1b4ff4d, type: 3}
   m_PrefabInstance: {fileID: 245757799}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1238836990 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3851964850037643292, guid: 4393309c88483be419c637e8d1b4ff4d, type: 3}
-  m_PrefabInstance: {fileID: 245757799}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec0e9122837adab42b2b4c57d7d430dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1268261101
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5522,6 +5508,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3851964850037643292, guid: 4393309c88483be419c637e8d1b4ff4d, type: 3}
       propertyPath: dropdown
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3851964850037643292, guid: 4393309c88483be419c637e8d1b4ff4d, type: 3}
+      propertyPath: actionsTest
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3851964850037643292, guid: 4393309c88483be419c637e8d1b4ff4d, type: 3}
@@ -6146,17 +6136,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2691492370524542098, guid: 4393309c88483be419c637e8d1b4ff4d, type: 3}
   m_PrefabInstance: {fileID: 1268261101}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1493121636 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3851964850037643292, guid: 4393309c88483be419c637e8d1b4ff4d, type: 3}
-  m_PrefabInstance: {fileID: 1268261101}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec0e9122837adab42b2b4c57d7d430dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1507022246
 GameObject:
   m_ObjectHideFlags: 0
@@ -7036,12 +7015,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nextCardText: {fileID: 717166142}
   unitControler: {fileID: 1612620122}
-  availableEffects: 00000000010000000200000003000000
-  availableCards:
-  - {fileID: 1956811494}
-  - {fileID: 1238836990}
-  - {fileID: 773937510}
-  - {fileID: 1493121636}
+  cardParent: {fileID: 1187270321}
 --- !u!1 &1787447273
 GameObject:
   m_ObjectHideFlags: 0
@@ -8073,17 +8047,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2691492370524542098, guid: 4393309c88483be419c637e8d1b4ff4d, type: 3}
   m_PrefabInstance: {fileID: 8041989503301043087}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1956811494 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3851964850037643292, guid: 4393309c88483be419c637e8d1b4ff4d, type: 3}
-  m_PrefabInstance: {fileID: 8041989503301043087}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec0e9122837adab42b2b4c57d7d430dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1978269518
 GameObject:
   m_ObjectHideFlags: 0

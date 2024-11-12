@@ -14,11 +14,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler
     [HideInInspector] public bool available = true; //tracks if the card has been used
     [HideInInspector] public bool nextInSequence;
 
-    enum Dropdown
-    {
-        Move, PickUp, Throw, Enable
-    }
-    [SerializeField] Dropdown action;
+    public GameActions.Actions actionsTest;
 
     public void OnDrop(PointerEventData eventData)
     {
@@ -31,9 +27,9 @@ public class CardTrigger : MonoBehaviour, IDropHandler
 
             slotImage.gameObject.SetActive(false);
             usedText.gameObject.SetActive(true);
-            //cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 0.5f);
+
             usedText.text = draggableItem.value.ToString();
-            cardManager.RecieveInfo(draggableItem.value, action);
+            cardManager.RecieveInfo(draggableItem.value, actionsTest);
             available = false;
 
             cardManager.ManageSequenceText(0, false);

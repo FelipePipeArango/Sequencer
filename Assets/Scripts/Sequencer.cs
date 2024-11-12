@@ -7,63 +7,73 @@ using UnityEngine.UI;
 
 public class Sequencer : MonoBehaviour
 {
-    //[SerializeField] int recievedValue = 0;
-    //[SerializeField] CardSO[] cardArray = new CardSO[] { };
     Image cardBackground;
     [SerializeField] Image nextCardText;
     [SerializeField] UnitControler unitControler;
-    [SerializeField] Effect[] availableEffects;
-    [SerializeField] CardTrigger[] availableCards;
 
-    enum Effect
+    CardTrigger[] levelCards;
+    GameActions.Actions[] levelActions;
+
+    [SerializeField] GameObject cardParent;
+
+    public void Awake()
     {
-        Move, PickUp, Throw, Enable
+        #region CardFilling
+        //This checks the cards being used in the level and fills the required arrays
+        levelCards = new CardTrigger[cardParent.transform.childCount];
+        levelActions = new GameActions.Actions[cardParent.transform.childCount];
+
+        for (int i = 0; i < levelCards.Length; i++)
+        {
+            levelCards[i] = cardParent.transform.GetChild(i).GetComponent<CardTrigger>();
+            levelActions[i] = levelCards[i].actionsTest;
+        }
+        #endregion
     }
 
     public void RecieveInfo(int recievedValue, Enum effect)
     {
-        for (int i = 0; i < availableEffects.Length; i++)
+        for (int i = 0; i < levelActions.Length; i++)
         {
-            if (effect.ToString() == availableEffects[i].ToString())
+            if (effect.ToString() == levelActions[i].ToString())
             {
-                switch (availableEffects[i])
+                switch (levelActions[i])
                 {
-                    case Effect.Move:
+                    case GameActions.Actions.Move:
                         unitControler.MovementReceiver(recievedValue);
                         break;
 
-                    case Effect.PickUp:
+                    case GameActions.Actions.PickUp:
                         unitControler.PickUpReceiver(recievedValue);
                         break;
-                    
-                    case Effect.Enable:
-                        availableCards[recievedValue - 1].Enable();
+
+                    case GameActions.Actions.Enable:
+                        levelCards[recievedValue - 1].Enable();
                         break;
 
-                    case Effect.Throw:
+                    case GameActions.Actions.Throw:
                         unitControler.ThrowReceiver(recievedValue);
                         break;
                 }
             }
-
         }
         NextCard(recievedValue);
     }
 
     void NextCard(int recievedValue)
     {
-        for (int i = 0; i < availableEffects.Length; i++)
+        for (int i = 0; i < levelActions.Length; i++)
         {
             if (i == recievedValue - 1)
             {
-                availableCards[i].nextInSequence = true;
-                cardBackground = availableCards[i].gameObject.GetComponentInChildren<Image>();
+                levelCards[i].nextInSequence = true;
+                cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
                 cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 1);
             }
             else
             {
-                availableCards[i].nextInSequence = false;
-                cardBackground = availableCards[i].gameObject.GetComponentInChildren<Image>();
+                levelCards[i].nextInSequence = false;
+                cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
                 cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 0.5f);
             }
         }
@@ -73,18 +83,18 @@ public class Sequencer : MonoBehaviour
     {
         if (dragging == true)
         {
-            for (int i = 0; i < availableEffects.Length; i++)
+            for (int i = 0; i < levelActions.Length; i++)
             {
                 if (i == recievedNumber - 1)
                 {
                     nextCardText.gameObject.SetActive(true);
-                    nextCardText.transform.position = new Vector3(availableCards[i].transform.position.x, availableCards[i].transform.position.y + 92, availableCards[i].transform.position.z);
+                    nextCardText.transform.position = new Vector3(levelCards[i].transform.position.x, levelCards[i].transform.position.y + 92, levelCards[i].transform.position.z);
                 }
             }
         }
         else
         {
-            
+
             nextCardText.gameObject.SetActive(false);
         }
     }
