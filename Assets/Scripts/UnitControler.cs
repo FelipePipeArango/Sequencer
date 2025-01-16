@@ -13,6 +13,7 @@ public class UnitControler : MonoBehaviour
 
     int maxAmount = 0;
     public bool hasItem = false;
+    bool hasNumber = false;
     int distaceToItem;
     int distaceToGoal;
     int distaceToNumber;
@@ -21,6 +22,8 @@ public class UnitControler : MonoBehaviour
     [SerializeField] GameObject goal;
     [SerializeField] GameObject number;
     [SerializeField] GameObject numberHUD;
+
+    UndoManager undoManager;
 
     private void Start()
     {
@@ -43,22 +46,28 @@ public class UnitControler : MonoBehaviour
             }
         }
     }
-    public void PickUpReceiver(int range)
+    //Manages the PickUp action
+    public void PickUpReceiver(int recievedNumber, GameActions.Actions usedAction)
     {
         if (!hasItem)
         {
-            if (range >= distaceToItem)
+            if (recievedNumber >= distaceToItem)
             {
                 hasItem = true;
                 item.SetActive (false);
             }
-
-            if (range >= distaceToNumber)
+        }
+        
+        if(!hasNumber)
+        {
+            if (recievedNumber >= distaceToNumber)
             {
-                number.SetActive (false);
-                numberHUD.SetActive (true);
+                number.SetActive(false);
+                numberHUD.SetActive(true);
+                hasNumber = true;
             }
         }
+        //undoManager.ActionHistory(usedAction, recievedNumber);
     }
     void Update()
     {
@@ -100,9 +109,11 @@ public class UnitControler : MonoBehaviour
         distaceToGoal = (int)Mathf.Abs(playerPosition.position.x - goalPosition.x) + (int)Mathf.Abs(playerPosition.position.z - goalPosition.y);
         distaceToNumber = (int)Mathf.Abs(playerPosition.position.x - numberPosition.x) + (int)Mathf.Abs(playerPosition.position.z - numberPosition.y);
 
-        if (distaceToNumber == 0)
+        if (distaceToNumber == 0 && !hasNumber)
         {
-            PickUpReceiver(0);
+            number.SetActive(false);
+            numberHUD.SetActive(true);
+            hasNumber = true;
         }
 
         if (distaceToGoal == 0 && hasItem == true)
@@ -110,9 +121,10 @@ public class UnitControler : MonoBehaviour
             Debug.Log("you win");
         }
 
-        if (distaceToItem == 0)
+        if (distaceToItem == 0 && !hasItem)
         {
-            PickUpReceiver(0);
+            hasItem = true;
+            item.SetActive(false);
         }
     }
 }

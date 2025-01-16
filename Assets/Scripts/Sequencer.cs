@@ -26,13 +26,14 @@ public class Sequencer : MonoBehaviour
         for (int i = 0; i < levelCards.Length; i++)
         {
             levelCards[i] = cardParent.transform.GetChild(i).GetComponent<CardTrigger>();
-            levelActions[i] = levelCards[i].actionsTest;
+            levelActions[i] = levelCards[i].LevelActions;
         }
         #endregion
     }
-
+    //Function in charge of recieving numbers and assigning them to the action
     public void RecieveInfo(int recievedValue, Enum effect)
     {
+        //Goes through the actions present in the level and applies the intended effect
         for (int i = 0; i < levelActions.Length; i++)
         {
             if (effect.ToString() == levelActions[i].ToString())
@@ -44,7 +45,7 @@ public class Sequencer : MonoBehaviour
                         break;
 
                     case GameActions.Actions.PickUp:
-                        unitControler.PickUpReceiver(recievedValue);
+                        unitControler.PickUpReceiver(recievedValue, GameActions.Actions.PickUp);
                         break;
 
                     case GameActions.Actions.Enable:
@@ -59,7 +60,7 @@ public class Sequencer : MonoBehaviour
         }
         NextCard(recievedValue);
     }
-
+    //Makes sure that only the next card in the sequence is considered as "next". Cards that are not next in the sequence are not avaiable to use.
     void NextCard(int recievedValue)
     {
         for (int i = 0; i < levelActions.Length; i++)
@@ -78,7 +79,7 @@ public class Sequencer : MonoBehaviour
             }
         }
     }
-
+    //Manages the "next" text on the actions.
     public void ManageSequenceText(int recievedNumber, bool dragging)
     {
         if (dragging == true)

@@ -14,7 +14,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler
     [HideInInspector] public bool available = true; //tracks if the card has been used
     [HideInInspector] public bool nextInSequence;
 
-    public GameActions.Actions actionsTest;
+    public GameActions.Actions LevelActions;
 
     public void OnDrop(PointerEventData eventData)
     {
@@ -29,7 +29,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler
             usedText.gameObject.SetActive(true);
 
             usedText.text = draggableItem.value.ToString();
-            cardManager.RecieveInfo(draggableItem.value, actionsTest);
+            cardManager.RecieveInfo(draggableItem.value, LevelActions);
             available = false;
 
             cardManager.ManageSequenceText(0, false);

@@ -1276,6 +1276,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1778812630}
     - target: {fileID: 3851964850037643292, guid: 4393309c88483be419c637e8d1b4ff4d, type: 3}
+      propertyPath: LevelActions
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3851964850037643292, guid: 4393309c88483be419c637e8d1b4ff4d, type: 3}
       propertyPath: cardPosition
       value: 2
       objectReference: {fileID: 0}
@@ -2621,6 +2625,10 @@ PrefabInstance:
       propertyPath: cardManager
       value: 
       objectReference: {fileID: 1778812630}
+    - target: {fileID: 3851964850037643292, guid: 4393309c88483be419c637e8d1b4ff4d, type: 3}
+      propertyPath: LevelActions
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3851964850037643292, guid: 4393309c88483be419c637e8d1b4ff4d, type: 3}
       propertyPath: cardPosition
       value: 3
@@ -4524,13 +4532,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2588191, y: 0, z: 0, w: 0.9659258}
-  m_LocalPosition: {x: 2, y: 11.45, z: -14}
+  m_LocalRotation: {x: 0.43713078, y: -0.0014754864, z: 0.0007171259, w: 0.8993965}
+  m_LocalPosition: {x: 2, y: 7.31, z: -5.41}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 51.842, y: -0.188, z: 0}
 --- !u!1 &991850700
 GameObject:
   m_ObjectHideFlags: 0
@@ -5518,6 +5526,10 @@ PrefabInstance:
       propertyPath: cardManager
       value: 
       objectReference: {fileID: 1778812630}
+    - target: {fileID: 3851964850037643292, guid: 4393309c88483be419c637e8d1b4ff4d, type: 3}
+      propertyPath: LevelActions
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3851964850037643292, guid: 4393309c88483be419c637e8d1b4ff4d, type: 3}
       propertyPath: cardPosition
       value: 4
