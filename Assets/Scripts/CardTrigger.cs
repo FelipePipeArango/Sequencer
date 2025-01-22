@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 public class CardTrigger : MonoBehaviour, IDropHandler
 {
-    [SerializeField] Sequencer cardManager;
     [SerializeField] TextMeshProUGUI usedText;
     [SerializeField] Image slotImage;
     [SerializeField] Image cardBackground;
@@ -15,6 +14,12 @@ public class CardTrigger : MonoBehaviour, IDropHandler
     [HideInInspector] public bool nextInSequence;
 
     public GameActions.Actions LevelActions;
+
+    public delegate void GrabActions(int number, bool isGrabing);
+    public static event GrabActions OnGrab;
+
+    public delegate void DropActions(int number, GameActions.Actions action);
+    public static event DropActions OnDropAction;
 
     public void OnDrop(PointerEventData eventData)
     {
@@ -29,10 +34,17 @@ public class CardTrigger : MonoBehaviour, IDropHandler
             usedText.gameObject.SetActive(true);
 
             usedText.text = draggableItem.value.ToString();
-            cardManager.RecieveInfo(draggableItem.value, LevelActions);
             available = false;
 
-            cardManager.ManageSequenceText(0, false);
+            if (OnDropAction != null)
+            {
+                OnDropAction(draggableItem.value, LevelActions);
+            }
+
+            if (OnGrab != null)
+            {
+                OnGrab(0, false);
+            }
         }
     }
 

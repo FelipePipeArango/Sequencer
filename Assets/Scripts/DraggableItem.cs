@@ -10,8 +10,10 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, 
     public Image image;
     public int value;
     [HideInInspector] public Transform parentTransform;
-    [SerializeField] Sequencer sequence;
     [SerializeField] TextMeshProUGUI numberText;
+
+    public delegate void DragActions(int number, bool isGrabing);
+    public static event DragActions OnDragAction;
 
     void Awake()
     {
@@ -25,7 +27,10 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, 
         image.raycastTarget = false;
         transform.SetAsLastSibling();
 
-        sequence.ManageSequenceText(value, true);
+        if (OnDragAction != null)
+        {
+            OnDragAction(value, true);
+        }
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -38,6 +43,9 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, 
         transform.SetParent(parentTransform);
         image.raycastTarget = true;
 
-        sequence.ManageSequenceText(value, false);
+        if (OnDragAction != null)
+        {
+            OnDragAction(value, false);
+        }
     }
 }

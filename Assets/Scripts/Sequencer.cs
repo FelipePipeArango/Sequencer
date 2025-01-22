@@ -9,59 +9,39 @@ public class Sequencer : MonoBehaviour
 {
     Image cardBackground;
     [SerializeField] Image nextCardText;
-    [SerializeField] UnitControler unitControler;
 
     CardTrigger[] levelCards;
     GameActions.Actions[] levelActions;
 
-    [SerializeField] GameObject cardParent;
+    //Makes sure that only the next card in the sequence is considered as "next". Cards that are not next in the sequence are not avaiable to use.
 
-    public void Awake()
+    private void OnEnable()
+    {
+        CardTrigger.OnGrab += ManageSequenceText;
+        DraggableItem.OnDragAction += ManageSequenceText;
+    }
+
+    private void OnDisable()
+    {
+        CardTrigger.OnGrab -= ManageSequenceText;
+        DraggableItem.OnDragAction -= ManageSequenceText;
+    }
+
+    public void FillCards(GameObject cardsInLevel)
     {
         #region CardFilling
         //This checks the cards being used in the level and fills the required arrays
-        levelCards = new CardTrigger[cardParent.transform.childCount];
-        levelActions = new GameActions.Actions[cardParent.transform.childCount];
+        levelCards = new CardTrigger[cardsInLevel.transform.childCount];
+        levelActions = new GameActions.Actions[cardsInLevel.transform.childCount];
 
         for (int i = 0; i < levelCards.Length; i++)
         {
-            levelCards[i] = cardParent.transform.GetChild(i).GetComponent<CardTrigger>();
+            levelCards[i] = cardsInLevel.transform.GetChild(i).GetComponent<CardTrigger>();
             levelActions[i] = levelCards[i].LevelActions;
         }
         #endregion
     }
-    //Function in charge of recieving numbers and assigning them to the action
-    public void RecieveInfo(int recievedValue, Enum effect)
-    {
-        //Goes through the actions present in the level and applies the intended effect
-        for (int i = 0; i < levelActions.Length; i++)
-        {
-            if (effect.ToString() == levelActions[i].ToString())
-            {
-                switch (levelActions[i])
-                {
-                    case GameActions.Actions.Move:
-                        unitControler.MovementReceiver(recievedValue);
-                        break;
-
-                    case GameActions.Actions.PickUp:
-                        unitControler.PickUpReceiver(recievedValue, GameActions.Actions.PickUp);
-                        break;
-
-                    case GameActions.Actions.Enable:
-                        levelCards[recievedValue - 1].Enable();
-                        break;
-
-                    case GameActions.Actions.Throw:
-                        unitControler.ThrowReceiver(recievedValue);
-                        break;
-                }
-            }
-        }
-        NextCard(recievedValue);
-    }
-    //Makes sure that only the next card in the sequence is considered as "next". Cards that are not next in the sequence are not avaiable to use.
-    void NextCard(int recievedValue)
+    public void NextCard(int recievedValue)
     {
         for (int i = 0; i < levelActions.Length; i++)
         {
@@ -95,7 +75,6 @@ public class Sequencer : MonoBehaviour
         }
         else
         {
-
             nextCardText.gameObject.SetActive(false);
         }
     }

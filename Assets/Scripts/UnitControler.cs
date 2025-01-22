@@ -4,54 +4,42 @@ using UnityEngine;
 
 public class UnitControler : MonoBehaviour
 {
-    [SerializeField] GridManager gridManager;
+    public delegate void MoveAction();
+    public static event MoveAction OnMovement;
 
-    [SerializeField] Transform playerPosition;
-    [SerializeField] Vector2Int itemPosition;
-    [SerializeField] Vector2Int goalPosition;
-    [SerializeField] Vector2Int numberPosition;
+    Transform playerPosition;
 
     int maxAmount = 0;
-    public bool hasItem = false;
-    bool hasNumber = false;
-    int distaceToItem;
-    int distaceToGoal;
-    int distaceToNumber;
+    [HideInInspector] public bool hasItem = false;
+    [HideInInspector] public bool hasNumber = false;
 
-    [SerializeField] GameObject item;
-    [SerializeField] GameObject goal;
-    [SerializeField] GameObject number;
-    [SerializeField] GameObject numberHUD;
-
-    UndoManager undoManager;
+    public Event OnPlayerMovement;
 
     private void Start()
     {
-        distaceToItem = (int)Mathf.Abs(playerPosition.position.x - itemPosition.x) + (int)Mathf.Abs(playerPosition.position.z - itemPosition.y);
-        distaceToGoal = (int) Mathf.Abs(playerPosition.position.x - goalPosition.x) + (int) Mathf.Abs(playerPosition.position.z - goalPosition.y);
-        distaceToNumber = (int)Mathf.Abs(playerPosition.position.x - numberPosition.x) + (int)Mathf.Abs(playerPosition.position.z - numberPosition.y);
+        playerPosition = this.gameObject.transform;
     }
 
-    public void MovementReceiver(int amount)
+    public void MovementReceiver(int recievedNumber, GameActions.Actions usedAction)
     {
-        maxAmount = amount;
+        maxAmount = recievedNumber;
     }
-    public void ThrowReceiver(int range)
+    public void ThrowReceiver(int recievedNumber, GameActions.Actions usedAction, int distanceToGoal)
     {
-        if (hasItem )
+        if (hasItem)
         {
-            if (range >= distaceToGoal)
+            if (recievedNumber >= distanceToGoal)
             {
                 Debug.Log("you win");
             }
         }
     }
     //Manages the PickUp action
-    public void PickUpReceiver(int recievedNumber, GameActions.Actions usedAction)
+    public void PickUpReceiver(int recievedNumber, GameActions.Actions usedAction, int distanceToItem, int distanceToNumber, GameObject item, GameObject number, GameObject numberHUD)
     {
         if (!hasItem)
         {
-            if (recievedNumber >= distaceToItem)
+            if (recievedNumber >= distanceToItem)
             {
                 hasItem = true;
                 item.SetActive (false);
@@ -60,14 +48,13 @@ public class UnitControler : MonoBehaviour
         
         if(!hasNumber)
         {
-            if (recievedNumber >= distaceToNumber)
+            if (recievedNumber >= distanceToNumber)
             {
                 number.SetActive(false);
                 numberHUD.SetActive(true);
                 hasNumber = true;
             }
         }
-        //undoManager.ActionHistory(usedAction, recievedNumber);
     }
     void Update()
     {
@@ -101,30 +88,9 @@ public class UnitControler : MonoBehaviour
         playerPosition.position += new Vector3(direction.x, 0, direction.y);
 
         maxAmount = maxAmount - 1;
-
-        //Change the rest of the function to detect the distance to items with collisions instead
-
-        //With collisions there is no need to make this calculations
-        distaceToItem = (int)Mathf.Abs(playerPosition.position.x - itemPosition.x) + (int)Mathf.Abs(playerPosition.position.z - itemPosition.y);
-        distaceToGoal = (int)Mathf.Abs(playerPosition.position.x - goalPosition.x) + (int)Mathf.Abs(playerPosition.position.z - goalPosition.y);
-        distaceToNumber = (int)Mathf.Abs(playerPosition.position.x - numberPosition.x) + (int)Mathf.Abs(playerPosition.position.z - numberPosition.y);
-
-        if (distaceToNumber == 0 && !hasNumber)
+        if (OnMovement != null)
         {
-            number.SetActive(false);
-            numberHUD.SetActive(true);
-            hasNumber = true;
-        }
-
-        if (distaceToGoal == 0 && hasItem == true)
-        {
-            Debug.Log("you win");
-        }
-
-        if (distaceToItem == 0 && !hasItem)
-        {
-            hasItem = true;
-            item.SetActive(false);
+            OnMovement();
         }
     }
 }
