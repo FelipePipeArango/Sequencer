@@ -27,7 +27,8 @@ public class CardTrigger : MonoBehaviour, IDropHandler
         {
             GameObject dropped = eventData.pointerDrag;
             DraggableItem draggableItem = dropped.GetComponent<DraggableItem>();
-            draggableItem.parentTransform = transform;
+            //draggableItem.parentTransform = transform;
+            draggableItem.transform.SetParent(draggableItem.parentTransform);
             draggableItem.gameObject.SetActive(false);
 
             slotImage.gameObject.SetActive(false);

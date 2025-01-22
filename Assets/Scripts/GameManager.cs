@@ -121,10 +121,12 @@ public class GameManager : MonoBehaviour
                 switch (levelActions[i])
                 {
                     case GameActions.Actions.Move:
+                        undoManager.SaveObjectPositions(player.transform.position);
                         playerActions.MovementReceiver (recievedNumber, GameActions.Actions.Move);
                         break;
 
                     case GameActions.Actions.PickUp:
+                        undoManager.SaveObjectPositions(keyItem.transform.position);
                         playerActions.PickUpReceiver (recievedNumber, GameActions.Actions.PickUp, distaceToItem, distaceToNumber, keyItem, pickUpNumber, numberHUD);
                         break;
 
@@ -137,7 +139,7 @@ public class GameManager : MonoBehaviour
                         break;
                 }
                 sequencer.NextCard(recievedNumber);
-                undoManager.ActionHistory(levelActions[i], recievedNumber, 1);
+                undoManager.ActionHistory(levelActions[i], recievedNumber);
             } 
         }
     }

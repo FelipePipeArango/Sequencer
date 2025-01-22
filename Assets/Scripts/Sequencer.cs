@@ -41,6 +41,25 @@ public class Sequencer : MonoBehaviour
         }
         #endregion
     }
+    public void PreviousCard(int previousValue)
+    {
+        for (int i = 0; i < levelActions.Length; i++)
+        {
+            if (i == previousValue - 1)
+            {
+                levelCards[i].nextInSequence = false;
+                cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
+                cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 0.5f);
+            }
+            else
+            {
+                levelCards[i].nextInSequence = true;
+                cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
+                cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 1);
+            }
+        }
+    }
+
     public void NextCard(int recievedValue)
     {
         for (int i = 0; i < levelActions.Length; i++)
