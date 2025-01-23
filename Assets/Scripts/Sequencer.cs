@@ -18,13 +18,13 @@ public class Sequencer : MonoBehaviour
     private void OnEnable()
     {
         CardTrigger.OnGrab += ManageSequenceText;
-        DraggableItem.OnDragAction += ManageSequenceText;
+        NumberItem.OnDragAction += ManageSequenceText;
     }
 
     private void OnDisable()
     {
         CardTrigger.OnGrab -= ManageSequenceText;
-        DraggableItem.OnDragAction -= ManageSequenceText;
+        NumberItem.OnDragAction -= ManageSequenceText;
     }
 
     public void FillCards(GameObject cardsInLevel)
@@ -41,30 +41,45 @@ public class Sequencer : MonoBehaviour
         }
         #endregion
     }
-    public void PreviousCard(int previousValue)
+    public void UndoCard(NumberItem previousValue, NumberItem currentValue)
     {
         for (int i = 0; i < levelActions.Length; i++)
         {
-            if (i == previousValue - 1)
+            if (i == previousValue.value - 1)
+            {
+                Debug.Log("numbero del turno anterior: " + previousValue.value);
+                levelCards[i].nextInSequence = true;
+                levelCards[i].Enable(true, currentValue);
+                cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
+                cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 1f);
+            }
+            else
             {
                 levelCards[i].nextInSequence = false;
                 cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
                 cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 0.5f);
             }
-            else
+
+            /*if (i == previousValue - 1)
             {
                 levelCards[i].nextInSequence = true;
                 cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
-                cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 1);
+                cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 1f);
             }
+            else
+            {
+                levelCards[i].nextInSequence = false;
+                cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
+                cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 0.5f);
+            }*/
         }
     }
 
-    public void NextCard(int recievedValue)
+    public void NextCard(NumberItem recievedValue)
     {
         for (int i = 0; i < levelActions.Length; i++)
         {
-            if (i == recievedValue - 1)
+            if (i == recievedValue.value - 1)
             {
                 levelCards[i].nextInSequence = true;
                 cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();

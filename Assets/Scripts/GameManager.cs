@@ -8,11 +8,14 @@ using static UnityEditor.Progress;
 public class GameManager : MonoBehaviour
 {
     //The cards present in the level
+    NumberItem[] levelNumbers;
+    int[] numberValues;
     CardTrigger[] levelCards;
     GameActions.Actions[] levelActions;
 
     [Header("MANDATORY OBJECTS IN A LEVEL")]
     [SerializeField] GameObject cardsInLevel; //hopefully I'll find a way to make this fill itself instead of requiring a serialization
+    [SerializeField] GameObject numbersInLevel;
 
     //Make this a prefab, add player under GameManager, and assign player to UnitController
     [SerializeField] GameObject player;
@@ -35,13 +38,15 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable()
     {
-        CardTrigger.OnDropAction += CommunicateAction;
+        //CardTrigger.OnDropAction += CommunicateAction;
+        CardTrigger.OnTest += CommunicateAction;
         UnitControler.OnMovement += ReCalculateBoard;
     }
     
     private void OnDisable()
     {
-        CardTrigger.OnDropAction -= CommunicateAction;
+       // CardTrigger.OnDropAction -= CommunicateAction;
+        CardTrigger.OnTest -= CommunicateAction;
         UnitControler.OnMovement -= ReCalculateBoard;
     }
 
@@ -49,6 +54,18 @@ public class GameManager : MonoBehaviour
     {
         playerActions = player.GetComponent<UnitControler>();
         undoManager = this.GetComponent<UndoManager>();
+
+        #region NumberFilling
+        //This section informs the manager about the numbers in the level
+        levelNumbers = new NumberItem[numbersInLevel.transform.childCount];
+        numberValues = new int [numbersInLevel.transform.childCount];
+        for (int i = 0; i < levelNumbers.Length; i++)
+        {
+            levelNumbers[i] = numbersInLevel.transform.GetChild(i).GetComponentInChildren<NumberItem>();
+            numberValues[i] = levelNumbers[i].value;
+        }
+        #endregion
+
         #region CardFilling
         //This checks the cards being used in the level and fills the required arrays
         levelCards = new CardTrigger[cardsInLevel.transform.childCount];
@@ -112,7 +129,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void CommunicateAction (int recievedNumber, GameActions.Actions usedAction)
+    /*public void CommunicateAction (int recievedNumber, GameActions.Actions usedAction)
     {
         for (int i = 0; i < levelActions.Length; i++)
         {
@@ -139,8 +156,41 @@ public class GameManager : MonoBehaviour
                         break;
                 }
                 sequencer.NextCard(recievedNumber);
-                undoManager.ActionHistory(levelActions[i], recievedNumber);
+                undoManager.ActionHistory(levelActions[i], recievedNumber, i);
             } 
+        }
+    }*/
+
+    public void CommunicateAction(NumberItem recievedNumber, GameActions.Actions usedAction)
+    {
+        for (int i = 0; i < levelActions.Length; i++)
+        {
+            if (usedAction == levelActions[i])
+            {
+                switch (levelActions[i])
+                {
+                    case GameActions.Actions.Move:
+                        undoManager.SaveObjectPositions(player.transform.position);
+                        playerActions.MovementReceiver(recievedNumber.value, GameActions.Actions.Move);
+                        break;
+
+                    case GameActions.Actions.PickUp:
+                        undoManager.SaveObjectPositions(keyItem.transform.position);
+                        playerActions.PickUpReceiver(recievedNumber.value, GameActions.Actions.PickUp, distaceToItem, distaceToNumber, keyItem, pickUpNumber, numberHUD);                      
+                        break;
+
+                    case GameActions.Actions.Enable:
+                        levelCards[recievedNumber.value - 1].Enable(false, recievedNumber);
+                        break;
+
+                    case GameActions.Actions.Throw:
+                        playerActions.ThrowReceiver(recievedNumber.value, GameActions.Actions.Throw, distaceToGoal);
+                        break;
+                }
+                levelCards[i].Disable(recievedNumber);
+                sequencer.NextCard(recievedNumber);
+                undoManager.ActionHistory(levelActions[i], recievedNumber);
+            }
         }
     }
 
