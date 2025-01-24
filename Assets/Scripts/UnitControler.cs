@@ -1,9 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public class UnitControler : MonoBehaviour
 {
+    public delegate void PickUpObject(GameActions.Actions action, GameObject affectedObject);
+    public static event PickUpObject OnObjectPickUp;
+
     public delegate void MoveAction();
     public static event MoveAction OnMovement;
 
@@ -12,8 +17,6 @@ public class UnitControler : MonoBehaviour
     int maxAmount = 0;
     [HideInInspector] public bool hasItem = false;
     [HideInInspector] public bool hasNumber = false;
-
-    public Event OnPlayerMovement;
 
     private void Start()
     {
@@ -35,12 +38,17 @@ public class UnitControler : MonoBehaviour
         }
     }
     //Manages the PickUp action
-    public void PickUpReceiver(int recievedNumber, GameActions.Actions usedAction, int distanceToItem, int distanceToNumber, GameObject item, GameObject number, GameObject numberHUD)
+    public void PickUpReceiver(int recievedNumber, int distanceToItem, int distanceToNumber, GameObject item, GameObject number, GameObject numberHUD)
     {
         if (!hasItem)
         {
             if (recievedNumber >= distanceToItem)
             {
+                if (OnObjectPickUp != null)
+                {
+                    OnObjectPickUp(GameActions.Actions.PickUp, item);
+                }
+
                 hasItem = true;
                 item.SetActive (false);
             }
@@ -50,10 +58,29 @@ public class UnitControler : MonoBehaviour
         {
             if (recievedNumber >= distanceToNumber)
             {
+                if (OnObjectPickUp != null)
+                {
+                    OnObjectPickUp(GameActions.Actions.PickUp, number);
+                }
                 number.SetActive(false);
                 numberHUD.SetActive(true);
                 hasNumber = true;
             }
+        }
+    }
+
+    public void UndoPickUps (GameObject @object)
+    {
+        if (@object.tag == "item")
+        {
+            hasItem = false;
+            @object.SetActive(true);
+        }
+
+        if (@object.tag == "itemNumber")
+        {
+            @object.SetActive(true);
+            hasNumber = false;
         }
     }
     void Update()
@@ -92,5 +119,11 @@ public class UnitControler : MonoBehaviour
         {
             OnMovement();
         }
+    }
+
+    public void UndoMovement(Vector3 previousPosition)
+    {
+        playerPosition.position = new Vector3(previousPosition.x, 1, previousPosition.z);
+        maxAmount = 0;
     }
 }

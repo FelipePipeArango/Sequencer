@@ -38,15 +38,13 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable()
     {
-        //CardTrigger.OnDropAction += CommunicateAction;
-        CardTrigger.OnTest += CommunicateAction;
+        CardTrigger.OnDropAction += CommunicateAction;
         UnitControler.OnMovement += ReCalculateBoard;
     }
     
     private void OnDisable()
     {
-       // CardTrigger.OnDropAction -= CommunicateAction;
-        CardTrigger.OnTest -= CommunicateAction;
+        CardTrigger.OnDropAction -= CommunicateAction;
         UnitControler.OnMovement -= ReCalculateBoard;
     }
 
@@ -112,6 +110,7 @@ public class GameManager : MonoBehaviour
 
         if (distaceToNumber == 0 && !playerActions.hasNumber)
         {
+            undoManager.Test2(GameActions.Actions.Move, pickUpNumber);
             pickUpNumber.SetActive(false);
             numberHUD.SetActive(true);
             playerActions.hasNumber = true;
@@ -124,12 +123,13 @@ public class GameManager : MonoBehaviour
 
         if (distaceToItem == 0 && !playerActions.hasItem)
         {
+            undoManager.Test2(GameActions.Actions.Move, keyItem);
             playerActions.hasItem = true;
             keyItem.SetActive(false);
         }
     }
 
-    /*public void CommunicateAction (int recievedNumber, GameActions.Actions usedAction)
+    void CommunicateAction(NumberItem recievedNumber, GameActions.Actions usedAction)
     {
         for (int i = 0; i < levelActions.Length; i++)
         {
@@ -138,45 +138,13 @@ public class GameManager : MonoBehaviour
                 switch (levelActions[i])
                 {
                     case GameActions.Actions.Move:
-                        undoManager.SaveObjectPositions(player.transform.position);
-                        playerActions.MovementReceiver (recievedNumber, GameActions.Actions.Move);
-                        break;
-
-                    case GameActions.Actions.PickUp:
-                        undoManager.SaveObjectPositions(keyItem.transform.position);
-                        playerActions.PickUpReceiver (recievedNumber, GameActions.Actions.PickUp, distaceToItem, distaceToNumber, keyItem, pickUpNumber, numberHUD);
-                        break;
-
-                    case GameActions.Actions.Enable:
-                        levelCards[recievedNumber - 1].Enable();
-                        break;
-
-                    case GameActions.Actions.Throw:
-                        playerActions.ThrowReceiver (recievedNumber, GameActions.Actions.Throw, distaceToGoal);
-                        break;
-                }
-                sequencer.NextCard(recievedNumber);
-                undoManager.ActionHistory(levelActions[i], recievedNumber, i);
-            } 
-        }
-    }*/
-
-    public void CommunicateAction(NumberItem recievedNumber, GameActions.Actions usedAction)
-    {
-        for (int i = 0; i < levelActions.Length; i++)
-        {
-            if (usedAction == levelActions[i])
-            {
-                switch (levelActions[i])
-                {
-                    case GameActions.Actions.Move:
-                        undoManager.SaveObjectPositions(player.transform.position);
+                        //undoManager.SaveObjectPositions(player.transform.position, pickUpNumber);
                         playerActions.MovementReceiver(recievedNumber.value, GameActions.Actions.Move);
                         break;
 
                     case GameActions.Actions.PickUp:
-                        undoManager.SaveObjectPositions(keyItem.transform.position);
-                        playerActions.PickUpReceiver(recievedNumber.value, GameActions.Actions.PickUp, distaceToItem, distaceToNumber, keyItem, pickUpNumber, numberHUD);                      
+                        //undoManager.SaveObjectPositions(keyItem.transform.position, keyItem);
+                        playerActions.PickUpReceiver(recievedNumber.value, distaceToItem, distaceToNumber, keyItem, pickUpNumber, numberHUD);
                         break;
 
                     case GameActions.Actions.Enable:
@@ -194,4 +162,43 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void CommunicateUndo(List<GameObject> gameObjects, GameActions.Actions undoneAction, NumberItem previousNumber, NumberItem currentNumber)
+    {
+        switch (undoneAction)
+        {
+            case GameActions.Actions.Move:
+                foreach(var @object in gameObjects)
+                {
+                    if (@object == player)
+                    {
+                        playerActions.UndoMovement(@object.transform.position);
+                    }
+
+                    if (@object == keyItem)
+                    {
+                        playerActions.UndoPickUps(@object);
+                    }
+
+                    if (@object == pickUpNumber)
+                    {
+                        numberHUD.SetActive(false);
+                        playerActions.UndoPickUps(@object);
+                    }
+                }
+                break;
+
+            case GameActions.Actions.PickUp:
+                //playerActions.UndoPickUp(keyItem, pickUpNumber, numberHUD);
+                break;
+
+            case GameActions.Actions.Enable:
+
+                break;
+
+            case GameActions.Actions.Throw:
+
+                break;
+        }
+        sequencer.UndoSequence(previousNumber, currentNumber);
+    }
 }

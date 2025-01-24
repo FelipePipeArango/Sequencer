@@ -4259,8 +4259,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bf32c55e39b8b744880c843392afec4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelNumbers: []
-  numberValues: 
   cardsInLevel: {fileID: 1187270321}
   numbersInLevel: {fileID: 534630998}
   player: {fileID: 1612620117}
@@ -4281,6 +4279,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfd4c3a37c5ab974384ce5624fb51dbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManager: {fileID: 935383993}
   sequencer: {fileID: 1778812630}
 --- !u!1 &942796838
 GameObject:
@@ -4703,7 +4702,7 @@ GameObject:
   - component: {fileID: 1012370784}
   m_Layer: 0
   m_Name: NumberItem
-  m_TagString: Item
+  m_TagString: NumberItem
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4788,7 +4787,7 @@ Transform:
   m_GameObject: {fileID: 1012370783}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0017087805, y: -0, z: -0, w: 0.99999857}
-  m_LocalPosition: {x: 2, y: 0.632, z: 0}
+  m_LocalPosition: {x: 1, y: 0.632, z: 0}
   m_LocalScale: {x: 0.8, y: 0.1, z: 0.8}
   m_ConstrainProportionsScale: 0
   m_Children:

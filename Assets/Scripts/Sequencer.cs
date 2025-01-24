@@ -41,7 +41,7 @@ public class Sequencer : MonoBehaviour
         }
         #endregion
     }
-    public void UndoCard(NumberItem previousValue, NumberItem currentValue)
+    public void UndoSequence(NumberItem previousValue, NumberItem currentValue)
     {
         for (int i = 0; i < levelActions.Length; i++)
         {
@@ -59,19 +59,6 @@ public class Sequencer : MonoBehaviour
                 cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
                 cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 0.5f);
             }
-
-            /*if (i == previousValue - 1)
-            {
-                levelCards[i].nextInSequence = true;
-                cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
-                cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 1f);
-            }
-            else
-            {
-                levelCards[i].nextInSequence = false;
-                cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
-                cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 0.5f);
-            }*/
         }
     }
 
