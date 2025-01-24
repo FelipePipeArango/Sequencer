@@ -10,53 +10,39 @@ public class UndoManager : MonoBehaviour
     [SerializeField] GameManager gameManager;
     [SerializeField] Sequencer sequencer;
 
-    GameActions.Actions currentAction;
-
     List<(GameActions.Actions usedAction, NumberItem usedNumber)> turns = new List<(GameActions.Actions usedAction, NumberItem usedNumber)>();
-    //List<(Vector3 coordinates, GameObject affectedObject)> objectCoordinates = new List<(Vector3 coordinates, GameObject affectedObject)> ();
 
-    List<GameObject> objectCoordinatesTest = new List<GameObject>();
-    Dictionary<GameActions.Actions, List<GameObject>> test = new Dictionary<GameActions.Actions, List<GameObject>>();
-
-    private void OnEnable()
-    {
-        UnitControler.OnObjectPickUp += Test2;
-    }
-
-    private void OnDisable()
-    {
-        UnitControler.OnObjectPickUp -= Test2;
-    }
+    List<(GameObject gameObject, Vector3 position)> SavedObjects = new List<(GameObject gameObject, Vector3 position)>();
+    Dictionary<int, List<(GameObject gameObject, Vector3 position)>> ActionResposibleForObject = new Dictionary<int, List<(GameObject gameObject, Vector3 position)>>();
 
     public void ActionHistory(GameActions.Actions usedAction, NumberItem usedNumber)
     {
-        currentAction = usedAction;
         var turn = (Action: usedAction, Number: usedNumber);
         turns.Add(turn);
-        Test2(usedAction,null);
     }
 
-    /*public void SaveObjectPositions(Vector3 coordinates, GameObject affectedObject)
+    public void AddToSaveHistory (int actionSlot, GameObject affectedObject, Vector3 position) //Adds a list of objects that were affected by the current action to the dictionary
     {
-        var ObjectPosition = (Coordinate: coordinates, AffectedObject: affectedObject);
-        objectCoordinates.Add(ObjectPosition);
-    }*/
-
-    public void Test2(GameActions.Actions usedAction, GameObject affectedObject)
-    {
+        Debug.Log("numero del undo: " + actionSlot);
         if (affectedObject != null)
         {
-            objectCoordinatesTest.Add(affectedObject);
-        }
-
-        if (currentAction != usedAction)
-        {
-            test.Add(usedAction, objectCoordinatesTest);
-        }
-
-        if (test.TryGetValue(usedAction, out var action))
-        {
-            Debug.Log(action.ToString());
+            var thisturn = (affectedObject, position);
+            SavedObjects.Add(thisturn);
+            ActionResposibleForObject[actionSlot] = SavedObjects;
+            if (ActionResposibleForObject.ContainsKey(actionSlot))
+            {
+                foreach (var obj in SavedObjects)
+                {
+                    Debug.Log("objetos en la lista: " + obj.gameObject.tag);
+                }
+                return;
+            }
+            else
+            {
+                SavedObjects = new List<(GameObject gameObject, Vector3 position)>(); //makes sure that different actions donÅLt get assigned GameObjects from past actions
+                SavedObjects.Add(thisturn);
+                ActionResposibleForObject.Add(actionSlot, SavedObjects);
+            }
         }
     }
 
@@ -77,36 +63,19 @@ public class UndoManager : MonoBehaviour
                 Debug.Log("deshaciendo accion: " + thisTurn.usedAction + " que equivale a carta #" + previousTurn.usedNumber.value);
                 Debug.Log("numero de este turno " + thisTurn.usedNumber.value);
 
-                if (test.TryGetValue(thisTurn.usedAction, out var action)) //action is a list of game objects
+                if (ActionResposibleForObject.TryGetValue(previousTurn.usedNumber.value - 1, out var affected)) //affected is a list of game objects and their positions
                 {
-                    gameManager.CommunicateUndo(action, thisTurn.usedAction, previousTurn.usedNumber, thisTurn.usedNumber);
+                    foreach (var item in affected)
+                    {
+                        Debug.Log("accion: " + thisTurn.usedAction + " y objeto: " + item); 
+                    }
+                    gameManager.CommunicateUndo(affected, thisTurn.usedAction, previousTurn.usedNumber, thisTurn.usedNumber);
                 }
                 else
                 {
+                    Debug.Log("no GameObject affected");
                     gameManager.CommunicateUndo(null, thisTurn.usedAction, previousTurn.usedNumber, thisTurn.usedNumber);
                 }
-
-                /*if (thisTurn.usedAction == GameActions.Actions.Move || thisTurn.usedAction == GameActions.Actions.PickUp)
-                {
-                    var previousPosition = objectCoordinates[objectCoordinates.Count - 1];
-                    objectCoordinates.RemoveAt(objectCoordinates.Count - 1);
-
-                    if (test.TryGetValue(usedAction, out var action))
-                    {
-                        foreach (var savedObject in action) //each action can affect multiple objects, this is saying to give me the list of objects affected by usedAction
-                        {
-                            Debug.Log(savedObject.ToString());
-                        }
-                    }
-
-                    gameManager.CommunicateUndo(previousPosition.coordinates, , thisTurn.usedAction, previousTurn.usedNumber, thisTurn.usedNumber);
-                }
-                else
-                {
-                    var ignorePosition = new Vector3 (0,0,0);
-                    gameManager.CommunicateUndo(ignorePosition, null, thisTurn.usedAction, previousTurn.usedNumber, thisTurn.usedNumber);
-                }*/
-
                 turns.RemoveAt(turns.Count - 1);
             }
         }

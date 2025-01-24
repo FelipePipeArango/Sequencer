@@ -71,13 +71,13 @@ public class UnitControler : MonoBehaviour
 
     public void UndoPickUps (GameObject @object)
     {
-        if (@object.tag == "item")
+        if (@object.tag == "Item")
         {
             hasItem = false;
             @object.SetActive(true);
         }
 
-        if (@object.tag == "itemNumber")
+        if (@object.tag == "NumberItem")
         {
             @object.SetActive(true);
             hasNumber = false;

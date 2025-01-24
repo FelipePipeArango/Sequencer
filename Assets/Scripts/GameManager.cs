@@ -40,12 +40,14 @@ public class GameManager : MonoBehaviour
     {
         CardTrigger.OnDropAction += CommunicateAction;
         UnitControler.OnMovement += ReCalculateBoard;
+        UnitControler.OnObjectPickUp += CommunicateChange;
     }
     
     private void OnDisable()
     {
         CardTrigger.OnDropAction -= CommunicateAction;
         UnitControler.OnMovement -= ReCalculateBoard;
+        UnitControler.OnObjectPickUp -= CommunicateChange;
     }
 
     public void Awake()
@@ -110,7 +112,7 @@ public class GameManager : MonoBehaviour
 
         if (distaceToNumber == 0 && !playerActions.hasNumber)
         {
-            undoManager.Test2(GameActions.Actions.Move, pickUpNumber);
+            CommunicateChange(GameActions.Actions.Move, pickUpNumber);
             pickUpNumber.SetActive(false);
             numberHUD.SetActive(true);
             playerActions.hasNumber = true;
@@ -123,9 +125,20 @@ public class GameManager : MonoBehaviour
 
         if (distaceToItem == 0 && !playerActions.hasItem)
         {
-            undoManager.Test2(GameActions.Actions.Move, keyItem);
+            CommunicateChange(GameActions.Actions.Move, keyItem);
             playerActions.hasItem = true;
             keyItem.SetActive(false);
+        }
+    }
+
+    void CommunicateChange(GameActions.Actions action, GameObject @object) //This lets the UndoManager know what action modified the objects in the board
+    {
+        for (int i = 0; i < levelActions.Length; i++) //this translates from action to its corresponding array slot, to allow for duplicate actions in the same level
+        {
+            if (action == levelActions[i])
+            {
+                undoManager.AddToSaveHistory(i, @object, @object.transform.position);
+            }
         }
     }
 
@@ -138,12 +151,11 @@ public class GameManager : MonoBehaviour
                 switch (levelActions[i])
                 {
                     case GameActions.Actions.Move:
-                        //undoManager.SaveObjectPositions(player.transform.position, pickUpNumber);
+                        undoManager.AddToSaveHistory(i, player, player.transform.position);
                         playerActions.MovementReceiver(recievedNumber.value, GameActions.Actions.Move);
                         break;
 
                     case GameActions.Actions.PickUp:
-                        //undoManager.SaveObjectPositions(keyItem.transform.position, keyItem);
                         playerActions.PickUpReceiver(recievedNumber.value, distaceToItem, distaceToNumber, keyItem, pickUpNumber, numberHUD);
                         break;
 
@@ -162,27 +174,31 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void CommunicateUndo(List<GameObject> gameObjects, GameActions.Actions undoneAction, NumberItem previousNumber, NumberItem currentNumber)
+    public void CommunicateUndo(List<(GameObject gameObject, Vector3 position)> gameObjects, GameActions.Actions undoneAction, NumberItem previousNumber, NumberItem currentNumber)
     {
+        sequencer.UndoSequence(previousNumber, currentNumber);
         switch (undoneAction)
         {
             case GameActions.Actions.Move:
                 foreach(var @object in gameObjects)
                 {
-                    if (@object == player)
+                    Debug.Log(@object.gameObject.tag);
+                    if (@object.gameObject.tag == player.tag)
                     {
-                        playerActions.UndoMovement(@object.transform.position);
+                        Debug.Log("retrocediendo jugador a posicion: " + @object.position);
+                        playerActions.UndoMovement(@object.position);
                     }
 
-                    if (@object == keyItem)
+                    if (@object.gameObject.tag == keyItem.tag)
                     {
-                        playerActions.UndoPickUps(@object);
+                        playerActions.UndoPickUps(@object.gameObject);
                     }
 
-                    if (@object == pickUpNumber)
+                    if (@object.gameObject.tag == pickUpNumber.tag)
                     {
+                        Debug.Log("retrocediendo numero");
                         numberHUD.SetActive(false);
-                        playerActions.UndoPickUps(@object);
+                        playerActions.UndoPickUps(@object.gameObject);
                     }
                 }
                 break;
@@ -199,6 +215,5 @@ public class GameManager : MonoBehaviour
 
                 break;
         }
-        sequencer.UndoSequence(previousNumber, currentNumber);
     }
 }
