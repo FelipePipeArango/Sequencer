@@ -14,7 +14,7 @@ public class UnitControler : MonoBehaviour
 
     Transform playerPosition;
 
-    int maxAmount = 0;
+    public int moveAmount = 0;
     [HideInInspector] public bool hasItem = false;
     [HideInInspector] public bool hasNumber = false;
 
@@ -25,7 +25,7 @@ public class UnitControler : MonoBehaviour
 
     public void MovementReceiver(int recievedNumber, GameActions.Actions usedAction)
     {
-        maxAmount = recievedNumber;
+        moveAmount = recievedNumber;
     }
     public void ThrowReceiver(int recievedNumber, GameActions.Actions usedAction, int distanceToGoal)
     {
@@ -85,7 +85,7 @@ public class UnitControler : MonoBehaviour
     }
     void Update()
     {
-        if (maxAmount > 0)
+        if (moveAmount > 0)
         {
             if (Input.GetKeyDown(KeyCode.W))
             {
@@ -114,7 +114,7 @@ public class UnitControler : MonoBehaviour
     {
         playerPosition.position += new Vector3(direction.x, 0, direction.y);
 
-        maxAmount = maxAmount - 1;
+        moveAmount = moveAmount - 1;
         if (OnMovement != null)
         {
             OnMovement();
@@ -124,6 +124,6 @@ public class UnitControler : MonoBehaviour
     public void UndoMovement(Vector3 previousPosition)
     {
         playerPosition.position = new Vector3(previousPosition.x, 1, previousPosition.z);
-        maxAmount = 0;
+        moveAmount = 0;
     }
 }

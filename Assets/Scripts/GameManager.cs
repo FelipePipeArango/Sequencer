@@ -12,6 +12,10 @@ public class GameManager : MonoBehaviour
     int[] numberValues;
     CardTrigger[] levelCards;
     GameActions.Actions[] levelActions;
+    object[,] board;
+
+    [Header("SIZE OF THE BOARD - STARTS FROM 0")]
+    [SerializeField] Vector2Int size;
 
     [Header("MANDATORY OBJECTS IN A LEVEL")]
     [SerializeField] GameObject cardsInLevel; //hopefully I'll find a way to make this fill itself instead of requiring a serialization
@@ -90,10 +94,54 @@ public class GameManager : MonoBehaviour
         {
             distaceToNumber = (int)Mathf.Abs(player.transform.position.x - pickUpNumber.transform.position.x) + (int)Mathf.Abs(player.transform.position.z - pickUpNumber.transform.position.z); 
         }
+
+        board = new object[size.x, size.y];
+
+        for (int i = 0; i < size.x; i++)
+        {
+            for (int j = 0; j < size.y; j++)
+            {
+                if (player.transform.position.x == i && player.transform.position.z == j)
+                {
+                    board[i, j] = playerActions.moveAmount;
+                }
+                if (keyItem.transform.position.x == i && keyItem.transform.position.z == j)
+                {
+                    board[i, j] = keyItem.tag;
+                }
+                if (pickUpNumber != null)
+                {
+                    if (pickUpNumber.transform.position.x == i && pickUpNumber.transform.position.z == j)
+                    {
+                        board[i, j] = pickUpNumber.tag;
+                    } 
+                }
+            }
+        }
+        undoManager.InitialState(board);
     }
 
     void ReCalculateBoard()
     {
+        for (int i = 0; i < size.x; i++)
+        {
+            for (int j = 0; j < size.y; j++)
+            {
+                if (board[i, j] != null)
+                {
+                    if (board[i, j].GetType() == typeof(int))
+                    {
+                        board[i, j] = null;
+                    } 
+                }
+                if (player.transform.position.x == i && player.transform.position.z == j) //updates the position of the player in the array
+                {
+                    board[i, j] = playerActions.moveAmount;
+                    Debug.Log("player is in " + board[i, j].GetType() + " on: " + i + "," + j);
+                }
+            }
+        }
+
         distaceToGoal = (int)Mathf.Abs(player.transform.position.x - goal.transform.position.x) + (int)Mathf.Abs(player.transform.position.z - goal.transform.position.z);
 
         if (!playerActions.hasItem)
@@ -112,6 +160,22 @@ public class GameManager : MonoBehaviour
 
         if (distaceToNumber == 0 && !playerActions.hasNumber)
         {
+            if (pickUpNumber != null)
+            {
+                for (int i = 0; i < size.x; i++)
+                {
+                    for (int j = 0; j < size.y; j++)
+                    {
+                        if (board[i, j] != null)
+                        {
+                            if (pickUpNumber.transform.position.x == i && pickUpNumber.transform.position.z == j)
+                            {
+                                board[i, j] = playerActions.moveAmount;
+                            }
+                        }
+                    }
+                } 
+            }
             CommunicateChange(GameActions.Actions.Move, pickUpNumber);
             pickUpNumber.SetActive(false);
             numberHUD.SetActive(true);
@@ -125,6 +189,19 @@ public class GameManager : MonoBehaviour
 
         if (distaceToItem == 0 && !playerActions.hasItem)
         {
+            for (int i = 0; i < size.x; i++)
+            {
+                for (int j = 0; j < size.y; j++)
+                {
+                    if (board[i, j] != null)
+                    {
+                        if (keyItem.transform.position.x == i && keyItem.transform.position.z == j)
+                        {
+                            board[i, j] = playerActions.moveAmount;
+                        } 
+                    }
+                }
+            }
             CommunicateChange(GameActions.Actions.Move, keyItem);
             playerActions.hasItem = true;
             keyItem.SetActive(false);
@@ -137,7 +214,8 @@ public class GameManager : MonoBehaviour
         {
             if (action == levelActions[i])
             {
-                undoManager.AddToSaveHistory(i, @object, @object.transform.position);
+                //undoManager.AddToSaveHistory(i, @object, @object.transform.position);
+                undoManager.SaveBoard(i, board);
             }
         }
     }
@@ -151,7 +229,8 @@ public class GameManager : MonoBehaviour
                 switch (levelActions[i])
                 {
                     case GameActions.Actions.Move:
-                        undoManager.AddToSaveHistory(i, player, player.transform.position);
+                        //undoManager.AddToSaveHistory(i, player, player.transform.position);
+                        //undoManager.SaveBoard(i, board);
                         playerActions.MovementReceiver(recievedNumber.value, GameActions.Actions.Move);
                         break;
 
@@ -174,7 +253,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void CommunicateUndo(List<(GameObject gameObject, Vector3 position)> gameObjects, GameActions.Actions undoneAction, NumberItem previousNumber, NumberItem currentNumber)
+    /*public void CommunicateUndo(List<(GameObject gameObject, Vector3 position)> gameObjects, GameActions.Actions undoneAction, NumberItem previousNumber, NumberItem currentNumber)
     {
         sequencer.UndoSequence(previousNumber, currentNumber);
         switch (undoneAction)
@@ -215,5 +294,60 @@ public class GameManager : MonoBehaviour
 
                 break;
         }
+    }*/
+
+    public void CommunicateUndo(object[,] newBoard, GameActions.Actions undoneAction, NumberItem previousNumber, NumberItem currentNumber)
+    {
+        sequencer.UndoSequence(previousNumber, currentNumber);
+
+        for (int i = 0; i < size.x; i++)
+        {
+            for (int j = 0; j < size.y; j++)
+            {
+                if (newBoard[i, j] != null)
+                {
+                    Debug.Log("going back to board with: " + newBoard[i, j].GetType() + " on: " + i + "," + j);
+                }
+            }
+        }
+
+        /*switch (undoneAction)
+        {
+            case GameActions.Actions.Move:
+                foreach (var @object in gameObjects)
+                {
+                    Debug.Log(@object.gameObject.tag);
+                    if (@object.gameObject.tag == player.tag)
+                    {
+                        Debug.Log("retrocediendo jugador a posicion: " + @object.position);
+                        playerActions.UndoMovement(@object.position);
+                    }
+
+                    if (@object.gameObject.tag == keyItem.tag)
+                    {
+                        playerActions.UndoPickUps(@object.gameObject);
+                    }
+
+                    if (@object.gameObject.tag == pickUpNumber.tag)
+                    {
+                        Debug.Log("retrocediendo numero");
+                        numberHUD.SetActive(false);
+                        playerActions.UndoPickUps(@object.gameObject);
+                    }
+                }
+                break;
+
+            case GameActions.Actions.PickUp:
+                //playerActions.UndoPickUp(keyItem, pickUpNumber, numberHUD);
+                break;
+
+            case GameActions.Actions.Enable:
+
+                break;
+
+            case GameActions.Actions.Throw:
+
+                break;
+        }*/
     }
 }
