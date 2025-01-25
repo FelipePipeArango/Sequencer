@@ -45,7 +45,7 @@ public class Sequencer : MonoBehaviour
     {
         for (int i = 0; i < levelActions.Length; i++)
         {
-            if (i == previousValue.value - 1)
+            if (i == previousValue.value - 1) //returns to the action that was just used, the -1 is only because the array starts at 0, while the used number starts at 1
             {
                 Debug.Log("numbero del turno anterior: " + previousValue.value);
                 levelCards[i].nextInSequence = true;

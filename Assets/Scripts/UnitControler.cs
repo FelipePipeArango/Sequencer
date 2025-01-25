@@ -6,10 +6,10 @@ using static UnityEditor.Progress;
 
 public class UnitControler : MonoBehaviour
 {
-    public delegate void PickUpObject(GameActions.Actions action, GameObject affectedObject);
+    public delegate void PickUpObject(GameActions.Actions action, GameObject affected);
     public static event PickUpObject OnObjectPickUp;
 
-    public delegate void MoveAction();
+    public delegate void MoveAction(GameActions.Actions usedAction, GameObject affected);
     public static event MoveAction OnMovement;
 
     Transform playerPosition;
@@ -31,26 +31,47 @@ public class UnitControler : MonoBehaviour
     {
         if (hasItem)
         {
+            hasItem = false;
             if (recievedNumber >= distanceToGoal)
             {
                 Debug.Log("you win");
             }
         }
     }
+
+    public void UndoThrow(bool playedHadItem)
+    {
+        if (playedHadItem) //if the player had the item before throwing, undoing the action should return the item to him.
+        {
+            hasItem = true;
+        }
+        else
+        {
+            hasItem = false; //but if he didn't, the item should not be given to him when undoing the action.
+        }
+    }
+
     //Manages the PickUp action
-    public void PickUpReceiver(int recievedNumber, int distanceToItem, int distanceToNumber, GameObject item, GameObject number, GameObject numberHUD)
+    public void PickUpReceiver(int recievedNumber, int distanceToItem, int distanceToNumber, GameObject item, GameObject pickUpNumber, GameObject numberHUD)
     {
         if (!hasItem)
         {
             if (recievedNumber >= distanceToItem)
             {
+                hasItem = true;
+                item.SetActive (false);
+
                 if (OnObjectPickUp != null)
                 {
                     OnObjectPickUp(GameActions.Actions.PickUp, item);
                 }
-
-                hasItem = true;
-                item.SetActive (false);
+            }
+        }
+        else
+        {
+            if (OnObjectPickUp != null)
+            {
+                OnObjectPickUp(GameActions.Actions.PickUp, null);
             }
         }
         
@@ -58,13 +79,21 @@ public class UnitControler : MonoBehaviour
         {
             if (recievedNumber >= distanceToNumber)
             {
-                if (OnObjectPickUp != null)
-                {
-                    OnObjectPickUp(GameActions.Actions.PickUp, number);
-                }
-                number.SetActive(false);
+                pickUpNumber.SetActive(false);
                 numberHUD.SetActive(true);
                 hasNumber = true;
+
+                if (OnObjectPickUp != null)
+                {
+                    OnObjectPickUp(GameActions.Actions.PickUp, pickUpNumber);
+                }
+            }
+        }
+        else
+        {
+            if (OnObjectPickUp != null)
+            {
+                OnObjectPickUp(GameActions.Actions.PickUp, null);
             }
         }
     }
@@ -117,13 +146,13 @@ public class UnitControler : MonoBehaviour
         moveAmount = moveAmount - 1;
         if (OnMovement != null)
         {
-            OnMovement();
+            OnMovement(GameActions.Actions.Move, null);
         }
     }
 
-    public void UndoMovement(Vector3 previousPosition)
+    public void UndoMovement(int previousPositionX, int previousPositionY)
     {
-        playerPosition.position = new Vector3(previousPosition.x, 1, previousPosition.z);
+        playerPosition.position = new Vector3(previousPositionX, 1, previousPositionY);
         moveAmount = 0;
     }
 }

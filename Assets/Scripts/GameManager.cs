@@ -44,14 +44,14 @@ public class GameManager : MonoBehaviour
     {
         CardTrigger.OnDropAction += CommunicateAction;
         UnitControler.OnMovement += ReCalculateBoard;
-        UnitControler.OnObjectPickUp += CommunicateChange;
+        UnitControler.OnObjectPickUp += ReCalculateBoard;
     }
     
     private void OnDisable()
     {
         CardTrigger.OnDropAction -= CommunicateAction;
         UnitControler.OnMovement -= ReCalculateBoard;
-        UnitControler.OnObjectPickUp -= CommunicateChange;
+        UnitControler.OnObjectPickUp -= ReCalculateBoard;
     }
 
     public void Awake()
@@ -121,8 +121,10 @@ public class GameManager : MonoBehaviour
         undoManager.InitialState(board);
     }
 
-    void ReCalculateBoard()
+    void ReCalculateBoard(GameActions.Actions usedAction, GameObject affected)
     {
+        //The array board is mostly used for the undo system of the game, keeping the player updated in that array is here.
+        #region Updates player position in the array board
         for (int i = 0; i < size.x; i++)
         {
             for (int j = 0; j < size.y; j++)
@@ -137,28 +139,56 @@ public class GameManager : MonoBehaviour
                 if (player.transform.position.x == i && player.transform.position.z == j) //updates the position of the player in the array
                 {
                     board[i, j] = playerActions.moveAmount;
-                    Debug.Log("player is in " + board[i, j].GetType() + " on: " + i + "," + j);
                 }
             }
         }
+        #endregion
 
+        //Goal distance measuring and it's interactios
+        #region Goal Checks
         distaceToGoal = (int)Mathf.Abs(player.transform.position.x - goal.transform.position.x) + (int)Mathf.Abs(player.transform.position.z - goal.transform.position.z);
 
+        if (distaceToGoal == 0 && playerActions.hasItem)
+        {
+            Debug.Log("you win");
+        }
+        #endregion
+
+        //KeyItem distance measuring and it's interactions
+        #region KeyItem Checks
         if (!playerActions.hasItem)
         {
             distaceToItem = (int)Mathf.Abs(player.transform.position.x - keyItem.transform.position.x) + (int)Mathf.Abs(player.transform.position.z - keyItem.transform.position.z);
         }
-        else
-        {
-            distaceToItem = 0;
-        }
 
+        if (distaceToItem == 0 && !playerActions.hasItem) //this updates the board array if the player picks the item up manually
+        {
+            for (int i = 0; i < size.x; i++)
+            {
+                for (int j = 0; j < size.y; j++)
+                {
+                    if (board[i, j] != null)
+                    {
+                        if (keyItem.transform.position.x == i && keyItem.transform.position.z == j)
+                        {
+                            board[i, j] = playerActions.moveAmount;
+                        }
+                    }
+                }
+            }
+            playerActions.hasItem = true;
+            keyItem.SetActive(false);
+        }
+        #endregion
+
+        //NumberItem distance measuring and it's interactions
+        #region NumberItem  Checks
         if (pickUpNumber != null)
         {
             distaceToNumber = (int)Mathf.Abs(player.transform.position.x - pickUpNumber.transform.position.x) + (int)Mathf.Abs(player.transform.position.z - pickUpNumber.transform.position.z);
         }
 
-        if (distaceToNumber == 0 && !playerActions.hasNumber)
+        if (distaceToNumber == 0 && !playerActions.hasNumber) //this updates the board array if the player picks the number up manually
         {
             if (pickUpNumber != null)
             {
@@ -176,45 +206,46 @@ public class GameManager : MonoBehaviour
                     }
                 } 
             }
-            CommunicateChange(GameActions.Actions.Move, pickUpNumber);
             pickUpNumber.SetActive(false);
             numberHUD.SetActive(true);
             playerActions.hasNumber = true;
         }
+        #endregion
 
-        if (distaceToGoal == 0 && playerActions.hasItem)
+        //The PickUp action may affect objects in game, therefore, the array board must be updated
+        #region PickUp checks
+        if (usedAction == GameActions.Actions.PickUp)
         {
-            Debug.Log("you win");
-        }
-
-        if (distaceToItem == 0 && !playerActions.hasItem)
-        {
-            for (int i = 0; i < size.x; i++)
+            if (affected != null)
             {
-                for (int j = 0; j < size.y; j++)
+                for (int i = 0; i < size.x; i++)
                 {
-                    if (board[i, j] != null)
+                    for (int j = 0; j < size.y; j++)
                     {
-                        if (keyItem.transform.position.x == i && keyItem.transform.position.z == j)
+                        if (board[i, j] != null)
                         {
-                            board[i, j] = playerActions.moveAmount;
-                        } 
+                            if (board[i, j].GetType() != typeof(int))
+                            {
+                                if (affected.CompareTag(board[i, j].ToString()))
+                                {
+                                    board[i, j] = null;
+                                } 
+                            }
+                        }
                     }
-                }
+                } 
             }
-            CommunicateChange(GameActions.Actions.Move, keyItem);
-            playerActions.hasItem = true;
-            keyItem.SetActive(false);
         }
+        #endregion
+        CommunicateChange(usedAction);
     }
 
-    void CommunicateChange(GameActions.Actions action, GameObject @object) //This lets the UndoManager know what action modified the objects in the board
+    void CommunicateChange(GameActions.Actions action) //This lets the UndoManager know that a board changing action has been used
     {
         for (int i = 0; i < levelActions.Length; i++) //this translates from action to its corresponding array slot, to allow for duplicate actions in the same level
         {
             if (action == levelActions[i])
             {
-                //undoManager.AddToSaveHistory(i, @object, @object.transform.position);
                 undoManager.SaveBoard(i, board);
             }
         }
@@ -229,8 +260,7 @@ public class GameManager : MonoBehaviour
                 switch (levelActions[i])
                 {
                     case GameActions.Actions.Move:
-                        //undoManager.AddToSaveHistory(i, player, player.transform.position);
-                        //undoManager.SaveBoard(i, board);
+                        undoManager.SaveBoard(i, board);
                         playerActions.MovementReceiver(recievedNumber.value, GameActions.Actions.Move);
                         break;
 
@@ -253,101 +283,77 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    /*public void CommunicateUndo(List<(GameObject gameObject, Vector3 position)> gameObjects, GameActions.Actions undoneAction, NumberItem previousNumber, NumberItem currentNumber)
-    {
-        sequencer.UndoSequence(previousNumber, currentNumber);
-        switch (undoneAction)
-        {
-            case GameActions.Actions.Move:
-                foreach(var @object in gameObjects)
-                {
-                    Debug.Log(@object.gameObject.tag);
-                    if (@object.gameObject.tag == player.tag)
-                    {
-                        Debug.Log("retrocediendo jugador a posicion: " + @object.position);
-                        playerActions.UndoMovement(@object.position);
-                    }
-
-                    if (@object.gameObject.tag == keyItem.tag)
-                    {
-                        playerActions.UndoPickUps(@object.gameObject);
-                    }
-
-                    if (@object.gameObject.tag == pickUpNumber.tag)
-                    {
-                        Debug.Log("retrocediendo numero");
-                        numberHUD.SetActive(false);
-                        playerActions.UndoPickUps(@object.gameObject);
-                    }
-                }
-                break;
-
-            case GameActions.Actions.PickUp:
-                //playerActions.UndoPickUp(keyItem, pickUpNumber, numberHUD);
-                break;
-
-            case GameActions.Actions.Enable:
-
-                break;
-
-            case GameActions.Actions.Throw:
-
-                break;
-        }
-    }*/
-
     public void CommunicateUndo(object[,] newBoard, GameActions.Actions undoneAction, NumberItem previousNumber, NumberItem currentNumber)
     {
         sequencer.UndoSequence(previousNumber, currentNumber);
 
-        for (int i = 0; i < size.x; i++)
+        if (undoneAction == GameActions.Actions.Throw)
         {
-            for (int j = 0; j < size.y; j++)
+            if (playerActions.hasItem == true)
             {
-                if (newBoard[i, j] != null)
-                {
-                    Debug.Log("going back to board with: " + newBoard[i, j].GetType() + " on: " + i + "," + j);
-                }
+                playerActions.UndoThrow(true);
+            }
+            else
+            {
+                playerActions.UndoThrow(false);
             }
         }
 
-        /*switch (undoneAction)
+        if (undoneAction == GameActions.Actions.Enable)
         {
-            case GameActions.Actions.Move:
-                foreach (var @object in gameObjects)
+            levelCards[currentNumber.value - 1].Disable(previousNumber);
+        }
+
+        if (newBoard != null)
+        {
+            for (int i = 0; i < size.x; i++)
+            {
+                for (int j = 0; j < size.y; j++)
                 {
-                    Debug.Log(@object.gameObject.tag);
-                    if (@object.gameObject.tag == player.tag)
+                    if (newBoard[i, j] != null)
                     {
-                        Debug.Log("retrocediendo jugador a posicion: " + @object.position);
-                        playerActions.UndoMovement(@object.position);
-                    }
+                        if(undoneAction == GameActions.Actions.Move)
+                        {
+                            if (newBoard[i, j].GetType() == typeof(int))
+                            {
+                                playerActions.UndoMovement(i, j);
+                            }
+                            if (newBoard[i, j].GetType() != typeof(int))
+                            {
+                                if (keyItem.CompareTag(newBoard[i, j].ToString()))
+                                {
+                                    keyItem.SetActive(true);
+                                    playerActions.hasItem = false;
+                                }
 
-                    if (@object.gameObject.tag == keyItem.tag)
-                    {
-                        playerActions.UndoPickUps(@object.gameObject);
-                    }
+                                if (pickUpNumber.CompareTag(newBoard[i, j].ToString()))
+                                {
+                                    playerActions.hasNumber = false;
+                                    pickUpNumber.SetActive(true);
+                                }
+                            }
+                        }
 
-                    if (@object.gameObject.tag == pickUpNumber.tag)
-                    {
-                        Debug.Log("retrocediendo numero");
-                        numberHUD.SetActive(false);
-                        playerActions.UndoPickUps(@object.gameObject);
+                        if(undoneAction == GameActions.Actions.PickUp)
+                        {
+                            if (newBoard[i, j].GetType() != typeof(int))
+                            {
+                                if (keyItem.CompareTag(newBoard[i, j].ToString()))
+                                {
+                                    playerActions.UndoPickUps(keyItem);
+                                }
+
+                                if (pickUpNumber.CompareTag(newBoard[i, j].ToString()))
+                                {
+                                    playerActions.UndoPickUps(pickUpNumber);
+                                }
+                            }
+                        }
                     }
                 }
-                break;
+            }
 
-            case GameActions.Actions.PickUp:
-                //playerActions.UndoPickUp(keyItem, pickUpNumber, numberHUD);
-                break;
 
-            case GameActions.Actions.Enable:
-
-                break;
-
-            case GameActions.Actions.Throw:
-
-                break;
-        }*/
+        }
     }
 }

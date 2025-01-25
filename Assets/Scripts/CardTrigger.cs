@@ -73,7 +73,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler
                 return;
             } 
         }
-        else
+        else //if it's through the undo system, then it returns the used number
         {
             usedText.gameObject.SetActive(false);
             slotImage.gameObject.SetActive(true);
