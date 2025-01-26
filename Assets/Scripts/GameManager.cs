@@ -269,6 +269,7 @@ public class GameManager : MonoBehaviour
                         break;
 
                     case GameActions.Actions.Enable:
+                        undoManager.SaveBoard(i, board);
                         levelCards[recievedNumber.value - 1].Enable(false, recievedNumber);
                         break;
 
@@ -316,7 +317,7 @@ public class GameManager : MonoBehaviour
                         {
                             if (newBoard[i, j].GetType() == typeof(int))
                             {
-                                playerActions.UndoMovement(i, j);
+                                playerActions.UndoMovement(i, j, (int) newBoard[i, j]);
                             }
                             if (newBoard[i, j].GetType() != typeof(int))
                             {

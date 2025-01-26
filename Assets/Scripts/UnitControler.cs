@@ -150,9 +150,9 @@ public class UnitControler : MonoBehaviour
         }
     }
 
-    public void UndoMovement(int previousPositionX, int previousPositionY)
+    public void UndoMovement(int previousPositionX, int previousPositionY, int move)
     {
         playerPosition.position = new Vector3(previousPositionX, 1, previousPositionY);
-        moveAmount = 0;
+        moveAmount = move;
     }
 }
