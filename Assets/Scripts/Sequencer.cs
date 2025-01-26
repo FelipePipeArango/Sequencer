@@ -9,62 +9,64 @@ public class Sequencer : MonoBehaviour
 {
     Image cardBackground;
     [SerializeField] Image nextCardText;
-    [SerializeField] UnitControler unitControler;
 
     CardTrigger[] levelCards;
     GameActions.Actions[] levelActions;
 
-    [SerializeField] GameObject cardParent;
+    //Makes sure that only the next card in the sequence is considered as "next". Cards that are not next in the sequence are not avaiable to use.
 
-    public void Awake()
+    private void OnEnable()
+    {
+        CardTrigger.OnGrab += ManageSequenceText;
+        NumberItem.OnDragAction += ManageSequenceText;
+    }
+
+    private void OnDisable()
+    {
+        CardTrigger.OnGrab -= ManageSequenceText;
+        NumberItem.OnDragAction -= ManageSequenceText;
+    }
+
+    public void FillCards(GameObject cardsInLevel)
     {
         #region CardFilling
         //This checks the cards being used in the level and fills the required arrays
-        levelCards = new CardTrigger[cardParent.transform.childCount];
-        levelActions = new GameActions.Actions[cardParent.transform.childCount];
+        levelCards = new CardTrigger[cardsInLevel.transform.childCount];
+        levelActions = new GameActions.Actions[cardsInLevel.transform.childCount];
 
         for (int i = 0; i < levelCards.Length; i++)
         {
-            levelCards[i] = cardParent.transform.GetChild(i).GetComponent<CardTrigger>();
-            levelActions[i] = levelCards[i].actionsTest;
+            levelCards[i] = cardsInLevel.transform.GetChild(i).GetComponent<CardTrigger>();
+            levelActions[i] = levelCards[i].LevelActions;
         }
         #endregion
     }
-
-    public void RecieveInfo(int recievedValue, Enum effect)
+    public void UndoSequence(NumberItem previousValue, NumberItem currentValue)
     {
         for (int i = 0; i < levelActions.Length; i++)
         {
-            if (effect.ToString() == levelActions[i].ToString())
+            if (i == previousValue.value - 1) //returns to the action that was just used, the -1 is only because the array starts at 0, while the used number starts at 1
             {
-                switch (levelActions[i])
-                {
-                    case GameActions.Actions.Move:
-                        unitControler.MovementReceiver(recievedValue);
-                        break;
-
-                    case GameActions.Actions.PickUp:
-                        unitControler.PickUpReceiver(recievedValue);
-                        break;
-
-                    case GameActions.Actions.Enable:
-                        levelCards[recievedValue - 1].Enable();
-                        break;
-
-                    case GameActions.Actions.Throw:
-                        unitControler.ThrowReceiver(recievedValue);
-                        break;
-                }
+                Debug.Log("numbero del turno anterior: " + previousValue.value);
+                levelCards[i].nextInSequence = true;
+                levelCards[i].Enable(true, currentValue);
+                cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
+                cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 1f);
+            }
+            else
+            {
+                levelCards[i].nextInSequence = false;
+                cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
+                cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 0.5f);
             }
         }
-        NextCard(recievedValue);
     }
 
-    void NextCard(int recievedValue)
+    public void NextCard(NumberItem recievedValue)
     {
         for (int i = 0; i < levelActions.Length; i++)
         {
-            if (i == recievedValue - 1)
+            if (i == recievedValue.value - 1)
             {
                 levelCards[i].nextInSequence = true;
                 cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
@@ -78,7 +80,7 @@ public class Sequencer : MonoBehaviour
             }
         }
     }
-
+    //Manages the "next" text on the actions.
     public void ManageSequenceText(int recievedNumber, bool dragging)
     {
         if (dragging == true)
@@ -94,7 +96,6 @@ public class Sequencer : MonoBehaviour
         }
         else
         {
-
             nextCardText.gameObject.SetActive(false);
         }
     }
