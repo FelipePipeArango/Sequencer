@@ -90,7 +90,7 @@ public class UndoManager : MonoBehaviour
                 Debug.Log("deshaciendo accion: " + thisTurn.usedAction + " que equivale a carta #" + previousTurn.usedNumber.value);
                 Debug.Log("numero de este turno " + thisTurn.usedNumber.value);
 
-                if (thisTurn.usedAction == GameActions.Actions.Move || thisTurn.usedAction == GameActions.Actions.PickUp)
+                if (thisTurn.usedAction == GameActions.Actions.Move || thisTurn.usedAction == GameActions.Actions.PickUp || thisTurn.usedAction == GameActions.Actions.Enable)
                 {
                     gameManager.CommunicateUndo(boardHistory[boardHistory.Count - 2], thisTurn.usedAction, previousTurn.usedNumber, thisTurn.usedNumber);
                     boardHistory.RemoveAt(boardHistory.Count - 1);

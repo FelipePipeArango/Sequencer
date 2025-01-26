@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     GameActions.Actions[] levelActions;
     object[,] board;
 
-    [Header("SIZE OF THE BOARD - STARTS FROM 0")]
+    [Header("SIZE OF THE BOARD - STARTS FROM 1")]
     [SerializeField] Vector2Int size;
 
     [Header("MANDATORY OBJECTS IN A LEVEL")]
@@ -97,27 +97,13 @@ public class GameManager : MonoBehaviour
 
         board = new object[size.x, size.y];
 
-        for (int i = 0; i < size.x; i++)
+        board [(int) player.transform.position.x, (int) player.transform.position.z] = playerActions.moveAmount;
+        board[(int)keyItem.transform.position.x, (int)keyItem.transform.position.z] = keyItem.tag;
+        if (pickUpNumber != null)
         {
-            for (int j = 0; j < size.y; j++)
-            {
-                if (player.transform.position.x == i && player.transform.position.z == j)
-                {
-                    board[i, j] = playerActions.moveAmount;
-                }
-                if (keyItem.transform.position.x == i && keyItem.transform.position.z == j)
-                {
-                    board[i, j] = keyItem.tag;
-                }
-                if (pickUpNumber != null)
-                {
-                    if (pickUpNumber.transform.position.x == i && pickUpNumber.transform.position.z == j)
-                    {
-                        board[i, j] = pickUpNumber.tag;
-                    } 
-                }
-            }
+            board[(int)pickUpNumber.transform.position.x, (int)pickUpNumber.transform.position.z] = pickUpNumber.tag; 
         }
+
         undoManager.InitialState(board);
     }
 
@@ -163,19 +149,7 @@ public class GameManager : MonoBehaviour
 
         if (distaceToItem == 0 && !playerActions.hasItem) //this updates the board array if the player picks the item up manually
         {
-            for (int i = 0; i < size.x; i++)
-            {
-                for (int j = 0; j < size.y; j++)
-                {
-                    if (board[i, j] != null)
-                    {
-                        if (keyItem.transform.position.x == i && keyItem.transform.position.z == j)
-                        {
-                            board[i, j] = playerActions.moveAmount;
-                        }
-                    }
-                }
-            }
+            board[(int) player.transform.position.x, (int)player.transform.position.z] = playerActions.moveAmount; //the array where the item was is now updated with the player
             playerActions.hasItem = true;
             keyItem.SetActive(false);
         }
@@ -190,22 +164,7 @@ public class GameManager : MonoBehaviour
 
         if (distaceToNumber == 0 && !playerActions.hasNumber) //this updates the board array if the player picks the number up manually
         {
-            if (pickUpNumber != null)
-            {
-                for (int i = 0; i < size.x; i++)
-                {
-                    for (int j = 0; j < size.y; j++)
-                    {
-                        if (board[i, j] != null)
-                        {
-                            if (pickUpNumber.transform.position.x == i && pickUpNumber.transform.position.z == j)
-                            {
-                                board[i, j] = playerActions.moveAmount;
-                            }
-                        }
-                    }
-                } 
-            }
+            board[(int)player.transform.position.x, (int)player.transform.position.z] = playerActions.moveAmount; //the array where the number was is now updated with the player
             pickUpNumber.SetActive(false);
             numberHUD.SetActive(true);
             playerActions.hasNumber = true;
@@ -214,26 +173,20 @@ public class GameManager : MonoBehaviour
 
         //The PickUp action may affect objects in game, therefore, the array board must be updated
         #region PickUp checks
-        if (usedAction == GameActions.Actions.PickUp)
+        if (usedAction == GameActions.Actions.PickUp && affected != null)
         {
-            if (affected != null)
+            for (int i = 0; i < size.x; i++)
             {
-                for (int i = 0; i < size.x; i++)
+                for (int j = 0; j < size.y; j++)
                 {
-                    for (int j = 0; j < size.y; j++)
+                    if (board[i, j] != null && board[i, j].GetType() != typeof(int))
                     {
-                        if (board[i, j] != null)
+                        if (affected.CompareTag(board[i, j].ToString()))
                         {
-                            if (board[i, j].GetType() != typeof(int))
-                            {
-                                if (affected.CompareTag(board[i, j].ToString()))
-                                {
-                                    board[i, j] = null;
-                                } 
-                            }
+                            board[i, j] = null;
                         }
                     }
-                } 
+                }
             }
         }
         #endregion
