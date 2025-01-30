@@ -160,14 +160,18 @@ public class GameManager : MonoBehaviour
         if (pickUpNumber != null)
         {
             distaceToNumber = (int)Mathf.Abs(player.transform.position.x - pickUpNumber.transform.position.x) + (int)Mathf.Abs(player.transform.position.z - pickUpNumber.transform.position.z);
-        }
 
-        if (distaceToNumber == 0 && !playerActions.hasNumber) //this updates the board array if the player picks the number up manually
+            if (distaceToNumber == 0 && !playerActions.hasNumber) //this updates the board array if the player picks the number up manually
+            {
+                board[(int)player.transform.position.x, (int)player.transform.position.z] = playerActions.moveAmount; //the array where the number was is now updated with the player
+                pickUpNumber.SetActive(false);
+                numberHUD.SetActive(true);
+                playerActions.hasNumber = true;
+            }
+        }
+        else
         {
-            board[(int)player.transform.position.x, (int)player.transform.position.z] = playerActions.moveAmount; //the array where the number was is now updated with the player
-            pickUpNumber.SetActive(false);
-            numberHUD.SetActive(true);
-            playerActions.hasNumber = true;
+            distaceToNumber = 0;
         }
         #endregion
 
@@ -280,10 +284,13 @@ public class GameManager : MonoBehaviour
                                     playerActions.hasItem = false;
                                 }
 
-                                if (pickUpNumber.CompareTag(newBoard[i, j].ToString()))
+                                if (pickUpNumber != null)
                                 {
-                                    playerActions.hasNumber = false;
-                                    pickUpNumber.SetActive(true);
+                                    if (pickUpNumber.CompareTag(newBoard[i, j].ToString()))
+                                    {
+                                        playerActions.hasNumber = false;
+                                        pickUpNumber.SetActive(true);
+                                    } 
                                 }
                             }
                         }
@@ -296,10 +303,12 @@ public class GameManager : MonoBehaviour
                                 {
                                     playerActions.UndoPickUps(keyItem);
                                 }
-
-                                if (pickUpNumber.CompareTag(newBoard[i, j].ToString()))
+                                if (pickUpNumber != null)
                                 {
-                                    playerActions.UndoPickUps(pickUpNumber);
+                                    if (pickUpNumber.CompareTag(newBoard[i, j].ToString()))
+                                    {
+                                        playerActions.UndoPickUps(pickUpNumber);
+                                    } 
                                 }
                             }
                         }
