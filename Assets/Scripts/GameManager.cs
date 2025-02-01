@@ -7,6 +7,7 @@ using static UnityEditor.Progress;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance { get; private set; }
     //Cards manager
     //The cards present in the level
     NumberItem[] levelNumbers;
@@ -47,7 +48,8 @@ public class GameManager : MonoBehaviour
     Sequencer sequencer;
     //Managers
     UndoManager undoManager;
-    UnitControler playerActions;
+   public UnitControler playerActions;
+
     //Grid manager
     private List<Vector2Int> affectedCells = new List<Vector2Int>();
     private int distaceToItem, distaceToGoal, distaceToNumber;
@@ -71,9 +73,17 @@ public class GameManager : MonoBehaviour
 
     public void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);  // Ensure only one instance exists
+            return;
+        }
+
+        Instance = this;  // Assign the static instance
+        DontDestroyOnLoad(gameObject);  // Optional: Prevent this object from being destroyed on scene changes
+
         playerActions = player.GetComponent<UnitControler>();
         undoManager = this.GetComponent<UndoManager>();
-        
         #region NumberFilling
 
         //This section informs the manager about the numbers in the level
@@ -106,13 +116,13 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-
+        
         distaceToItem = CalculateDistance(keyItem);
         distaceToGoal = CalculateDistance(goal);
 
         if (pickUpNumber != null)
             distaceToNumber = CalculateDistance(pickUpNumber);
-
+         
 
         board = new object[size.x, size.y];
         Vector2Int PlayerPosition = PosConverter(player.transform.position);
@@ -131,7 +141,7 @@ public class GameManager : MonoBehaviour
         undoManager.InitialState(board);
     }
 
-    private Vector2Int PosConverter(Vector3 converted)
+    public Vector2Int PosConverter(Vector3 converted)
     {
         Vector2Int PosConverted = new Vector2Int(
             Mathf.Clamp(Mathf.FloorToInt(converted.x), 0, size.x - 1),
@@ -153,9 +163,24 @@ public class GameManager : MonoBehaviour
                        Mathf.Abs(currentPosition.y - targetPosition.y);
         return distance;
     }
+    public int CalculateDistance(Vector3 position)
+    {
+        Vector2Int currentPosition = new Vector2Int(
+            Mathf.FloorToInt(playerActions.transform.position.x),
+            Mathf.FloorToInt(playerActions.transform.position.z)
+        );
+        Vector2Int targetPosition = new Vector2Int(
+            Mathf.FloorToInt(position.x),
+            Mathf.FloorToInt(position.z)
+        );
+        int distance = Mathf.Abs(currentPosition.x - targetPosition.x) +
+                       Mathf.Abs(currentPosition.y - targetPosition.y);
+        return distance;
+    }
 
     void UpdatePlayerPosition(Vector2Int previousPosition)
     {
+        
         previousPosition = new Vector2Int(
             Mathf.Clamp(playerActions.GetPreviousPosition().x, 0, size.x - 1),
             Mathf.Clamp(playerActions.GetPreviousPosition().y, 0, size.y - 1));

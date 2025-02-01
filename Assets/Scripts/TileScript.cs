@@ -5,19 +5,32 @@ using UnityEngine;
 
 public class TileScript : MonoBehaviour
 {
-    Renderer render;
+    public Renderer render;
 
+    private Color setColor;
     // Start is called before the first frame update
     void Start()
     {
         render = GetComponent<Renderer>();
-        Debug.Log(this.isActiveAndEnabled); 
+        setColor = render.material.color;
+        Debug.Log($"This tile is {GetColor()}"); 
+        Debug.Log($"This tile is {this.isActiveAndEnabled}");
     }
 
     public void SetColor(Color color)
     {
+        render = GetComponent<Renderer>();
+        this.render.material.color = color;
+    }
+    public Color GetColor()
+    {
+        render = GetComponent<Renderer>();
+        return render.material.color;
+    }
 
-        render.material.color = color;
+    public void ResetColor()
+    {
+        SetColor(setColor);
     }
     // Update is called once per frame
     void Update()

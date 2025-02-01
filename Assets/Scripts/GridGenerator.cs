@@ -4,16 +4,39 @@ using UnityEngine;
 
 public class GridGenerator : MonoBehaviour
 {
+
+    public static GridGenerator Instance { get; private set; }
     [SerializeField] GameObject Tile;
-    TileScript[] tiles;
+    [SerializeField] TileScript[] tiles;
     private GameObject[] allTiles;
     private GameObject oneTiles;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        //CreateGrid();
-        FindAllTiles();
-        SetTileAt(new Vector2Int( 0, 0));
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);  // Ensure only one instance exists
+            return;
+        }
+
+        Instance = this;  // Assign the static instance
+        DontDestroyOnLoad(gameObject);  // Optional: Prevent this object from being destroyed on scene changes
+    
+    //CreateGrid();
+    allTiles = GameObject.FindGameObjectsWithTag("Ground");
+        Debug.Log(allTiles.Length);
+        tiles = new TileScript[allTiles.Length];
+
+        for (int i = 0; i < allTiles.Length; i++)
+        {
+            tiles[i] = allTiles[i].GetComponent<TileScript>();
+        }
+
+        foreach (TileScript tile in tiles)
+        {
+            Debug.Log(tile.GetColor());
+        }
+        //SetTileAt(new Vector2Int( 0, 3));
     }
     public void CreateGrid()
     {
@@ -21,31 +44,54 @@ public class GridGenerator : MonoBehaviour
         oneTiles = Instantiate(Tile);
         oneTiles.transform.position = position;
     }
-    public void FindAllTiles()
+
+    public void DistanceCheck(int amount)
     {
-        allTiles = GameObject.FindGameObjectsWithTag("Ground");
-        Debug.Log(allTiles.Length);
-        tiles = new TileScript[allTiles.Length];
-
-        for (int i = 0; )
-        {
-            
-
-            Debug.Log(tile.transform.position);
+        int distance;
+        foreach (var tile in tiles)
+        { 
+            distance = GameManager.Instance.CalculateDistance(tile.transform.position);
+            Debug.Log($"{distance}");
+            if ((distance) <= amount)
+            {
+                Debug.Log($"{distance - amount}");
+                tile.SetColor(Color.red);
+                if (distance == 0)
+                {
+                    tile.ResetColor();
+                }
+            }
         }
     }
+    public void Reset()
+    {
+        if (allTiles != null)
+        {
+            foreach (TileScript tile in tiles)
+            {
+                tile.ResetColor();
+            }
+        }
+        else
+            Debug.Log("No tiles here");
+
+    }
+
     public void SetTileAt(Vector2Int position)
     {
         if (allTiles != null)
         {
-            foreach (GameObject tile in allTiles)
+            foreach (TileScript tile in tiles)
             {
                 Vector2Int Pos2d = new Vector2Int(Mathf.FloorToInt(tile.transform.position.x),
                                                  Mathf.FloorToInt(tile.transform.position.z));
                 if (Pos2d == position)
-                    tile.GetComponent<TileScript>().SetColor(Color.red);
-                else
-                    Debug.Log($"At {tile.transform.position} nothing there");
+                {
+                   // Debug.Log($"At {tile.transform.position} Red");
+                    tile.SetColor(Color.red);
+                }
+                //else
+                   // Debug.Log($"At {tile.transform.position} nothing there");
             }
         }
         else
