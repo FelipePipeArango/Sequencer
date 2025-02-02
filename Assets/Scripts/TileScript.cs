@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class TileScript : MonoBehaviour
 {
-    public Renderer render;
+    private Renderer render;
     
     private Color setColor;
     // Start is called before the first frame update
@@ -31,9 +31,5 @@ public class TileScript : MonoBehaviour
     {
         SetColor(setColor);
     }
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+   
 }

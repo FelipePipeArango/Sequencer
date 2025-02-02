@@ -34,7 +34,7 @@ public class GridGenerator : MonoBehaviour
         Tiles = new GameObject[size.x, size.y];
         Instance = this;  // Assign the static instance
         //CreateGrid();
-        DontDestroyOnLoad(gameObject);  // Optional: Prevent this object from being destroyed on scene changes
+        // DontDestroyOnLoad(gameObject);  // Optional: Prevent this object from being destroyed on scene changes
     
        // CreateGrid();
         UpdateGrid();

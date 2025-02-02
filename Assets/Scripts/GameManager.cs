@@ -80,7 +80,7 @@ public class GameManager : MonoBehaviour
         }
 
         Instance = this;  // Assign the static instance
-        DontDestroyOnLoad(gameObject);  // Optional: Prevent this object from being destroyed on scene changes
+        // DontDestroyOnLoad(gameObject);  // Optional: Prevent this object from being destroyed on scene changes
 
         playerActions = player.GetComponent<UnitControler>();
         undoManager = this.GetComponent<UndoManager>();
@@ -274,17 +274,26 @@ public class GameManager : MonoBehaviour
     void PickUpCheck(GameActions.Actions usedAction, GameObject affected)
     {
         //No need for "for" loop as we know the position of everything
-        if (usedAction == GameActions.Actions.PickUp && affected != null)
+        if (pickUpNumber == null && affected == pickUpNumber)
         {
-            Vector2Int affectedPosition = PosConverter(affected.transform.position);
-            // Add the item's position to the affected cells
-            affectedCells.Add(affectedPosition);
+            Debug.Log("Pick Up Number is null");
+        }
+        else
+        {
+            if (usedAction == GameActions.Actions.PickUp && affected != null)
 
-            if (board[affectedPosition.x, affectedPosition.y] != null)
             {
-                board[affectedPosition.x, affectedPosition.y] = null;
+                Vector2Int affectedPosition = PosConverter(affected.transform.position);
+                // Add the item's position to the affected cells
+                affectedCells.Add(affectedPosition);
+
+                if (board[affectedPosition.x, affectedPosition.y] != null)
+                {
+                    board[affectedPosition.x, affectedPosition.y] = null;
+                }
             }
         }
+
     }
 
 

@@ -73,8 +73,12 @@ public class UnitControler : MonoBehaviour
         {
             if (recievedNumber >= distanceToNumber)
             {
-                pickUpNumber.SetActive(false);
-                numberHUD.SetActive(true);
+                if (pickUpNumber != null || numberHUD != null)
+                {
+                    pickUpNumber.SetActive(false);
+                    numberHUD.SetActive(true);
+                }
+                
                 hasNumber = true;
 
                 if (OnObjectPickUp != null)
