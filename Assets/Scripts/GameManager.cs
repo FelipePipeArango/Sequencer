@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
     GameObject cardsInLevel; //hopefully I'll find a way to make this fill itself instead of requiring a serialization
     [SerializeField] GameObject numbersInLevel;
 
-
+    
 
     //Grid manager
     //Make this a prefab, add player under GameManager, and assign player to UnitController
@@ -253,18 +253,21 @@ public class GameManager : MonoBehaviour
             distaceToNumber = CalculateDistance(pickUpNumber);
         }
 
-        //this updates the board array if the player picks the item up manually
-        if (distaceToNumber == 0 && !playerActions.hasNumber)
+        if (pickUpNumber != null)
         {
-            Vector2Int currentPosition = PosConverter(player.transform.position);
-            // Add the new position to the affected cells
-            affectedCells.Add(currentPosition);
-            //the array where the item was is now updated with the player
-            board[currentPosition.x, currentPosition.y] = playerActions.moveAmount;
+            //this updates the board array if the player picks the item up manually
+            if (distaceToNumber == 0 && !playerActions.hasNumber)
+            {
+                Vector2Int currentPosition = PosConverter(player.transform.position);
+                // Add the new position to the affected cells
+                affectedCells.Add(currentPosition);
+                //the array where the item was is now updated with the player
+                board[currentPosition.x, currentPosition.y] = playerActions.moveAmount;
 
-            pickUpNumber.SetActive(false);
-            numberHUD.SetActive(true);
-            playerActions.hasNumber = true;
+                pickUpNumber.SetActive(false);
+                numberHUD.SetActive(true);
+                playerActions.hasNumber = true;
+            }
         }
     }
 
