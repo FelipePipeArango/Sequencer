@@ -56,7 +56,7 @@ public class UnitControler : MonoBehaviour
     {
         if (!hasItem)
         {
-            if (recievedNumber >= distanceToItem)
+            if (recievedNumber == distanceToItem)
             {
                 hasItem = true;
                 item.SetActive (false);
@@ -77,7 +77,7 @@ public class UnitControler : MonoBehaviour
         
         if(!hasNumber)
         {
-            if (distanceToNumber != 0 && recievedNumber >= distanceToNumber)
+            if (distanceToNumber != 0 && recievedNumber == distanceToNumber)
             {
                 pickUpNumber.SetActive(false);
                 numberHUD.SetActive(true);
