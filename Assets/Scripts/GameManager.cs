@@ -148,7 +148,9 @@ public class GameManager : MonoBehaviour
             Mathf.Clamp(Mathf.FloorToInt(converted.z), 0, size.y - 1));
         return PosConverted;
     }
-
+    // takes game object and calculates distance 
+    // redundant(but still in use), needs rewriting  
+    
     public int CalculateDistance(GameObject target)
     {
         Vector2Int currentPosition = new Vector2Int(
@@ -163,6 +165,7 @@ public class GameManager : MonoBehaviour
                        Mathf.Abs(currentPosition.y - targetPosition.y);
         return distance;
     }
+    // Takes position and calculates the distance 
     public int CalculateDistance(Vector3 position)
     {
         Vector2Int currentPosition = new Vector2Int(
