@@ -2561,11 +2561,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6aaeca9ca1db64c4897d856dd5cd9036, type: 3}
---- !u!1 &547747983 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5131192903137520530, guid: 6aaeca9ca1db64c4897d856dd5cd9036, type: 3}
-  m_PrefabInstance: {fileID: 547747982}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &547747984 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3767215707280523383, guid: 6aaeca9ca1db64c4897d856dd5cd9036, type: 3}
@@ -7849,9 +7844,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2305454592418405982, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4366984284756147693, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
       propertyPath: m_Name
       value: GameManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 4366984284756147693, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6451947076222048117, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
       propertyPath: size.x
@@ -7864,11 +7867,15 @@ PrefabInstance:
     - target: {fileID: 6451947076222048117, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
       propertyPath: numberHUD
       value: 
-      objectReference: {fileID: 547747983}
+      objectReference: {fileID: 0}
     - target: {fileID: 6451947076222048117, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
       propertyPath: cardsInLevel
       value: 
       objectReference: {fileID: 1187270321}
+    - target: {fileID: 6451947076222048117, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
+      propertyPath: pickUpNumber
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 6451947076222048117, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
       propertyPath: numbersInLevel
       value: 
