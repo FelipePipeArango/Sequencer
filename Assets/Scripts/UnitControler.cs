@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static UnityEditor.Progress;
 
 public class UnitControler : MonoBehaviour
@@ -19,6 +20,9 @@ public class UnitControler : MonoBehaviour
     [HideInInspector] public bool hasNumber = false;
 
 
+    [SerializeField] public float fallSpeed = 1.0f;
+
+    
     private void Start() { }
 
     public void MovementReceiver(int recievedNumber/*, GameActions.Actions usedAction*/)
@@ -121,6 +125,28 @@ public class UnitControler : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.A)) Movement(Vector2Int.left);
 
         }
+
+        if (!IsBoardBelow())
+        {
+
+            Vector3 targetPos = new Vector3(transform.position.x, -1f, transform.position.z);
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, fallSpeed * Time.deltaTime);
+
+            if (transform.position.y <= -0.99f)
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
+        }
+    }
+
+    private bool IsBoardBelow()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, 1.2f))
+        {
+            return true;
+        }
+        return false;
     }
 
     //Changed the previous movement implementation to make it more easy to calculate
