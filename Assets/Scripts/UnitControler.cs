@@ -71,7 +71,7 @@ public class UnitControler : MonoBehaviour
 
         if (!hasNumber)
         {
-            if (recievedNumber >= distanceToNumber)
+            if (distanceToNumber != 0 && recievedNumber >= distanceToNumber)
             {
                 if (pickUpNumber != null || numberHUD != null)
                 {
