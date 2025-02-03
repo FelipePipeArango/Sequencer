@@ -7,38 +7,53 @@ using static UnityEditor.Progress;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance { get; private set; }
+    //Cards manager
     //The cards present in the level
     NumberItem[] levelNumbers;
     int[] numberValues;
     CardTrigger[] levelCards;
     GameActions.Actions[] levelActions;
+
+    [SerializeField] GameObject tile;
+
+    //Grid manager
     object[,] board;
-
     [Header("SIZE OF THE BOARD - STARTS FROM 1")]
-    [SerializeField] Vector2Int size;
-
+    [SerializeField]
+    Vector2Int size;
     [Header("MANDATORY OBJECTS IN A LEVEL")]
-    [SerializeField] GameObject cardsInLevel; //hopefully I'll find a way to make this fill itself instead of requiring a serialization
+    [SerializeField]
+    //Card Manager
+    GameObject cardsInLevel; //hopefully I'll find a way to make this fill itself instead of requiring a serialization
     [SerializeField] GameObject numbersInLevel;
 
+    
+
+    //Grid manager
     //Make this a prefab, add player under GameManager, and assign player to UnitController
     [SerializeField] GameObject player;
     [SerializeField] GameObject keyItem;
     [SerializeField] GameObject goal;
 
     [Header("OPTIONAL OBJECTS IN A LEVEL")]
-    [SerializeField] GameObject pickUpNumber;
+    [SerializeField]
+
+    GameObject pickUpNumber;
+
     [SerializeField] GameObject numberHUD;
 
     [Header("NO NEED TO ASSIGN THIS")]
-    [SerializeField] Sequencer sequencer;
-
+    [SerializeField]
+    Sequencer sequencer;
+    //Managers
     UndoManager undoManager;
-    UnitControler playerActions;
+   public UnitControler playerActions;
 
-    int distaceToItem;
-    int distaceToGoal;
-    int distaceToNumber;
+    //Grid manager
+    private List<Vector2Int> affectedCells = new List<Vector2Int>();
+    private int distaceToItem, distaceToGoal, distaceToNumber;
+
 
     private void OnEnable()
     {
@@ -46,7 +61,7 @@ public class GameManager : MonoBehaviour
         UnitControler.OnMovement += ReCalculateBoard;
         UnitControler.OnObjectPickUp += ReCalculateBoard;
     }
-    
+
     private void OnDisable()
     {
         CardTrigger.OnDropAction -= CommunicateAction;
@@ -54,23 +69,36 @@ public class GameManager : MonoBehaviour
         UnitControler.OnObjectPickUp -= ReCalculateBoard;
     }
 
+
+
     public void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);  // Ensure only one instance exists
+            return;
+        }
+
+        Instance = this;  // Assign the static instance
+        // DontDestroyOnLoad(gameObject);  // Optional: Prevent this object from being destroyed on scene changes
+
         playerActions = player.GetComponent<UnitControler>();
         undoManager = this.GetComponent<UndoManager>();
-
         #region NumberFilling
+
         //This section informs the manager about the numbers in the level
         levelNumbers = new NumberItem[numbersInLevel.transform.childCount];
-        numberValues = new int [numbersInLevel.transform.childCount];
+        numberValues = new int[numbersInLevel.transform.childCount];
         for (int i = 0; i < levelNumbers.Length; i++)
         {
             levelNumbers[i] = numbersInLevel.transform.GetChild(i).GetComponentInChildren<NumberItem>();
             numberValues[i] = levelNumbers[i].value;
         }
+
         #endregion
 
         #region CardFilling
+
         //This checks the cards being used in the level and fills the required arrays
         levelCards = new CardTrigger[cardsInLevel.transform.childCount];
         levelActions = new GameActions.Actions[cardsInLevel.transform.childCount];
@@ -82,129 +110,231 @@ public class GameManager : MonoBehaviour
         }
 
         sequencer.FillCards(cardsInLevel);
+
         #endregion
     }
 
     private void Start()
     {
-        distaceToItem = (int)Mathf.Abs(player.transform.position.x - keyItem.transform.position.x) + (int)Mathf.Abs(player.transform.position.z - keyItem.transform.position.z);
-        distaceToGoal = (int)Mathf.Abs(player.transform.position.x - goal.transform.position.x) + (int)Mathf.Abs(player.transform.position.z - goal.transform.position.z);
+        
+        distaceToItem = CalculateDistance(keyItem);
+        distaceToGoal = CalculateDistance(goal);
 
         if (pickUpNumber != null)
-        {
-            distaceToNumber = (int)Mathf.Abs(player.transform.position.x - pickUpNumber.transform.position.x) + (int)Mathf.Abs(player.transform.position.z - pickUpNumber.transform.position.z); 
-        }
+            distaceToNumber = CalculateDistance(pickUpNumber);
+         
 
         board = new object[size.x, size.y];
+        Vector2Int PlayerPosition = PosConverter(player.transform.position);
+        // Clamp player position to ensure it fits within the board size
+        board[PlayerPosition.x, PlayerPosition.y] = playerActions.moveAmount;
 
-        board [(int) player.transform.position.x, (int) player.transform.position.z] = playerActions.moveAmount;
-        board[(int)keyItem.transform.position.x, (int)keyItem.transform.position.z] = keyItem.tag;
+        Vector2Int keyPosition = PosConverter(keyItem.transform.position);
+        board[keyPosition.x, keyPosition.y] = keyItem.tag;
+
         if (pickUpNumber != null)
         {
-            board[(int)pickUpNumber.transform.position.x, (int)pickUpNumber.transform.position.z] = pickUpNumber.tag; 
+            Vector2Int PickUpNumberPosition = PosConverter(pickUpNumber.transform.position);
+            board[PickUpNumberPosition.x, PickUpNumberPosition.y] = pickUpNumber.tag;
         }
 
         undoManager.InitialState(board);
     }
 
-    void ReCalculateBoard(GameActions.Actions usedAction, GameObject affected)
+    public Vector2Int PosConverter(Vector3 converted)
     {
-        //The array board is mostly used for the undo system of the game, keeping the player updated in that array is here.
-        #region Updates player position in the array board
-        for (int i = 0; i < size.x; i++)
-        {
-            for (int j = 0; j < size.y; j++)
-            {
-                if (board[i, j] != null)
-                {
-                    if (board[i, j].GetType() == typeof(int))
-                    {
-                        board[i, j] = null;
-                    } 
-                }
-                if (player.transform.position.x == i && player.transform.position.z == j) //updates the position of the player in the array
-                {
-                    board[i, j] = playerActions.moveAmount;
-                }
-            }
-        }
-        #endregion
+        Vector2Int PosConverted = new Vector2Int(
+            Mathf.Clamp(Mathf.FloorToInt(converted.x), 0, size.x - 1),
+            Mathf.Clamp(Mathf.FloorToInt(converted.z), 0, size.y - 1));
+        return PosConverted;
+    }
+    // takes game object and calculates distance 
+    // redundant(but still in use), needs rewriting  
+    
+    public int CalculateDistance(GameObject target)
+    {
+        Vector2Int currentPosition = new Vector2Int(
+            Mathf.FloorToInt(playerActions.transform.position.x),
+            Mathf.FloorToInt(playerActions.transform.position.z)
+        );
+        Vector2Int targetPosition = new Vector2Int(
+            Mathf.FloorToInt(target.transform.position.x),
+            Mathf.FloorToInt(target.transform.position.z)
+        );
+        int distance = Mathf.Abs(currentPosition.x - targetPosition.x) +
+                       Mathf.Abs(currentPosition.y - targetPosition.y);
+        return distance;
+    }
+    // Takes position and calculates the distance 
+    public int CalculateDistance(Vector3 position)
+    {
+        Vector2Int currentPosition = new Vector2Int(
+            Mathf.FloorToInt(playerActions.transform.position.x),
+            Mathf.FloorToInt(playerActions.transform.position.z)
+        );
+        Vector2Int targetPosition = new Vector2Int(
+            Mathf.FloorToInt(position.x),
+            Mathf.FloorToInt(position.z)
+        );
+        int distance = Mathf.Abs(currentPosition.x - targetPosition.x) +
+                       Mathf.Abs(currentPosition.y - targetPosition.y);
+        return distance;
+    }
 
-        //Goal distance measuring and it's interactios
-        #region Goal Checks
-        distaceToGoal = (int)Mathf.Abs(player.transform.position.x - goal.transform.position.x) + (int)Mathf.Abs(player.transform.position.z - goal.transform.position.z);
+    void UpdatePlayerPosition(Vector2Int previousPosition)
+    {
+        
+        previousPosition = new Vector2Int(
+            Mathf.Clamp(playerActions.GetPreviousPosition().x, 0, size.x - 1),
+            Mathf.Clamp(playerActions.GetPreviousPosition().y, 0, size.y - 1));
+
+        // Add the previous position to the affected cells
+        affectedCells.Add(previousPosition);
+
+        // Clear the previous position on the grid
+        if (previousPosition.x >= 0 && previousPosition.x < size.x &&
+            previousPosition.y >= 0 && previousPosition.y < size.y)
+        {
+            board[previousPosition.x, previousPosition.y] = null;
+        }
+        else
+            Debug.LogWarning($"Previous Position {previousPosition} is out of bounds!");
+
+
+        // Calculate the new position
+        Vector2Int newPosition = PosConverter(player.transform.position);
+
+        // Add the new position to the affected cells
+        affectedCells.Add(newPosition);
+
+        // Update the new position on the grid
+        if (newPosition.x >= 0 && newPosition.x < size.x &&
+            newPosition.y >= 0 && newPosition.y < size.y)
+        {
+            board[newPosition.x, newPosition.y] = playerActions.moveAmount;
+        }
+        else
+            Debug.LogWarning($"New Position {newPosition} is out of bounds!");
+
+    }
+
+    void GoalCheck()
+    {
+        distaceToGoal = CalculateDistance(goal);
 
         if (distaceToGoal == 0 && playerActions.hasItem)
         {
             Debug.Log("you win");
         }
-        #endregion
+    }
 
-        //KeyItem distance measuring and it's interactions
-        #region KeyItem Checks
+    void KeyItemCheck()
+    {
         if (!playerActions.hasItem)
         {
-            distaceToItem = (int)Mathf.Abs(player.transform.position.x - keyItem.transform.position.x) + (int)Mathf.Abs(player.transform.position.z - keyItem.transform.position.z);
+            distaceToItem = CalculateDistance(keyItem);
         }
 
-        if (distaceToItem == 0 && !playerActions.hasItem) //this updates the board array if the player picks the item up manually
+        //this updates the board array if the player picks the item up manually
+        if (distaceToItem == 0 && !playerActions.hasItem)
         {
-            board[(int) player.transform.position.x, (int)player.transform.position.z] = playerActions.moveAmount; //the array where the item was is now updated with the player
+            Vector2Int currentPosition = PosConverter(player.transform.position);
+            // Add the new position to the affected cells
+            affectedCells.Add(currentPosition);
+
+            //the array where the item was is now updated with the player
+            board[currentPosition.x, currentPosition.y] = playerActions.moveAmount;
             playerActions.hasItem = true;
             keyItem.SetActive(false);
         }
-        #endregion
+    }
 
-        //NumberItem distance measuring and it's interactions
-        #region NumberItem  Checks
+    void NumberItemCheck()
+    {
         if (pickUpNumber != null)
         {
-            distaceToNumber = (int)Mathf.Abs(player.transform.position.x - pickUpNumber.transform.position.x) + (int)Mathf.Abs(player.transform.position.z - pickUpNumber.transform.position.z);
+            distaceToNumber = CalculateDistance(pickUpNumber);
+        }
 
-            if (distaceToNumber == 0 && !playerActions.hasNumber) //this updates the board array if the player picks the number up manually
+        if (pickUpNumber != null)
+        {
+            //this updates the board array if the player picks the item up manually
+            if (distaceToNumber == 0 && !playerActions.hasNumber)
             {
-                board[(int)player.transform.position.x, (int)player.transform.position.z] = playerActions.moveAmount; //the array where the number was is now updated with the player
+                Vector2Int currentPosition = PosConverter(player.transform.position);
+                // Add the new position to the affected cells
+                affectedCells.Add(currentPosition);
+                //the array where the item was is now updated with the player
+                board[currentPosition.x, currentPosition.y] = playerActions.moveAmount;
+
                 pickUpNumber.SetActive(false);
                 numberHUD.SetActive(true);
                 playerActions.hasNumber = true;
             }
         }
+    }
+
+    void PickUpCheck(GameActions.Actions usedAction, GameObject affected)
+    {
+        //No need for "for" loop as we know the position of everything
+        if (pickUpNumber == null && affected == pickUpNumber)
+        {
+            Debug.Log("Pick Up Number is null");
+        }
         else
         {
-            distaceToNumber = 0;
-        }
-        #endregion
+            if (usedAction == GameActions.Actions.PickUp && affected != null)
 
-        //The PickUp action may affect objects in game, therefore, the array board must be updated
-        #region PickUp checks
-        if (usedAction == GameActions.Actions.PickUp && affected != null)
-        {
-            for (int i = 0; i < size.x; i++)
             {
-                for (int j = 0; j < size.y; j++)
+                Vector2Int affectedPosition = PosConverter(affected.transform.position);
+                // Add the item's position to the affected cells
+                affectedCells.Add(affectedPosition);
+
+                if (board[affectedPosition.x, affectedPosition.y] != null)
                 {
-                    if (board[i, j] != null && board[i, j].GetType() != typeof(int))
-                    {
-                        if (affected.CompareTag(board[i, j].ToString()))
-                        {
-                            board[i, j] = null;
-                        }
-                    }
+                    board[affectedPosition.x, affectedPosition.y] = null;
                 }
             }
         }
-        #endregion
+
+    }
+
+
+    void ReCalculateBoard(GameActions.Actions usedAction, GameObject affected)
+    {
+        //Updates player position in the array board
+        UpdatePlayerPosition(playerActions.GetPreviousPosition());
+
+        //Goal distance measuring and it's interactios
+        //Goal Checks
+        GoalCheck();
+
+        //KeyItem distance measuring and it's interactions
+        //KeyItem Checks
+        KeyItemCheck();
+
+        //NumberItem distance measuring and it's interactions
+        //NumberItem  Checks
+        NumberItemCheck();
+
+        //The PickUp action may affect objects in game, therefore, the array board must be updated
+        //PickUp checks
+        PickUpCheck(usedAction, affected);
+
+
         CommunicateChange(usedAction);
     }
 
-    void CommunicateChange(GameActions.Actions action) //This lets the UndoManager know that a board changing action has been used
+
+
+
+    //This lets the UndoManager know that a board changing action has been used
+    void CommunicateChange(GameActions.Actions action)
     {
-        for (int i = 0; i < levelActions.Length; i++) //this translates from action to its corresponding array slot, to allow for duplicate actions in the same level
+        //this translates from action to its corresponding array slot, to allow for duplicate actions in the same level
+        for (int i = 0; i < levelActions.Length; i++)
         {
-            if (action == levelActions[i])
-            {
-                undoManager.SaveBoard(i, board);
-            }
+            if (action == levelActions[i]) undoManager.SaveBoard(i, board);
         }
     }
 
@@ -219,11 +349,12 @@ public class GameManager : MonoBehaviour
                 {
                     case GameActions.Actions.Move:
                         undoManager.SaveBoard(i, board);
-                        playerActions.MovementReceiver(recievedNumber.value, GameActions.Actions.Move);
+                        playerActions.MovementReceiver(recievedNumber.value /*, GameActions.Actions.Move*/);
                         break;
 
                     case GameActions.Actions.PickUp:
-                        playerActions.PickUpReceiver(recievedNumber.value, distaceToItem, distaceToNumber, keyItem, pickUpNumber, numberHUD);
+                        playerActions.PickUpReceiver(
+                            recievedNumber.value, distaceToItem, distaceToNumber, keyItem, pickUpNumber, numberHUD);
                         break;
 
                     case GameActions.Actions.Enable:
@@ -232,9 +363,10 @@ public class GameManager : MonoBehaviour
                         break;
 
                     case GameActions.Actions.Throw:
-                        playerActions.ThrowReceiver(recievedNumber.value, GameActions.Actions.Throw, distaceToGoal);
+                        playerActions.ThrowReceiver(recievedNumber.value, /*GameActions.Actions.Throw,*/ distaceToGoal);
                         break;
                 }
+
                 levelCards[i].Disable(recievedNumber);
                 sequencer.NextCard(recievedNumber);
                 undoManager.ActionHistory(levelActions[i], recievedNumber);
@@ -243,82 +375,76 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void CommunicateUndo(object[,] newBoard, GameActions.Actions undoneAction, NumberItem previousNumber, NumberItem currentNumber)
+    public void CommunicateUndo(
+        object[,] newBoard, GameActions.Actions undoneAction,
+        NumberItem previousNumber, NumberItem currentNumber)
     {
+
         sequencer.UndoSequence(previousNumber, currentNumber);
 
         if (undoneAction == GameActions.Actions.Throw)
-        {
-            if (playerActions.hasItem == true)
-            {
-                playerActions.UndoThrow(true);
-            }
-            else
-            {
-                playerActions.UndoThrow(false);
-            }
-        }
+            playerActions.UndoThrow(playerActions.hasItem);
+
 
         if (undoneAction == GameActions.Actions.Enable)
-        {
             levelCards[currentNumber.value - 1].Disable(previousNumber);
-        }
 
+        //No need to go through the whole grid
+        //Created new variable for affected cells
         if (newBoard != null)
         {
-            for (int i = 0; i < size.x; i++)
+            foreach (Vector2Int cell in affectedCells)
             {
-                for (int j = 0; j < size.y; j++)
+                if (newBoard[cell.x, cell.y] != null)
                 {
-                    if (newBoard[i, j] != null)
+                    if (undoneAction == GameActions.Actions.Move)
                     {
-                        if(undoneAction == GameActions.Actions.Move)
+                        if (newBoard[cell.x, cell.y].GetType() == typeof(int))
                         {
-                            if (newBoard[i, j].GetType() == typeof(int))
-                            {
-                                playerActions.UndoMovement(i, j, (int) newBoard[i, j]);
-                            }
-                            if (newBoard[i, j].GetType() != typeof(int))
-                            {
-                                if (keyItem.CompareTag(newBoard[i, j].ToString()))
-                                {
-                                    keyItem.SetActive(true);
-                                    playerActions.hasItem = false;
-                                }
+                            playerActions.UndoMovement(cell.x, cell.y, (int)newBoard[cell.x, cell.y]);
+                        }
 
-                                if (pickUpNumber != null)
+                        if (newBoard[cell.x, cell.y].GetType() != typeof(int))
+                        {
+                            if (keyItem.CompareTag(newBoard[cell.x, cell.y].ToString()))
+                            {
+                                keyItem.SetActive(true);
+                                playerActions.hasItem = false;
+                            }
+
+                            if (pickUpNumber != null)
+                            {
+                                if (pickUpNumber.CompareTag(newBoard[cell.x, cell.y].ToString()))
                                 {
-                                    if (pickUpNumber.CompareTag(newBoard[i, j].ToString()))
-                                    {
-                                        playerActions.hasNumber = false;
-                                        pickUpNumber.SetActive(true);
-                                    } 
+                                    pickUpNumber.SetActive(true);
+                                    playerActions.hasNumber = false;
                                 }
                             }
                         }
+                    }
 
-                        if(undoneAction == GameActions.Actions.PickUp)
+                    if (undoneAction == GameActions.Actions.PickUp)
+                    {
+                        if (newBoard[cell.x, cell.y].GetType() != typeof(int))
                         {
-                            if (newBoard[i, j].GetType() != typeof(int))
+                            if (keyItem.CompareTag(newBoard[cell.x, cell.y].ToString()))
                             {
-                                if (keyItem.CompareTag(newBoard[i, j].ToString()))
+                                playerActions.UndoPickUps(keyItem);
+                            }
+                            if (pickUpNumber != null)
+                            {
+                                if (pickUpNumber.CompareTag(newBoard[cell.x, cell.y].ToString()))
                                 {
-                                    playerActions.UndoPickUps(keyItem);
-                                }
-                                if (pickUpNumber != null)
-                                {
-                                    if (pickUpNumber.CompareTag(newBoard[i, j].ToString()))
-                                    {
-                                        playerActions.UndoPickUps(pickUpNumber);
-                                    } 
+                                    playerActions.UndoPickUps(pickUpNumber);
                                 }
                             }
                         }
                     }
                 }
             }
-
-
         }
+
+
     }
 }
+
