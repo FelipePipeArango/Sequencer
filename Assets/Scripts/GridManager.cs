@@ -4,15 +4,27 @@ using UnityEngine;
 
 public class GridManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] Vector2Int gridSize;
+    [SerializeField] public int unitGridsize;
 
-    // Update is called once per frame
-    void Update()
+    Vector2Int[] battlefield;
+    int gridTotal = 0;
+
+    public void Awake()
     {
-        
+        gridTotal = gridSize.x * gridSize.y;
+        int i = 0;
+        battlefield = new Vector2Int[gridTotal];
+
+        for (int x = 0; x < gridSize.x; x++)
+        {
+            for (int y = 0; y < gridSize.y; y++)
+            {
+                Vector2Int cords = new Vector2Int(x, y);
+                battlefield[i] = cords;
+                i++;
+            }
+        }
     }
 }
+ 
