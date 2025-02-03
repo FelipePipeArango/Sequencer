@@ -90,7 +90,10 @@ public class Sequencer : MonoBehaviour
                 if (i == recievedNumber - 1)
                 {
                     nextCardText.gameObject.SetActive(true);
-                    nextCardText.transform.position = new Vector3(levelCards[i].transform.position.x, levelCards[i].transform.position.y + 92, levelCards[i].transform.position.z);
+                    nextCardText.transform.position =
+                        new Vector3(levelCards[i].transform.position.x
+                            , levelCards[i].transform.position.y + 92
+                            , levelCards[i].transform.position.z);
                 }
             }
         }
