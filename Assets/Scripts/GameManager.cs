@@ -256,20 +256,6 @@ public class GameManager : MonoBehaviour
             distaceToNumber = CalculateDistance(pickUpNumber);
         }
 
-        //if (distaceToNumber == 0 &&
-        //    !playerActions.hasNumber) //this updates the board array if the player picks the number up manually
-        //{
-        //    board[(int)player.transform.position.x, (int)player.transform.position.z] =
-        //        playerActions.moveAmount; //the array where the number was is now updated with the player
-        //    pickUpNumber.SetActive(false);
-        //    numberHUD.SetActive(true);
-        //    playerActions.hasNumber = true;
-        //} 
-        //else
-        //{
-        //    distaceToNumber = 0;
-        //}
-
         if (pickUpNumber != null)
         {
             //this updates the board array if the player picks the item up manually
