@@ -21,7 +21,7 @@ public class NumberItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDr
     public float proximityThreshold = 0.5f;  // The distance at which the event triggers
     public UnityEvent onProximityReached;  // The event to trigger
 
-    private bool eventTriggered = false;  // To ensure the event only triggers once
+    //private bool eventTriggered = false;  // To ensure the event only triggers once
 
     
 

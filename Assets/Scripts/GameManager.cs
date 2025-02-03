@@ -20,8 +20,7 @@ public class GameManager : MonoBehaviour
     //Grid manager
     object[,] board;
     [Header("SIZE OF THE BOARD - STARTS FROM 1")]
-    [SerializeField]
-    Vector2Int size;
+    [SerializeField] public Vector2Int size;
     [Header("MANDATORY OBJECTS IN A LEVEL")]
     [SerializeField]
     //Card Manager
@@ -69,7 +68,10 @@ public class GameManager : MonoBehaviour
         UnitControler.OnObjectPickUp -= ReCalculateBoard;
     }
 
-
+    public Vector3 GetPlayerPos()
+    {
+        return playerActions.transform.position;
+    }
 
     public void Awake()
     {

@@ -131,7 +131,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1092043111}
-  - component: {fileID: 1092043110}
+  - component: {fileID: 1092043112}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -139,25 +139,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1092043110
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1092043109}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79eea3026a5a69947a87026930be05ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Tile: {fileID: 8923966650842686609, guid: d266327d5b1c3ec4789bc2c97237269e, type: 3}
-  Player: {fileID: 5203907586013310667, guid: cbe8b0f1da105c947918814fdd380967, type: 3}
-  PickUpItem: {fileID: 5002639537613505352, guid: 378de2ce66ea2fa48b6f145f215f9dd0, type: 3}
-  KeyItem: {fileID: 2002592082102179084, guid: c2c39ba2aa7fc20448406cf7bc896e04, type: 3}
-  tiles: []
-  size: {x: 5, y: 8}
-  showGrid: 0
 --- !u!4 &1092043111
 Transform:
   m_ObjectHideFlags: 0
@@ -173,6 +154,26 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1092043112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1092043109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79eea3026a5a69947a87026930be05ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Tile: {fileID: 8923966650842686609, guid: d266327d5b1c3ec4789bc2c97237269e, type: 3}
+  color: {r: 0, g: 0, b: 0, a: 0}
+  Player: {fileID: 0}
+  PickUpItem: {fileID: 0}
+  KeyItem: {fileID: 0}
+  tiles: []
+  size: {x: 5, y: 4}
+  showGrid: 1
 --- !u!1 &1886544301
 GameObject:
   m_ObjectHideFlags: 0
