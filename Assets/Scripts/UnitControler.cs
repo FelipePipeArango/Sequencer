@@ -1,118 +1,153 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public class UnitControler : MonoBehaviour
 {
-    [SerializeField] GridManager gridManager;
+    public delegate void PickUpObject(GameActions.Actions action, GameObject affected);
+    public static event PickUpObject OnObjectPickUp;
 
-    [SerializeField] Transform playerPosition;
-    [SerializeField] Vector2Int itemPosition;
-    [SerializeField] Vector2Int goalPosition;
-    [SerializeField] Vector2Int numberPosition;
+    public delegate void MoveAction(GameActions.Actions usedAction, GameObject affected);
+    public static event MoveAction OnMovement;
 
-    int maxAmount = 0;
-    public bool hasItem = false;
-    int distaceToItem;
-    int distaceToGoal;
-    int distaceToNumber;
+    private Vector2Int playerPreviousPosition;
 
-    [SerializeField] GameObject item;
-    [SerializeField] GameObject goal;
-    [SerializeField] GameObject number;
-    [SerializeField] GameObject numberHUD;
+    public int moveAmount = 0;
+    [HideInInspector] public bool hasItem = false;
+    [HideInInspector] public bool hasNumber = false;
 
-    private void Start()
+
+    private void Start() { }
+
+    public void MovementReceiver(int recievedNumber/*, GameActions.Actions usedAction*/)
     {
-        distaceToItem = (int)Mathf.Abs(playerPosition.position.x - itemPosition.x) + (int)Mathf.Abs(playerPosition.position.z - itemPosition.y);
-        distaceToGoal = (int) Mathf.Abs(playerPosition.position.x - goalPosition.x) + (int) Mathf.Abs(playerPosition.position.z - goalPosition.y);
-        distaceToNumber = (int)Mathf.Abs(playerPosition.position.x - numberPosition.x) + (int)Mathf.Abs(playerPosition.position.z - numberPosition.y);
+        moveAmount = recievedNumber;
     }
 
-    public void MovementReceiver(int amount)
+
+    public void ThrowReceiver(int recievedNumber, /* GameActions.Actions usedAction, */int distanceToGoal)
     {
-        maxAmount = amount;
-    }
-    public void ThrowReceiver(int range)
-    {
-        if (hasItem )
+        if (hasItem)
         {
-            if (range >= distaceToGoal)
-            {
-                Debug.Log("you win");
-            }
+            hasItem = false;
+            if (recievedNumber >= distanceToGoal) Debug.Log("you win");
         }
     }
-    public void PickUpReceiver(int range)
+
+    //if the player HAD the item before throwing, undoing the action should return the item to him.
+    //but if he did NOT, the item should NOT be given to him when undoing the action.
+
+    //no need for if statement
+    public void UndoThrow(bool playedHadItem)
+    {
+        hasItem = playedHadItem;
+    }
+
+    //Manages the PickUp action
+    public void PickUpReceiver
+        (int recievedNumber, int distanceToItem, int distanceToNumber,
+            GameObject item, GameObject pickUpNumber, GameObject numberHUD)
     {
         if (!hasItem)
         {
-            if (range >= distaceToItem)
+            if (recievedNumber >= distanceToItem)
             {
                 hasItem = true;
-                item.SetActive (false);
-            }
+                item.SetActive(false);
 
-            if (range >= distaceToNumber)
-            {
-                number.SetActive (false);
-                numberHUD.SetActive (true);
+                if (OnObjectPickUp != null)
+                    OnObjectPickUp(GameActions.Actions.PickUp, item);
+
             }
+        }
+        else
+        {
+            if (OnObjectPickUp != null)
+                OnObjectPickUp(GameActions.Actions.PickUp, null);
+
+        }
+
+        if (!hasNumber)
+        {
+            if (distanceToNumber != 0 && recievedNumber >= distanceToNumber)
+            {
+                if (pickUpNumber != null || numberHUD != null)
+                {
+                    pickUpNumber.SetActive(false);
+                    numberHUD.SetActive(true);
+                }
+                
+                hasNumber = true;
+
+                if (OnObjectPickUp != null)
+                    OnObjectPickUp(GameActions.Actions.PickUp, pickUpNumber);
+            }
+        }
+        else
+        {
+            if (OnObjectPickUp != null)
+                OnObjectPickUp(GameActions.Actions.PickUp, null);
+
+        }
+    }
+
+    public void UndoPickUps(GameObject @object)
+    {
+        if (@object.tag == "Item")
+        {
+            hasItem = false;
+            @object.SetActive(true);
+        }
+
+        if (@object.tag == "NumberItem")
+        {
+            @object.SetActive(true);
+            hasNumber = false;
         }
     }
     void Update()
     {
-        if (maxAmount > 0)
+        if (moveAmount > 0)
         {
-            if (Input.GetKeyDown(KeyCode.W))
-            {
-                Movement(Vector2Int.up); //Used constant vectors instead of hard coded numbers
-            }
+            //Used constant vectors instead of hard coded numbers
+            if (Input.GetKeyDown(KeyCode.W)) Movement(Vector2Int.up);
 
-            if (Input.GetKeyDown(KeyCode.S))
-            {
-                Movement(Vector2Int.down);
-            }
+            if (Input.GetKeyDown(KeyCode.S)) Movement(Vector2Int.down);
 
-            if (Input.GetKeyDown(KeyCode.D))
-            {
-                Movement(Vector2Int.right);
-            }
+            if (Input.GetKeyDown(KeyCode.D)) Movement(Vector2Int.right);
 
-            if (Input.GetKeyDown(KeyCode.A))
-            {
-                Movement(Vector2Int.left);
-            } 
+            if (Input.GetKeyDown(KeyCode.A)) Movement(Vector2Int.left);
+
         }
     }
 
     //Changed the previous movement implementation to make it more easy to calculate
     void Movement(Vector2Int direction)
     {
-        playerPosition.position += new Vector3(direction.x, 0, direction.y);
+        playerPreviousPosition = new Vector2Int(
+            Mathf.FloorToInt(this.transform.position.x),
+            Mathf.FloorToInt(this.transform.position.z)
+            );
 
-        maxAmount = maxAmount - 1;
+        this.transform.position += new Vector3(direction.x, 0, direction.y);
+        moveAmount--;
 
-        //Change the rest of the function to detect the distance to items with collisions instead
-
-        //With collisions there is no need to make this calculations
-        distaceToItem = (int)Mathf.Abs(playerPosition.position.x - itemPosition.x) + (int)Mathf.Abs(playerPosition.position.z - itemPosition.y);
-        distaceToGoal = (int)Mathf.Abs(playerPosition.position.x - goalPosition.x) + (int)Mathf.Abs(playerPosition.position.z - goalPosition.y);
-        distaceToNumber = (int)Mathf.Abs(playerPosition.position.x - numberPosition.x) + (int)Mathf.Abs(playerPosition.position.z - numberPosition.y);
-
-        if (distaceToNumber == 0)
+        if (OnMovement != null)
         {
-            PickUpReceiver(0);
-        }
-
-        if (distaceToGoal == 0 && hasItem == true)
-        {
-            Debug.Log("you win");
-        }
-
-        if (distaceToItem == 0)
-        {
-            PickUpReceiver(0);
+            OnMovement(GameActions.Actions.Move, null);
         }
     }
+    public Vector2Int GetPreviousPosition()
+    {
+        return playerPreviousPosition;
+    }
+    public void UndoMovement(int previousPositionX, int previousPositionY, int move)
+    {
+        this.transform.position = new Vector3(previousPositionX, 1, previousPositionY);
+        moveAmount = move;
+    }
+
+
 }
