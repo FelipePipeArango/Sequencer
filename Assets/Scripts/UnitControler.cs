@@ -128,7 +128,6 @@ public class UnitControler : MonoBehaviour
 
         if (!IsBoardBelow())
         {
-
             Vector3 targetPos = new Vector3(transform.position.x, -1f, transform.position.z);
             transform.position = Vector3.MoveTowards(transform.position, targetPos, fallSpeed * Time.deltaTime);
 

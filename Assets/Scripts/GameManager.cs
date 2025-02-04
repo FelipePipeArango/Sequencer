@@ -82,7 +82,6 @@ public class GameManager : MonoBehaviour
         }
 
         Instance = this;  // Assign the static instance
-        // DontDestroyOnLoad(gameObject);  // Optional: Prevent this object from being destroyed on scene changes
 
         playerActions = player.GetComponent<UnitControler>();
         undoManager = this.GetComponent<UndoManager>();

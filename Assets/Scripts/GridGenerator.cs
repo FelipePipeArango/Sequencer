@@ -14,9 +14,6 @@ public class GridGenerator : MonoBehaviour
     [SerializeField] Color color;
 
     [Header("Not Implemented yet")] 
-    [SerializeField] GameObject Player;
-    [SerializeField] GameObject PickUpItem;
-    [SerializeField] GameObject KeyItem;
     [SerializeField] TileScript[] tiles;
     [SerializeField] Vector2Int size;
     private GameObject[] allTiles;
@@ -33,25 +30,8 @@ public class GridGenerator : MonoBehaviour
         }
 
         Instance = this; // Assign the static instance
-
-        CreateGrid();
+        TwoDTiles = new TileScript[GameManager.Instance.size.x, GameManager.Instance.size.y];
         UpdateGrid();
-        
-    }
-
-    //not implemented yet
-    public void CreateGrid()
-    {
-        for (int i = 0; i < size.x; i++)
-        {
-            for (int j = 0; j < size.y; j++)
-            {
-                Vector3 position = new Vector3(i, 0, j);
-                var spawnedTile = Instantiate(Tile, position, Quaternion.identity);
-                spawnedTile.name = $"Tile {i}, {j}";
-            }
-        }
-
     }
 
     void CheckIfGround(int amount, Vector3 pos)
@@ -91,12 +71,10 @@ public class GridGenerator : MonoBehaviour
         foreach (var tile in tiles)
         {
             distance = GameManager.Instance.CalculateDistance(tile.transform.position);
-            Debug.Log($"{distance}");
             if (distance == amount)
             {
                 tile.SetColor(color);
             }
-
         }
     }
 
@@ -109,9 +87,6 @@ public class GridGenerator : MonoBehaviour
                 tile.ResetColor();
             }
         }
-        else
-            Debug.Log("No tiles here");
-
     }
 
     void UpdateGrid()
@@ -128,8 +103,7 @@ public class GridGenerator : MonoBehaviour
             }
         }
 
-        TileScript[,] placeholder = new TileScript[GameManager.Instance.size.x, GameManager.Instance.size.y];
-
+        
         for (int i = 0; i < GameManager.Instance.size.x ; i++)
         {
             for (int j = 0; j < GameManager.Instance.size.y; j++)
@@ -138,21 +112,9 @@ public class GridGenerator : MonoBehaviour
                 {
                     if (new Vector3(i, 0, j) == tile.transform.position)
                     {
-                        placeholder[i, j] = tile;
+                        TwoDTiles[i, j] = tile;
                     }
                 }
-            }
-        }
-
-        TwoDTiles = new TileScript[GameManager.Instance.size.x, GameManager.Instance.size.y];
-        TwoDTiles = placeholder;
-        foreach (var tile in TwoDTiles)
-        {
-            if (tile != null)
-                Debug.Log($"Has Tile at {tile.transform.position}");
-            else
-            {
-                Debug.Log("Nothing");
             }
         }
     }

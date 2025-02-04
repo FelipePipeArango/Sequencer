@@ -39,18 +39,14 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             if (LevelActions == GameActions.Actions.Move)
             {
                 GridGenerator.Instance.MoveDistanceCheck(hoveredNumberItem.value, GameManager.Instance.GetPlayerPos());
-
-                Debug.Log($"Move {hoveredNumberItem.value} tiles.");
             }
             else if (LevelActions == GameActions.Actions.PickUp)
             {
                 GridGenerator.Instance.PickUpThrowCheck(hoveredNumberItem.value);
-                Debug.Log($"Pick up item within {hoveredNumberItem.value} tiles.");
             }
             else if (LevelActions == GameActions.Actions.Throw)
             {
                 GridGenerator.Instance.PickUpThrowCheck(hoveredNumberItem.value);
-                Debug.Log($"Throw object with a range of {hoveredNumberItem.value} tiles.");
             }
         }
     }
