@@ -38,18 +38,15 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             // Display the debug message based on the card type and number value
             if (LevelActions == GameActions.Actions.Move)
             {
-                GridGenerator.Instance.DistanceCheck(hoveredNumberItem.value);
-                Debug.Log($"Move {hoveredNumberItem.value} tiles.");
+                GridGenerator.Instance.MoveDistanceCheck(hoveredNumberItem.value, GameManager.Instance.GetPlayerPos());
             }
             else if (LevelActions == GameActions.Actions.PickUp)
             {
-                GridGenerator.Instance.DistanceCheck(hoveredNumberItem.value);
-                Debug.Log($"Pick up item within {hoveredNumberItem.value} tiles.");
+                GridGenerator.Instance.PickUpThrowCheck(hoveredNumberItem.value);
             }
             else if (LevelActions == GameActions.Actions.Throw)
             {
-                GridGenerator.Instance.DistanceCheck(hoveredNumberItem.value);
-                Debug.Log($"Throw object with a range of {hoveredNumberItem.value} tiles.");
+                GridGenerator.Instance.PickUpThrowCheck(hoveredNumberItem.value);
             }
         }
     }

@@ -16,16 +16,8 @@ public class NumberItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDr
     public delegate void DragActions(int number, bool isGrabing);
     public static event DragActions OnDragAction;
 
-
     public Transform target;  // The target object the player or item approaches
-    public float proximityThreshold = 0.5f;  // The distance at which the event triggers
-    public UnityEvent onProximityReached;  // The event to trigger
-
-    private bool eventTriggered = false;  // To ensure the event only triggers once
-
     
-
-
     void Awake()
     {
         numberText.text = value.ToString();
@@ -47,7 +39,6 @@ public class NumberItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDr
     public void OnDrag(PointerEventData eventData)
     {
         transform.position = Input.mousePosition;
-        //Debug.Log($"This is the position {transform.position}");
     }
 
     public void OnEndDrag(PointerEventData eventData)
