@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using Unity.Jobs;
 using Unity.VisualScripting;
 using UnityEngine;
 using Color = UnityEngine.Color;
@@ -11,71 +12,72 @@ public class GridGenerator : MonoBehaviour
     public static GridGenerator Instance { get; private set; }
     [SerializeField] GameObject Tile;
     [SerializeField] Color color;
-    [Header("Not Implemented yet")]
-    [SerializeField] GameObject Player;
-    [SerializeField] GameObject PickUpItem;
-    [SerializeField] GameObject KeyItem;
+
+    [Header("Not Implemented yet")] 
     [SerializeField] TileScript[] tiles;
     [SerializeField] Vector2Int size;
-
     private GameObject[] allTiles;
-    private GameObject[,] Tiles;
-    public bool showGrid = true;
-
+    TileScript[,] TwoDTiles;
+    
+    
     // Start is called before the first frame update
     void Awake()
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);  // Ensure only one instance exists
+            Destroy(gameObject); // Ensure only one instance exists
             return;
         }
 
-        Tiles = new GameObject[size.x, size.y];
-        Instance = this;  // Assign the static instance
-        //CreateGrid();
-        // DontDestroyOnLoad(gameObject);  // Optional: Prevent this object from being destroyed on scene changes
-    
-       // CreateGrid();
+        Instance = this; // Assign the static instance
+        TwoDTiles = new TileScript[GameManager.Instance.size.x, GameManager.Instance.size.y];
         UpdateGrid();
-        
     }
 
-    
-    
-    //not implemented yet
-    //public void CreateGrid()
-    //{ 
-    //    for (int i = 0; i < size.x; i++)
-    //    {
-    //        for (int j = 0; j < size.y; j++)
-    //        {
-    //            Vector3 position = new Vector3(i, 0, j);
-    //            Tiles[i,j] = Instantiate(Tile);
-    //            Tiles[i, j].transform.position = position;
-    //        }
-    //    }
-    //}
-    //
-    
-    public void DistanceCheck(int amount)
+    void CheckIfGround(int amount, Vector3 pos)
     {
-        int distance;
-        foreach (var tile in tiles)
-        { 
-            distance = GameManager.Instance.CalculateDistance(tile.transform.position);
-            Debug.Log($"{distance}");
-            if ((distance) <= amount)
+        if (pos.x >= 0 && pos.x < GameManager.Instance.size.x && 
+            pos.z >= 0 && pos.z < GameManager.Instance.size.y)
+        {
+            if (TwoDTiles[(int)pos.x, (int)pos.z] != null)
             {
-                Debug.Log($"{distance - amount}");
-                tile.SetColor(color);
-                if (distance == 0)
-                {
-                    tile.ResetColor();
-                }
+                TwoDTiles[(int)pos.x, (int)pos.z].SetColor(color);
+                MoveDistanceCheck(amount - 1, TwoDTiles[(int)pos.x, (int)pos.z].transform.position);
             }
         }
     }
+
+    public void MoveDistanceCheck(int amount, Vector3 start)
+    {
+        if (amount == 0)
+        {
+            return;
+        }
+
+        Vector3 right = new Vector3(start.x - 1, start.y, start.z);
+        Vector3 left = new Vector3(start.x + 1, start.y, start.z);
+        Vector3 up = new Vector3(start.x, start.y, start.z + 1);
+        Vector3 down = new Vector3(start.x, start.y, start.z - 1);
+
+        CheckIfGround(amount, right);
+        CheckIfGround(amount, left);
+        CheckIfGround(amount, up);
+        CheckIfGround(amount, down);
+    }
+
+    public void PickUpThrowCheck(int amount)
+    {
+        int distance;
+        foreach (var tile in tiles)
+        {
+            distance = GameManager.Instance.CalculateDistance(tile.transform.position);
+            if (distance == amount)
+            {
+                tile.SetColor(color);
+            }
+        }
+    }
+
     public void Reset()
     {
         if (allTiles != null)
@@ -85,34 +87,7 @@ public class GridGenerator : MonoBehaviour
                 tile.ResetColor();
             }
         }
-        else
-            Debug.Log("No tiles here");
-
     }
-
-    //public void SetTileAt(Vector2Int position)
-    //{
-    //    if (allTiles != null)
-    //    {
-    //        foreach (TileScript tile in tiles)
-    //        {
-    //            Vector2Int Pos2d = new Vector2Int(Mathf.FloorToInt(tile.transform.position.x),
-    //                                             Mathf.FloorToInt(tile.transform.position.z));
-    //            if (Pos2d == position)
-    //            {
-    //               // Debug.Log($"At {tile.transform.position} Red");
-    //                tile.SetColor(color);
-    //            }
-    //            //else
-    //               // Debug.Log($"At {tile.transform.position} nothing there");
-    //        }
-    //    }
-    //    else
-    //        Debug.Log("No tiles here");
-        
-    //}
-
-    // Update is called once per frame
 
     void UpdateGrid()
     {
@@ -127,6 +102,20 @@ public class GridGenerator : MonoBehaviour
                 tiles[i] = allTiles[i].GetComponent<TileScript>();
             }
         }
-    }
 
+        
+        for (int i = 0; i < GameManager.Instance.size.x ; i++)
+        {
+            for (int j = 0; j < GameManager.Instance.size.y; j++)
+            {
+                foreach (var tile in tiles)
+                {
+                    if (new Vector3(i, 0, j) == tile.transform.position)
+                    {
+                        TwoDTiles[i, j] = tile;
+                    }
+                }
+            }
+        }
+    }
 }
