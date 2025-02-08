@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -96,8 +96,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
-  m_LightingSettings: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: ee13a1a47079382469072436868f32f4, type: 2}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: a95dbda4015953b4fbcbae0b4bdae126, type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -1516,7 +1516,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &705507994
 Light:
   m_ObjectHideFlags: 0
@@ -2737,6 +2737,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 534de2a6cca82ec4baadc9f9b7d1a0b3, type: 2}
+    - target: {fileID: -6332114349706614168, guid: 24198548d9ffadf4488f32345a92322d, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -3652862870785322071, guid: 24198548d9ffadf4488f32345a92322d, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -2749,16 +2753,32 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 24198548d9ffadf4488f32345a92322d, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361137549424080016, guid: 24198548d9ffadf4488f32345a92322d, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1412913048526114158, guid: 24198548d9ffadf4488f32345a92322d, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 6dcbfdbecad0d6b4e8c4aa5899212f51, type: 2}
+    - target: {fileID: 5043620052971109633, guid: 24198548d9ffadf4488f32345a92322d, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7064073765246860709, guid: 24198548d9ffadf4488f32345a92322d, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 534de2a6cca82ec4baadc9f9b7d1a0b3, type: 2}
     - target: {fileID: 8331315822498831214, guid: 24198548d9ffadf4488f32345a92322d, type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8331315822498831214, guid: 24198548d9ffadf4488f32345a92322d, type: 3}
+      propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -2797,6 +2817,7 @@ MonoBehaviour:
   moveAmount: 0
   hasItem: 0
   hasNumber: 0
+  fallSpeed: 1
 --- !u!65 &1330395031
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4813,12 +4834,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Tile: {fileID: 8923966650842686609, guid: d266327d5b1c3ec4789bc2c97237269e, type: 3}
   color: {r: 0.4117647, g: 1, b: 0.41568628, a: 0}
-  Player: {fileID: 0}
-  PickUpItem: {fileID: 0}
-  KeyItem: {fileID: 0}
   tiles: []
   size: {x: 0, y: 0}
-  showGrid: 1
 --- !u!1001 &2512458604966629601
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4905,31 +4922,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2197490779211417197, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
       propertyPath: m_Size.z
-      value: 0.6083816
+      value: 0.61229324
       objectReference: {fileID: 0}
     - target: {fileID: 2197490779211417197, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
       propertyPath: m_Center.y
-      value: 4.8669666e-17
+      value: 2.8194961e-15
       objectReference: {fileID: 0}
     - target: {fileID: 2197490779211417197, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
       propertyPath: m_Center.z
-      value: 0.25342476
+      value: 0.30753547
       objectReference: {fileID: 0}
     - target: {fileID: 2305454592418405982, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
       propertyPath: m_IsActive
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3118230808357991865, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
-      propertyPath: m_Materials.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3118230808357991865, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 6bbc77c3e946a7b4f816fcc3b32a5bc0, type: 2}
-    - target: {fileID: 3118230808357991865, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
-      propertyPath: m_Materials.Array.data[1]
-      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 4366984284756147693, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
       propertyPath: m_Name
@@ -4941,11 +4946,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4926024823031096180, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 4926024823031096180, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 4926024823031096180, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
       propertyPath: m_LocalScale.z
@@ -4957,7 +4962,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4926024823031096180, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.584
+      value: 0.514
       objectReference: {fileID: 0}
     - target: {fileID: 4926024823031096180, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5027,10 +5032,6 @@ PrefabInstance:
       propertyPath: numbersInLevel
       value: 
       objectReference: {fileID: 534630998}
-    - target: {fileID: 6570126876477716795, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 5133956943485819134, guid: e443b84fabd56234c88109a3f4df3587, type: 3}
     - target: {fileID: 7155653731005948063, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -5042,6 +5043,10 @@ PrefabInstance:
     - target: {fileID: 8173415176379193817, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8574681982801654670, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9088434828783240721, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
       propertyPath: m_Size.z
@@ -5255,6 +5260,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4025043622621656767, guid: d266327d5b1c3ec4789bc2c97237269e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8923966650842686609, guid: d266327d5b1c3ec4789bc2c97237269e, type: 3}
       propertyPath: m_Name
       value: 0.0
@@ -5266,6 +5275,10 @@ PrefabInstance:
     - target: {fileID: 8923966650842686609, guid: d266327d5b1c3ec4789bc2c97237269e, type: 3}
       propertyPath: m_TagString
       value: Ground
+      objectReference: {fileID: 0}
+    - target: {fileID: 8923966650842686609, guid: d266327d5b1c3ec4789bc2c97237269e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
