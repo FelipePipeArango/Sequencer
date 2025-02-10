@@ -343,7 +343,8 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < levelActions.Length; i++)
         {
-            if (usedAction == levelActions[i])
+            if (usedAction == levelActions[i] //The card slot that's equal to the recieved number
+                && levelCards[i].available == true) //allows for multiple cards of the same type
             {
                 switch (levelActions[i])
                 {
@@ -370,6 +371,7 @@ public class GameManager : MonoBehaviour
                 levelCards[i].Disable(recievedNumber);
                 sequencer.NextCard(recievedNumber);
                 undoManager.ActionHistory(levelActions[i], recievedNumber);
+                break;
             }
         }
     }

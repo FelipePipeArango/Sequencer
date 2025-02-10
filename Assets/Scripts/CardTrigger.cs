@@ -11,7 +11,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     [SerializeField] TextMeshProUGUI usedText;
     [SerializeField] Image slotImage;
     [SerializeField] Image cardBackground;
-    bool available = true; //tracks if the card has been used
+    [HideInInspector] public bool available = true; //tracks if the card has been used
     [HideInInspector] public bool nextInSequence;
 
     public GameActions.Actions LevelActions;
