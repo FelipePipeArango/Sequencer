@@ -33,10 +33,20 @@ public class UnitControler : MonoBehaviour
 
     public void ThrowReceiver(int recievedNumber, /* GameActions.Actions usedAction, */int distanceToGoal)
     {
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = currentSceneIndex + 1;
+
         if (hasItem)
         {
             hasItem = false;
-            if (recievedNumber >= distanceToGoal) Debug.Log("you win");
+            if (recievedNumber >= distanceToGoal)
+            {
+                if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+                {
+                    SceneManager.LoadScene(nextSceneIndex);
+                }
+            }
+
         }
     }
 

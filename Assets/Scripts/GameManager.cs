@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static UnityEditor.Progress;
 
 public class GameManager : MonoBehaviour
@@ -221,11 +222,16 @@ public class GameManager : MonoBehaviour
 
     void GoalCheck()
     {
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = currentSceneIndex + 1;
         distaceToGoal = CalculateDistance(goal);
 
         if (distaceToGoal == 0 && playerActions.hasItem)
         {
-            Debug.Log("you win");
+            if(nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+            {
+                SceneManager.LoadScene(nextSceneIndex);
+            }
         }
     }
 
