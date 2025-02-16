@@ -27,7 +27,7 @@ public class UnitControler : MonoBehaviour
 
     public void MovementReceiver(int recievedNumber/*, GameActions.Actions usedAction*/)
     {
-        moveAmount = recievedNumber;
+        moveAmount += recievedNumber;
     }
 
 
