@@ -8,7 +8,6 @@ public class TileScript : MonoBehaviour
     private Renderer render;
     
     private Color setColor;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -26,6 +25,7 @@ public class TileScript : MonoBehaviour
         render = GetComponent<Renderer>();
         return render.material.color;
     }
+
     public void ResetColor()
     {
         SetColor(setColor);

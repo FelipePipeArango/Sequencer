@@ -12,20 +12,18 @@ public class UnitControler : MonoBehaviour
     public delegate void MoveAction(GameActions.Actions usedAction, GameObject affected);
     public static event MoveAction OnMovement;
 
-    private Vector3 playerPreviousPosition;
+    private Vector2Int playerPreviousPosition;
 
-    public int moveAmount;
+    public int moveAmount = 0;
     [HideInInspector] public bool hasItem = false;
     [HideInInspector] public bool hasNumber = false;
 
 
     [SerializeField] public float fallSpeed = 1.0f;
-    
 
     
     private void Start() { }
 
-    
     public void MovementReceiver(int recievedNumber/*, GameActions.Actions usedAction*/)
     {
         moveAmount = recievedNumber;
@@ -124,12 +122,6 @@ public class UnitControler : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            string currentScene = SceneManager.GetActiveScene().name;
-            SceneManager.LoadScene(currentScene);
-        }
-
         if (moveAmount > 0)
         {
             //Used constant vectors instead of hard coded numbers
@@ -142,6 +134,7 @@ public class UnitControler : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.A)) Movement(Vector2Int.left);
 
         }
+
         if (!IsBoardBelow())
         {
             Vector3 targetPos = new Vector3(transform.position.x, -1f, transform.position.z);
@@ -153,7 +146,7 @@ public class UnitControler : MonoBehaviour
             }
         }
     }
-    //BUG player fastjump the holes
+
     private bool IsBoardBelow()
     {
         RaycastHit hit;
@@ -167,9 +160,12 @@ public class UnitControler : MonoBehaviour
     //Changed the previous movement implementation to make it more easy to calculate
     void Movement(Vector2Int direction)
     {
-        playerPreviousPosition = transform.position;
+        playerPreviousPosition = new Vector2Int(
+            Mathf.FloorToInt(this.transform.position.x),
+            Mathf.FloorToInt(this.transform.position.z)
+            );
 
-        transform.position += new Vector3(direction.x, 0, direction.y);
+        this.transform.position += new Vector3(direction.x, 0, direction.y);
         moveAmount--;
 
         if (OnMovement != null)
@@ -177,13 +173,13 @@ public class UnitControler : MonoBehaviour
             OnMovement(GameActions.Actions.Move, null);
         }
     }
-    public Vector3 GetPreviousPosition()
+    public Vector2Int GetPreviousPosition()
     {
         return playerPreviousPosition;
     }
     public void UndoMovement(int previousPositionX, int previousPositionY, int move)
     {
-        transform.position = new Vector3(previousPositionX, 1, previousPositionY);
+        this.transform.position = new Vector3(previousPositionX, 1, previousPositionY);
         moveAmount = move;
     }
 
