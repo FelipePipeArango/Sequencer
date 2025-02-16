@@ -38,22 +38,18 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             // Display the debug message based on the card type and number value
             if (LevelActions == GameActions.Actions.Move)
             {
-                GridGenerator.Instance.MoveDistanceCheck(hoveredNumberItem.value, GameManager.Instance.GetPlayerPos());
+                GridManager.Instance.MoveDistanceHighLight(hoveredNumberItem.value, GridManager.Instance.GetPlayerPos());
             }
-            else if (LevelActions == GameActions.Actions.PickUp)
+            else if (LevelActions == GameActions.Actions.PickUp || LevelActions == GameActions.Actions.Throw)
             {
-                GridGenerator.Instance.PickUpThrowCheck(hoveredNumberItem.value);
-            }
-            else if (LevelActions == GameActions.Actions.Throw)
-            {
-                GridGenerator.Instance.PickUpThrowCheck(hoveredNumberItem.value);
+                GridManager.Instance.PickUpThrowHighLight(hoveredNumberItem.value);
             }
         }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        GridGenerator.Instance.Reset();
+        GridManager.Instance.ResetAllColor();
         // Clear the hovered item reference when leaving the card
         hoveredNumberItem = null;
     }
