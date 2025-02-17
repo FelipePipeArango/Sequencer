@@ -26,7 +26,7 @@ public class UnitControler : MonoBehaviour
 
     public void MovementReceiver(int recievedNumber/*, GameActions.Actions usedAction*/)
     {
-        moveAmount = recievedNumber;
+        moveAmount += recievedNumber;
     }
 
 
@@ -137,6 +137,7 @@ public class UnitControler : MonoBehaviour
 
         if (!IsBoardBelow())
         {
+            moveAmount = 0;
             Vector3 targetPos = new Vector3(transform.position.x, -1f, transform.position.z);
             transform.position = Vector3.MoveTowards(transform.position, targetPos, fallSpeed * Time.deltaTime);
 
