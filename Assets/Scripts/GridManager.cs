@@ -22,8 +22,10 @@ public class GridManager : MonoBehaviour
     TileScript[] tiles;
 
     public int distaceToItem, distaceToGoal, distaceToNumber;
+    public int AIdistaceToItem, AIdistaceToGoal, AIdistaceToNumber;
 
     [Header("Pieces")] [SerializeField] 
+    public GameObject AICompanion;
     public GameObject player;
     public GameObject keyItem;
     public GameObject goal;
@@ -31,6 +33,7 @@ public class GridManager : MonoBehaviour
     [Header("OPTIONAL OBJECTS IN A LEVEL")] [SerializeField]
     public GameObject pickUpNumber;
     public UnitControler playerActions;
+    public AICompanion AIActions;
 
 
     // Start is called before the first frame update
@@ -46,6 +49,7 @@ public class GridManager : MonoBehaviour
 
 
         playerActions = player.GetComponent<UnitControler>();
+        AIActions = AICompanion.GetComponent<AICompanion>();  
         grid = new TileScript[size.x, size.y];
         StoreGrid();
     }
@@ -84,7 +88,8 @@ public class GridManager : MonoBehaviour
         updateTileType(goal.transform.position, GameActions.TileTypes.GoalTile);
     }
 
-    public int CalculateDistance(Vector3 position)
+    public int CalculateDistance(Vector3 position,
+        Vector3 start)
     {
         Vector2Int currentPosition = new Vector2Int(
             Mathf.FloorToInt(playerActions.transform.position.x),
@@ -140,7 +145,9 @@ public class GridManager : MonoBehaviour
         int distance;
         foreach (var tile in tiles)
         {
-            distance = CalculateDistance(tile.transform.position);
+            distance = CalculateDistance(
+                tile.transform.position, 
+                playerActions.transform.position);
             if (distance == amount)
             {
                 tile.SetColor(color);
@@ -152,7 +159,9 @@ public class GridManager : MonoBehaviour
     {
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         int nextSceneIndex = currentSceneIndex + 1;
-        distaceToGoal = CalculateDistance(goal.transform.position);
+        distaceToGoal = CalculateDistance(
+            goal.transform.position, 
+            playerActions.transform.position);
 
         if (distaceToGoal == 0 && playerActions.hasItem)
         {
@@ -167,7 +176,9 @@ public class GridManager : MonoBehaviour
 
         if (!playerActions.hasItem)
         {
-            distaceToItem = CalculateDistance(keyItem.transform.position);
+            distaceToItem = CalculateDistance(
+                keyItem.transform.position,
+                playerActions.transform.position);
 
             if (distaceToItem == 0)
             {
@@ -181,8 +192,12 @@ public class GridManager : MonoBehaviour
     {
         if (pickUpNumber != null)
         {
-            distaceToNumber = CalculateDistance(pickUpNumber.transform.position);
-
+            distaceToNumber = CalculateDistance(
+                pickUpNumber.transform.position,
+                playerActions.transform.position);
+            AIdistaceToNumber = CalculateDistance(
+                pickUpNumber.transform.position,
+                playerActions.transform.position);
             if (distaceToNumber == 0 && !playerActions.hasNumber)
             {
                 Vector2Int currentPosition = PosConverter(player.transform.position);
@@ -205,10 +220,20 @@ public class GridManager : MonoBehaviour
     {
         return playerActions.transform.position;
     }
+
     public void updateTileType(Vector3 pos, GameActions.TileTypes type)
     {
-        grid[(int)pos.x, (int)pos.z].tileType = type;
+        if (size.x > pos.x || size.y > pos.z)
+        {
+            if (grid[(int)pos.x, (int)pos.z] != null)
+                grid[(int)pos.x, (int)pos.z].tileType = type;
+            else
+                Debug.Log("hole");
+        }
+        else
+            Debug.Log("Set correct Grid size");
     }
+
     public void ResetAllColor()
     {
         if (allTiles != null)

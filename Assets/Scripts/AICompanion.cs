@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class UnitControler : MonoBehaviour
+public class AICompanion : MonoBehaviour
 {
+
     public delegate void PickUpObject(GameActions.Actions action, GameObject affected);
     public static event PickUpObject OnObjectPickUp;
 
@@ -21,40 +21,12 @@ public class UnitControler : MonoBehaviour
 
     [SerializeField] public float fallSpeed = 1.0f;
 
-    
+
     private void Start() { }
 
     public void MovementReceiver(int recievedNumber, GameActions.Actions usedAction)
     {
         moveAmount = recievedNumber;
-    }
-
-
-    public void ThrowReceiver(int recievedNumber, int distanceToGoal)
-    {
-        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        int nextSceneIndex = currentSceneIndex + 1;
-
-        if (hasItem)
-        {
-            hasItem = false;
-            if (recievedNumber >= distanceToGoal)
-            {
-                if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
-                {
-                    SceneManager.LoadScene(nextSceneIndex);
-                }
-            }
-        }
-    }
-
-    //if the player HAD the item before throwing, undoing the action should return the item to him.
-    //but if he did NOT, the item should NOT be given to him when undoing the action.
-
-    //no need for if statement
-    public void UndoThrow(bool playedHadItem)
-    {
-        hasItem = playedHadItem;
     }
 
     //Manages the PickUp action
@@ -90,7 +62,7 @@ public class UnitControler : MonoBehaviour
                     pickUpNumber.SetActive(false);
                     numberHUD.SetActive(true);
                 }
-                
+
                 hasNumber = true;
 
                 if (OnObjectPickUp != null)
@@ -105,39 +77,23 @@ public class UnitControler : MonoBehaviour
         }
     }
 
-    public void UndoPickUps(GameObject @object)
-    {
-        if (@object.tag == "Item")
-        {
-            hasItem = false;
-            @object.SetActive(true);
-        }
-
-        if (@object.tag == "NumberItem")
-        {
-            @object.SetActive(true);
-            hasNumber = false;
-        }
-    }
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            string currentScene = SceneManager.GetActiveScene().name; 
+            string currentScene = SceneManager.GetActiveScene().name;
             SceneManager.LoadScene(currentScene);
         }
-        if (moveAmount > 0)
-        {
-            //Used constant vectors instead of hard coded numbers
-            if (Input.GetKeyDown(KeyCode.W)) Movement(Vector2Int.up);
 
-            if (Input.GetKeyDown(KeyCode.S)) Movement(Vector2Int.down);
+        //Used constant vectors instead of hard coded numbers
+        if (Input.GetKeyDown(KeyCode.UpArrow)) Movement(Vector2Int.up);
 
-            if (Input.GetKeyDown(KeyCode.D)) Movement(Vector2Int.right);
+        if (Input.GetKeyDown(KeyCode.DownArrow)) Movement(Vector2Int.down);
 
-            if (Input.GetKeyDown(KeyCode.A)) Movement(Vector2Int.left);
+        if (Input.GetKeyDown(KeyCode.RightArrow)) Movement(Vector2Int.right);
 
-        }
+        if (Input.GetKeyDown(KeyCode.LeftArrow)) Movement(Vector2Int.left);
+
 
         if (!IsBoardBelow())
         {
@@ -172,11 +128,11 @@ public class UnitControler : MonoBehaviour
             GameActions.TileTypes.EmptyTile);
 
         this.transform.position += new Vector3(direction.x, 0, direction.y);
-        
-            GridManager.Instance.updateTileType(transform.position,
-                GameActions.TileTypes.PlayerTile);
-        
-        
+
+        GridManager.Instance.updateTileType(transform.position,
+            GameActions.TileTypes.PlayerTile);
+
+
         moveAmount--;
 
         if (OnMovement != null)
@@ -188,11 +144,4 @@ public class UnitControler : MonoBehaviour
     {
         return playerPreviousPosition;
     }
-    public void UndoMovement(int previousPositionX, int previousPositionY, int move)
-    {
-        this.transform.position = new Vector3(previousPositionX, 1, previousPositionY);
-        moveAmount = move;
-    }
-
-
 }

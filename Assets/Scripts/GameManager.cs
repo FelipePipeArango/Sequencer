@@ -46,7 +46,6 @@ public class GameManager : MonoBehaviour
         UnitControler.OnObjectPickUp -= ReCalculateBoard;
     }
 
-   
     public void Awake()
     {
         if (Instance != null && Instance != this)
@@ -95,11 +94,8 @@ public class GameManager : MonoBehaviour
     public void ReCalculateBoard(GameActions.Actions usedAction, GameObject affected)
     {
         GridManager.Instance.GoalCheck();
-
         GridManager.Instance.KeyItemCheck();
-
         GridManager.Instance.NumberItemCheck();
-
         GridManager.Instance.PickUpCheck(usedAction, affected);
     }
 
