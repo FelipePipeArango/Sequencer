@@ -7,49 +7,38 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: DissolveMAT
-  m_Shader: {fileID: -6465566751694194690, guid: eb73e54f1b7470d4fbf82c227dfe6f1e, type: 3}
+  m_Name: PanMAT
+  m_Shader: {fileID: -6465566751694194690, guid: 640a1b02603008549b8595634d25a2a0, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _BUILTIN_SURFACE_TYPE_TRANSPARENT
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap:
-    RenderType: Transparent
+  stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: e10b8e64a24e88945a11ea126a3bda06, type: 3}
+        m_Texture: {fileID: 2800000, guid: cb5fbecb8054a054686e2519d6da97f4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BUILTIN_AlphaClip: 1
-    - _BUILTIN_Blend: 0
-    - _BUILTIN_CullMode: 2
-    - _BUILTIN_DstBlend: 10
     - _BUILTIN_QueueControl: 0
     - _BUILTIN_QueueOffset: 0
-    - _BUILTIN_SrcBlend: 5
-    - _BUILTIN_Surface: 1
-    - _BUILTIN_ZTest: 4
-    - _BUILTIN_ZWrite: 0
-    - _BUILTIN_ZWriteControl: 0
     - _DissolveAmount: 0
     - _DissolveScale: 25
-    - _HorizontalDissolve: 0.5
+    - _HorizontalDissolve: 0
     - _OutlineThickness: 0.1
     m_Colors:
-    - _OutlineColor: {r: 0.07618539, g: 1, b: 1, a: 0}
+    - _OutlineColor: {r: 0, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
---- !u!114 &6268318279344260106
+--- !u!114 &5034638257080228019
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
