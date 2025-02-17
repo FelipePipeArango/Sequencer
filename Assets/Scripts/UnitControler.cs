@@ -24,7 +24,7 @@ public class UnitControler : MonoBehaviour
     
     private void Start() { }
 
-    public void MovementReceiver(int recievedNumber/*, GameActions.Actions usedAction*/)
+    public void MovementReceiver(int recievedNumber, GameActions.Actions usedAction)
     {
         moveAmount = recievedNumber;
     }
@@ -122,6 +122,11 @@ public class UnitControler : MonoBehaviour
     }
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            string currentScene = SceneManager.GetActiveScene().name; 
+            SceneManager.LoadScene(currentScene);
+        }
         if (moveAmount > 0)
         {
             //Used constant vectors instead of hard coded numbers
@@ -164,8 +169,15 @@ public class UnitControler : MonoBehaviour
             Mathf.FloorToInt(this.transform.position.x),
             Mathf.FloorToInt(this.transform.position.z)
             );
+        GridManager.Instance.updateTileType(transform.position,
+            GameActions.TileTypes.EmptyTile);
 
         this.transform.position += new Vector3(direction.x, 0, direction.y);
+        
+        GridManager.Instance.updateTileType(transform.position,
+            GameActions.TileTypes.PlayerTile);
+        
+        
         moveAmount--;
 
         if (OnMovement != null)
