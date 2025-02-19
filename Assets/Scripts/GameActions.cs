@@ -33,6 +33,7 @@ public class GameActions : ScriptableObject {
         Back
     }
 
+
     [SerializeField] List<TileTypes> types = new List<TileTypes>();
     [SerializeField] List<Actions> actions = new List<Actions>();
     [SerializeField] List<AIActions> aiActions = new List<AIActions>();

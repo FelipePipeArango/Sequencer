@@ -7,9 +7,11 @@ public class AICompanion : MonoBehaviour
 {
 
     public delegate void PickUpObject(GameActions.Actions action, GameObject affected);
+
     public static event PickUpObject OnObjectPickUp;
 
     public delegate void MoveAction(GameActions.Actions usedAction, GameObject affected);
+
     public static event MoveAction OnMovement;
 
     private Vector2Int playerPreviousPosition;
@@ -26,7 +28,8 @@ public class AICompanion : MonoBehaviour
 
     private void Start()
     {
-        wait = new WaitForSeconds(5);
+        GridManager.Instance.updateTileType(transform.position,
+            GameActions.TileTypes.PawnTile);
     }
 
     public void MovementReceiver(int recievedNumber, GameActions.Actions usedAction)
@@ -36,8 +39,8 @@ public class AICompanion : MonoBehaviour
 
     //Manages the PickUp action
     public void PickUpReceiver
-        (int recievedNumber, int distanceToItem, int distanceToNumber,
-            GameObject item, GameObject pickUpNumber, GameObject numberHUD)
+    (int recievedNumber, int distanceToItem, int distanceToNumber,
+        GameObject item, GameObject pickUpNumber, GameObject numberHUD)
     {
         if (!hasItem)
         {
@@ -84,8 +87,8 @@ public class AICompanion : MonoBehaviour
 
     void Update()
     {
-        
-        
+
+
         if (Input.GetKeyDown(KeyCode.Q))
         {
             string currentScene = SceneManager.GetActiveScene().name;
@@ -93,13 +96,13 @@ public class AICompanion : MonoBehaviour
         }
 
         //Used constant vectors instead of hard coded numbers
-        if (action == GameActions.AIActions.Forward) Movement(Vector2Int.up); 
+        if /*(Input.GetKeyDown(KeyCode.W))*/ (action == GameActions.AIActions.Forward) Movement(Vector2Int.up);
 
-        if (action == GameActions.AIActions.Back) Movement(Vector2Int.down);
+        if /*(Input.GetKeyDown(KeyCode.S))*/ (action == GameActions.AIActions.Back) Movement(Vector2Int.down);
 
-        if (action == GameActions.AIActions.Right) Movement(Vector2Int.right);
+        if /*(Input.GetKeyDown(KeyCode.D))*/ (action == GameActions.AIActions.Right) Movement(Vector2Int.right);
 
-        if (action == GameActions.AIActions.Left) Movement(Vector2Int.left);
+        if /*(Input.GetKeyDown(KeyCode.A))*/ (action == GameActions.AIActions.Left) Movement(Vector2Int.left);
 
 
         if (!IsBoardBelow())
@@ -121,35 +124,44 @@ public class AICompanion : MonoBehaviour
         {
             return true;
         }
+
         return false;
     }
 
     //Changed the previous movement implementation to make it more easy to calculate
     void Movement(Vector2Int direction)
     {
-        playerPreviousPosition = new Vector2Int(
-            Mathf.FloorToInt(this.transform.position.x),
-            Mathf.FloorToInt(this.transform.position.z)
-            );
-        GridManager.Instance.updateTileType(transform.position,
-            GameActions.TileTypes.EmptyTile);
-
-        this.transform.position += new Vector3(direction.x, 0, direction.y);
-
-        GridManager.Instance.updateTileType(transform.position,
-            GameActions.TileTypes.PlayerTile);
-
-        moveAmount--;
-
-        if (OnMovement != null)
+        Vector3 checkPos = new Vector3(transform.position.x + direction.x, 0, transform.position.z + direction.y);
+        while (GridManager.Instance.CheckWhatNextTileIs(checkPos) != GameActions.TileTypes.None)
         {
-            OnMovement(GameActions.Actions.Move, null);
+            if (GridManager.Instance.CheckWhatNextTileIs(checkPos) == GameActions.TileTypes.PlayerTile)
+            {
+                break;
+            }
+
+            GridManager.Instance.updateTileType(transform.position,
+                GameActions.TileTypes.EmptyTile);
+
+            transform.position += new Vector3(direction.x, 0, direction.y);
+
+            GridManager.Instance.updateTileType(transform.position,
+                GameActions.TileTypes.PawnTile);
+
+            moveAmount--;
+
+            if (OnMovement != null)
+            {
+                OnMovement(GameActions.Actions.Move, null);
+            }
+
+            checkPos += new Vector3(direction.x, 0, direction.y);
         }
     }
 
+
     public void ExecuteMove()
     {
-        
+
         //
         //if ground check is true movement 
         //if false movement and moveAmount = 0

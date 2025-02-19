@@ -13,9 +13,6 @@ public class GridManager : MonoBehaviour
 {
     public static GridManager Instance { get; private set; }
 
-    public int distaceToItem, distaceToGoal, distaceToNumber;
-    public int AIdistaceToItem, AIdistaceToGoal, AIdistaceToNumber;
-
     [SerializeField] Color color;
 
     [SerializeField] Vector2Int size;
@@ -33,21 +30,20 @@ public class GridManager : MonoBehaviour
 
     [Header("OPTIONAL OBJECTS IN A LEVEL")] [SerializeField]
     public GameObject pickUpNumber;
+    public GameObject numberHUD; //Should at some point go to card manager
     public UnitControler playerActions;
     public AICompanion AIActions;
 
 
-    // Start is called before the first frame update
     void Awake()
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject); // Ensure only one instance exists
+            Destroy(gameObject); 
             return;
         }
 
-        Instance = this; // Assign the static instance
-
+        Instance = this; 
 
         playerActions = player.GetComponent<UnitControler>();
         AIActions = AICompanion.GetComponent<AICompanion>();  
@@ -57,15 +53,36 @@ public class GridManager : MonoBehaviour
 
     private void Start()
     {
-        
+        UpdateTileType(keyItem.transform.position, GameActions.TileTypes.KeyTile);
+        UpdateTileType(pickUpNumber.transform.position, GameActions.TileTypes.ItemTile);
+        UpdateTileType(goal.transform.position, GameActions.TileTypes.GoalTile);
     }
 
-    private void Update()
+    public int CalculateDistance(Vector3 position, Vector3 start)
     {
-        SetTilesColor();
+        Vector2Int currentPosition = new Vector2Int(
+            Mathf.FloorToInt(start.x),
+            Mathf.FloorToInt(start.z)
+        );
+        Vector2Int targetPosition = new Vector2Int(
+            Mathf.FloorToInt(position.x),
+            Mathf.FloorToInt(position.z)
+        );
+        int distance = Mathf.Abs(currentPosition.x - targetPosition.x) +
+                       Mathf.Abs(currentPosition.y - targetPosition.y);
+        return distance;
     }
-    private void SetTilesColor()
+   
+    public void TurnOnHighlight(bool isMoveAction, int value)
     {
+        if (isMoveAction)
+        {
+            MoveDistanceHighLight(value, playerActions.transform.position);
+        }
+        else
+        {
+            PickUpThrowHighLight(value);
+        }
         foreach (var tile in tiles)
         {
             if (tile.isHighLight) tile.SetColor(color);
@@ -73,7 +90,38 @@ public class GridManager : MonoBehaviour
             else tile.ResetColor();
         }
     }
-    void StoreGrid()
+   
+    public void TurnOffHighlight()
+    {
+        if (tiles != null)
+        {
+            foreach (TileScript tile in tiles)
+            {
+                tile.isHighLight = false;
+                tile.ResetColor();
+            }
+        }
+    }
+    
+
+    public GameActions.TileTypes CheckWhatNextTileIs(Vector3 pos)
+    {
+        if (pos.x >= 0 && pos.x < size.x &&
+            pos.z >= 0 && pos.z < size.y)
+        {
+            if (grid[(int)pos.x, (int)pos.z] == null)
+            {
+                return GameActions.TileTypes.None;
+            }
+            else
+            {
+                return grid[(int)pos.x, (int)pos.z].tileType;
+            }
+        }
+        return GameActions.TileTypes.None;
+    }
+
+    private void StoreGrid()
     {
         allTiles = GameObject.FindGameObjectsWithTag("Ground");
         if (allTiles != null)
@@ -91,59 +139,16 @@ public class GridManager : MonoBehaviour
                 foreach (var tile in tiles)
                 {
                     if (new Vector3(i, 0, j) == tile.transform.position)
+                    {
+                        tile.tileType = GameActions.TileTypes.EmptyTile;
                         grid[i, j] = tile;
+                    }
                 }
             }
         }
-
-        updateTileType(playerActions.transform.position, GameActions.TileTypes.PlayerTile);
-        updateTileType(keyItem.transform.position, GameActions.TileTypes.KeyTile);
-        updateTileType(pickUpNumber.transform.position, GameActions.TileTypes.ItemTile);
-        updateTileType(goal.transform.position, GameActions.TileTypes.GoalTile);
     }
 
-    public int CalculateDistance(Vector3 position,
-        Vector3 start)
-    {
-        Vector2Int currentPosition = new Vector2Int(
-            Mathf.FloorToInt(playerActions.transform.position.x),
-            Mathf.FloorToInt(playerActions.transform.position.z)
-        );
-        Vector2Int targetPosition = new Vector2Int(
-            Mathf.FloorToInt(position.x),
-            Mathf.FloorToInt(position.z)
-        );
-        int distance = Mathf.Abs(currentPosition.x - targetPosition.x) +
-                       Mathf.Abs(currentPosition.y - targetPosition.y);
-        return distance;
-    }
-    public Vector2Int PosConverter(Vector3 converted)
-    {
-        Vector2Int PosConverted = new Vector2Int(
-            Mathf.Clamp(Mathf.FloorToInt(converted.x), 0, size.x - 1),
-            Mathf.Clamp(Mathf.FloorToInt(converted.z), 0, size.y - 1));
-        return PosConverted;
-    }
-
-
-    public GameActions.TileTypes CheckWhatNextTileIs(Vector3 pos)
-    {
-        if (pos.x < size.x && pos.z < size.y)
-        {
-            if (grid[(int)pos.x, (int)pos.z] == null)
-            {
-                return GameActions.TileTypes.None;
-            }
-            else
-            {
-                return grid[(int)pos.x, (int)pos.z].tileType;
-            }
-        }
-        return GameActions.TileTypes.None;
-    }
-
-
-    void CheckIfGround(int amount, Vector3 pos)
+    private void CheckIfGround(int amount, Vector3 pos)
     {
         if (pos.x >= 0 && pos.x < size.x &&
             pos.z >= 0 && pos.z < size.y)
@@ -156,7 +161,7 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    public void MoveDistanceHighLight(int amount, Vector3 start)
+    private void MoveDistanceHighLight(int amount, Vector3 start)
     {
         if (amount == 0)
         {
@@ -174,7 +179,7 @@ public class GridManager : MonoBehaviour
         CheckIfGround(amount, down);
     }
 
-    public void PickUpThrowHighLight(int amount)
+    private void PickUpThrowHighLight(int amount)
     {
         int distance;
         foreach (var tile in tiles)
@@ -189,73 +194,36 @@ public class GridManager : MonoBehaviour
         }
     }
     
+
     public void GoalCheck()
     {
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         int nextSceneIndex = currentSceneIndex + 1;
-        distaceToGoal = CalculateDistance(
-            goal.transform.position, 
-            playerActions.transform.position);
 
-        if (distaceToGoal == 0 && playerActions.hasItem)
+        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
         {
-            if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
-            {
-                SceneManager.LoadScene(nextSceneIndex);
-            }
+            SceneManager.LoadScene(nextSceneIndex);
         }
+            Debug.Log("GOAL");
     }
+
     public void KeyItemCheck()
     {
-
         if (!playerActions.hasItem)
         {
-            distaceToItem = CalculateDistance(
-                keyItem.transform.position,
-                playerActions.transform.position);
-
-            if (distaceToItem == 0)
-            {
-                Vector2Int currentPosition = PosConverter(player.transform.position);
-                playerActions.hasItem = true;
-                keyItem.SetActive(false);
-            }
+            playerActions.hasItem = true;
+            keyItem.SetActive(false);
         }
     }
+
     public void NumberItemCheck()
     {
-        if (pickUpNumber != null)
-        {
-            distaceToNumber = CalculateDistance(
-                pickUpNumber.transform.position,
-                playerActions.transform.position);
-            AIdistaceToNumber = CalculateDistance(
-                pickUpNumber.transform.position,
-                playerActions.transform.position);
-            if (distaceToNumber == 0 && !playerActions.hasNumber)
-            {
-                Vector2Int currentPosition = PosConverter(player.transform.position);
-
-                pickUpNumber.SetActive(false);
-                GameManager.Instance.numberHUD.SetActive(true);
-                playerActions.hasNumber = true;
-            }
-        }
-    }
-    public void PickUpCheck(GameActions.Actions usedAction, GameObject affected)
-    {
-        if (usedAction == GameActions.Actions.PickUp && affected != null)
-        {
-            affected.SetActive(false);
-        }
-    }
-    
-    public Vector3 GetPlayerPos()
-    {
-        return playerActions.transform.position;
+        pickUpNumber.SetActive(false);
+        numberHUD.SetActive(true);
+        playerActions.hasNumber = true;
     }
 
-    public void updateTileType(Vector3 pos, GameActions.TileTypes type)
+    public void UpdateTileType(Vector3 pos, GameActions.TileTypes type)
     {
         if (size.x > pos.x || size.y > pos.z)
         {
@@ -268,15 +236,14 @@ public class GridManager : MonoBehaviour
             Debug.Log("Set correct Grid size");
     }
 
-    public void ResetAllColor()
+    public void ResetTileType(GameActions.TileTypes type)
     {
-        if (tiles != null)
+        foreach (var tile in tiles)
         {
-            foreach (TileScript tile in tiles)
+            if (tile.tileType == type)
             {
-                tile.isHighLight = false;
+                tile.tileType = GameActions.TileTypes.EmptyTile;
             }
         }
     }
-
 }

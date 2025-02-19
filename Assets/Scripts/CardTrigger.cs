@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine.UI;
 using Unity.VisualScripting;
 
+
 public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] TextMeshProUGUI usedText;
@@ -38,23 +39,23 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             // Display the debug message based on the card type and number value
             if (LevelActions == GameActions.Actions.Move)
             {
-                GridManager.Instance.MoveDistanceHighLight(hoveredNumberItem.value, GridManager.Instance.GetPlayerPos());
+                GridManager.Instance.TurnOnHighlight(true, hoveredNumberItem.value);
                 Debug.Log("hover over move");
             }
             else if (LevelActions == GameActions.Actions.PickUp)
             {
-                GridManager.Instance.PickUpThrowHighLight(hoveredNumberItem.value);
+                GridManager.Instance.TurnOnHighlight(false, hoveredNumberItem.value);
             }
             if (LevelActions == GameActions.Actions.Throw)
             {
-                GridManager.Instance.PickUpThrowHighLight(hoveredNumberItem.value);
+                GridManager.Instance.TurnOnHighlight(false, hoveredNumberItem.value);
             }
         }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        GridManager.Instance.ResetAllColor();
+        GridManager.Instance.TurnOffHighlight();
         // Clear the hovered item reference when leaving the card
         hoveredNumberItem = null;
     }

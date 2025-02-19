@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -10,13 +11,17 @@ public class TileScript : MonoBehaviour
     private Color setColor;
     public bool isHighLight;
     public GameActions.TileTypes tileType { get; set; }
-    // Start is called before the first frame update
+
+    //Debug
+    [SerializeField] public GameActions.TileTypes tile;
+    
     void Start()
     {
+
         render = GetComponent<Renderer>();
         setColor = render.material.color;
         isHighLight = false;
-        tileType = GameActions.TileTypes.EmptyTile;
+        
     }
     public void SetColor(Color color)
     {
@@ -32,4 +37,6 @@ public class TileScript : MonoBehaviour
     {
         SetColor(setColor);
     }
+
+    
 }

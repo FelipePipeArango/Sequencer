@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject numbersInLevel;
 
     
-    [SerializeField] public GameObject numberHUD;
+   
 
     [Header("NO NEED TO ASSIGN THIS")]
     [SerializeField]
@@ -36,15 +36,11 @@ public class GameManager : MonoBehaviour
     private void OnEnable()
     {
         CardTrigger.OnDropAction += CommunicateAction;
-        UnitControler.OnMovement += ReCalculateBoard;
-        UnitControler.OnObjectPickUp += ReCalculateBoard;
     }
 
     private void OnDisable()
     {
         CardTrigger.OnDropAction -= CommunicateAction;
-        UnitControler.OnMovement -= ReCalculateBoard;
-        UnitControler.OnObjectPickUp -= ReCalculateBoard;
     }
 
     public void Awake()
@@ -91,15 +87,6 @@ public class GameManager : MonoBehaviour
     {
         
     }
-     
-    public void ReCalculateBoard(GameActions.Actions usedAction, GameObject affected)
-    {
-        GridManager.Instance.GoalCheck();
-        GridManager.Instance.KeyItemCheck();
-        GridManager.Instance.NumberItemCheck();
-        GridManager.Instance.PickUpCheck(usedAction, affected);
-    }
-
     
     void CommunicateAction(NumberItem recievedNumber, GameActions.Actions usedAction)
     {
@@ -111,28 +98,20 @@ public class GameManager : MonoBehaviour
                 switch (levelActions[i])
                 {
                     case GameActions.Actions.Move:
-                        //undoManager.SaveBoard(i, board);
-                        GridManager.Instance.playerActions.MovementReceiver(recievedNumber.value, GameActions.Actions.Move);
+                        GridManager.Instance.playerActions.MovementReceiver(recievedNumber.value);
                         break;
 
                     case GameActions.Actions.PickUp:
                         GridManager.Instance.playerActions.PickUpReceiver(
-                            recievedNumber.value, 
-                            GridManager.Instance.distaceToItem, 
-                            GridManager.Instance.distaceToNumber, 
-                            GridManager.Instance.keyItem, 
-                            GridManager.Instance.pickUpNumber, numberHUD);
+                            recievedNumber.value);
                         break;
 
                     case GameActions.Actions.Enable:
-                        //undoManager.SaveBoard(i, board);
                         levelCards[recievedNumber.value - 1].Enable(false, recievedNumber);
                         break;
 
                     case GameActions.Actions.Throw:
-                        GridManager.Instance.playerActions.ThrowReceiver(
-                            recievedNumber.value, 
-                            GridManager.Instance.distaceToGoal);
+                        GridManager.Instance.playerActions.ThrowReceiver(recievedNumber.value);
                         break;
                 }
 

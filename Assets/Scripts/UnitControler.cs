@@ -6,12 +6,6 @@ using UnityEngine.SceneManagement;
 
 public class UnitControler : MonoBehaviour
 {
-    public delegate void PickUpObject(GameActions.Actions action, GameObject affected);
-    public static event PickUpObject OnObjectPickUp;
-
-    public delegate void MoveAction(GameActions.Actions usedAction, GameObject affected);
-    public static event MoveAction OnMovement;
-
     private Vector2Int playerPreviousPosition;
 
     public int moveAmount = 0;
@@ -21,104 +15,53 @@ public class UnitControler : MonoBehaviour
 
     [SerializeField] public float fallSpeed = 1.0f;
 
-    
-    private void Start() { }
+    private bool isBoardBelow = true;
+    private void Start()
+    {
+        GridManager.Instance.UpdateTileType(transform.position,
+            GameActions.TileTypes.PlayerTile);
+    }
 
-    public void MovementReceiver(int recievedNumber, GameActions.Actions usedAction)
+    public void MovementReceiver(int recievedNumber)
     {
         moveAmount = recievedNumber;
     }
 
 
-    public void ThrowReceiver(int recievedNumber, int distanceToGoal)
+    public void ThrowReceiver(int recievedNumber)
     {
-        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        int nextSceneIndex = currentSceneIndex + 1;
-
         if (hasItem)
         {
             hasItem = false;
-            if (recievedNumber >= distanceToGoal)
+            if (recievedNumber >= GridManager.Instance.CalculateDistance(
+                    GridManager.Instance.goal.transform.position, transform.position))
             {
-                if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
-                {
-                    SceneManager.LoadScene(nextSceneIndex);
-                }
+                GridManager.Instance.GoalCheck();
             }
         }
     }
 
-    //if the player HAD the item before throwing, undoing the action should return the item to him.
-    //but if he did NOT, the item should NOT be given to him when undoing the action.
-
-    //no need for if statement
-    public void UndoThrow(bool playedHadItem)
+    public void PickUpReceiver (int recievedNumber)
     {
-        hasItem = playedHadItem;
-    }
-
-    //Manages the PickUp action
-    public void PickUpReceiver
-        (int recievedNumber, int distanceToItem, int distanceToNumber,
-            GameObject item, GameObject pickUpNumber, GameObject numberHUD)
-    {
-        if (!hasItem)
+        if (recievedNumber == GridManager.Instance.CalculateDistance(
+                GridManager.Instance.keyItem.transform.position, transform.position))
         {
-            if (recievedNumber == distanceToItem)
+            GridManager.Instance.KeyItemCheck();
+            GridManager.Instance.ResetTileType(GameActions.TileTypes.KeyTile);
+        }
+
+        if (recievedNumber == GridManager.Instance.CalculateDistance(
+                GridManager.Instance.pickUpNumber.transform.position, transform.position))
+        {
+            if (GridManager.Instance.pickUpNumber != null ||
+                GridManager.Instance.numberHUD != null)
             {
-                hasItem = true;
-                item.SetActive(false);
-
-                if (OnObjectPickUp != null)
-                    OnObjectPickUp(GameActions.Actions.PickUp, item);
-
+                GridManager.Instance.NumberItemCheck();
+                GridManager.Instance.ResetTileType(GameActions.TileTypes.KeyTile);
             }
         }
-        else
-        {
-            if (OnObjectPickUp != null)
-                OnObjectPickUp(GameActions.Actions.PickUp, null);
-
-        }
-
-        if (!hasNumber)
-        {
-            if (distanceToNumber != 0 && recievedNumber == distanceToNumber)
-            {
-                if (pickUpNumber != null || numberHUD != null)
-                {
-                    pickUpNumber.SetActive(false);
-                    numberHUD.SetActive(true);
-                }
-                
-                hasNumber = true;
-
-                if (OnObjectPickUp != null)
-                    OnObjectPickUp(GameActions.Actions.PickUp, pickUpNumber);
-            }
-        }
-        else
-        {
-            if (OnObjectPickUp != null)
-                OnObjectPickUp(GameActions.Actions.PickUp, null);
-
-        }
     }
 
-    public void UndoPickUps(GameObject @object)
-    {
-        if (@object.tag == "Item")
-        {
-            hasItem = false;
-            @object.SetActive(true);
-        }
-
-        if (@object.tag == "NumberItem")
-        {
-            @object.SetActive(true);
-            hasNumber = false;
-        }
-    }
     void Update()
     {
 
@@ -129,7 +72,6 @@ public class UnitControler : MonoBehaviour
         }
         if (moveAmount > 0)
         {
-            //Used constant vectors instead of hard coded numbers
             if (Input.GetKeyDown(KeyCode.W)) Movement(Vector2Int.up);
 
             if (Input.GetKeyDown(KeyCode.S)) Movement(Vector2Int.down);
@@ -137,10 +79,9 @@ public class UnitControler : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.D)) Movement(Vector2Int.right);
 
             if (Input.GetKeyDown(KeyCode.A)) Movement(Vector2Int.left);
-
         }
 
-        if (!IsBoardBelow())
+        if (!isBoardBelow)
         {
             Vector3 targetPos = new Vector3(transform.position.x, -1f, transform.position.z);
             transform.position = Vector3.MoveTowards(transform.position, targetPos, fallSpeed * Time.deltaTime);
@@ -152,15 +93,7 @@ public class UnitControler : MonoBehaviour
         }
     }
 
-    private bool IsBoardBelow()
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, Vector3.down, out hit, 1.2f))
-        {
-            return true;
-        }
-        return false;
-    }
+    
 
     //Changed the previous movement implementation to make it more easy to calculate
     void Movement(Vector2Int direction)
@@ -171,35 +104,55 @@ public class UnitControler : MonoBehaviour
         {
             transform.position += new Vector3(direction.x, 0, direction.y);
             moveAmount = 0;
-            if (OnMovement != null)
+            isBoardBelow = false;
+        }
+        else if (GridManager.Instance.CheckWhatNextTileIs(checkPos) == GameActions.TileTypes.GoalTile)
+        {
+            if (hasItem)
             {
-                OnMovement(GameActions.Actions.Move, null);
+                GridManager.Instance.ResetTileType(GameActions.TileTypes.PlayerTile);
+                transform.position += new Vector3(direction.x, 0, direction.y);
+
+                moveAmount--;
+
+                GridManager.Instance.GoalCheck();
             }
+
+            else Debug.Log("Need key");
+        }
+        else if (GridManager.Instance.CheckWhatNextTileIs(checkPos) == GameActions.TileTypes.PawnTile)
+        {
+            Debug.Log("Companion");
         }
         else
         {
-            GridManager.Instance.updateTileType(transform.position,
-                GameActions.TileTypes.EmptyTile);
+            GridManager.Instance.ResetTileType(GameActions.TileTypes.PlayerTile);
 
+            
             transform.position += new Vector3(direction.x, 0, direction.y);
+            switch (GridManager.Instance.CheckWhatNextTileIs(checkPos))
+            {
+                case GameActions.TileTypes.KeyTile:
+                    
+                    GridManager.Instance.KeyItemCheck();
+                   
+                    break;
+                case GameActions.TileTypes.ItemTile:
+                    
+                    GridManager.Instance.NumberItemCheck();
+                    
+                    break;
+                case GameActions.TileTypes.EmptyTile:
+                    
+                    Debug.Log("Empty");
+                    
+                    break;
+            }
 
-            GridManager.Instance.updateTileType(transform.position,
+            GridManager.Instance.UpdateTileType(transform.position,
                 GameActions.TileTypes.PlayerTile);
 
             moveAmount--;
-
-            if (OnMovement != null)
-            {
-                OnMovement(GameActions.Actions.Move, null);
-            }
         }
     }
-
-    public void UndoMovement(int previousPositionX, int previousPositionY, int move)
-    {
-        this.transform.position = new Vector3(previousPositionX, 1, previousPositionY);
-        moveAmount = move;
-    }
-
-
 }
