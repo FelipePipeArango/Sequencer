@@ -76,6 +76,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
                 OnGrab(0, false); //Communicates with the sequencer whengrabing a number.
             }
 
+
         }
         if (hoveredNumberItem != null)
         {
