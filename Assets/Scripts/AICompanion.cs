@@ -28,7 +28,7 @@ public class AICompanion : MonoBehaviour
 
     private void Start()
     {
-        GridManager.Instance.updateTileType(transform.position,
+        GridManager.Instance.UpdateTileType(transform.position,
             GameActions.TileTypes.PawnTile);
     }
 
@@ -139,12 +139,12 @@ public class AICompanion : MonoBehaviour
                 break;
             }
 
-            GridManager.Instance.updateTileType(transform.position,
+            GridManager.Instance.UpdateTileType(transform.position,
                 GameActions.TileTypes.EmptyTile);
 
             transform.position += new Vector3(direction.x, 0, direction.y);
 
-            GridManager.Instance.updateTileType(transform.position,
+            GridManager.Instance.UpdateTileType(transform.position,
                 GameActions.TileTypes.PawnTile);
 
             moveAmount--;
