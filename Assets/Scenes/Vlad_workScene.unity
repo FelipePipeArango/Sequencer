@@ -1888,9 +1888,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a94181f13ce3234ab36aba120190ef6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveAmount: 0
-  hasItem: 0
-  hasNumber: 0
   fallSpeed: 1
 --- !u!135 &1172181696
 SphereCollider:
@@ -3326,8 +3323,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2720f3a8d8c44b438b66ee201634319, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  distaceToGoal: 0
-  AIdistaceToGoal: 0
   color: {r: 0.41176474, g: 1, b: 0.4156863, a: 0}
   size: {x: 4, y: 7}
   AICompanion: {fileID: 1172181694}

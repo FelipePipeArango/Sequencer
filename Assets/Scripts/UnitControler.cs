@@ -64,7 +64,6 @@ public class UnitControler : MonoBehaviour
 
     void Update()
     {
-
         if (Input.GetKeyDown(KeyCode.Q))
         {
             string currentScene = SceneManager.GetActiveScene().name; 
@@ -99,7 +98,10 @@ public class UnitControler : MonoBehaviour
     void Movement(Vector2Int direction)
     {
         Vector3 checkPos = new Vector3(
-            transform.position.x + direction.x, 0, transform.position.z + direction.y);
+            transform.position.x + direction.x,
+            0, 
+            transform.position.z + direction.y);
+
         if (GridManager.Instance.CheckWhatNextTileIs(checkPos) == GameActions.TileTypes.None)
         {
             transform.position += new Vector3(direction.x, 0, direction.y);
