@@ -14,16 +14,19 @@ public class GameActions : ScriptableObject {
 
     public enum TileTypes
     {
+        None,
+        Hole,
         EmptyTile, 
         PlayerTile, 
         ItemTile, 
         KeyTile, 
         GoalTile, 
-        PawnTile
+        PawnTile,
     }
 
     public enum AIActions
     {
+        Stay,
         Left,
         Right, 
         Forward, 

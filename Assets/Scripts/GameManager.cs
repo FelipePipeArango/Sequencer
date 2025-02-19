@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour
 
     //Grid manager
 
+    //TODO add that to the AICompanion
 
     private void OnEnable()
     {
@@ -99,6 +100,7 @@ public class GameManager : MonoBehaviour
         GridManager.Instance.PickUpCheck(usedAction, affected);
     }
 
+    
     void CommunicateAction(NumberItem recievedNumber, GameActions.Actions usedAction)
     {
         for (int i = 0; i < levelActions.Length; i++)

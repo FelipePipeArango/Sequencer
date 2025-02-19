@@ -12,8 +12,10 @@ using Color = UnityEngine.Color;
 public class GridManager : MonoBehaviour
 {
     public static GridManager Instance { get; private set; }
-    
-    [SerializeField] GameObject Tile;
+
+    public int distaceToItem, distaceToGoal, distaceToNumber;
+    public int AIdistaceToItem, AIdistaceToGoal, AIdistaceToNumber;
+
     [SerializeField] Color color;
 
     [SerializeField] Vector2Int size;
@@ -21,8 +23,7 @@ public class GridManager : MonoBehaviour
     public TileScript[,] grid;
     TileScript[] tiles;
 
-    public int distaceToItem, distaceToGoal, distaceToNumber;
-    public int AIdistaceToItem, AIdistaceToGoal, AIdistaceToNumber;
+    
 
     [Header("Pieces")] [SerializeField] 
     public GameObject AICompanion;
@@ -59,6 +60,19 @@ public class GridManager : MonoBehaviour
         
     }
 
+    private void Update()
+    {
+        SetTilesColor();
+    }
+    private void SetTilesColor()
+    {
+        foreach (var tile in tiles)
+        {
+            if (tile.isHighLight) tile.SetColor(color);
+            
+            else tile.ResetColor();
+        }
+    }
     void StoreGrid()
     {
         allTiles = GameObject.FindGameObjectsWithTag("Ground");
@@ -110,6 +124,25 @@ public class GridManager : MonoBehaviour
             Mathf.Clamp(Mathf.FloorToInt(converted.z), 0, size.y - 1));
         return PosConverted;
     }
+
+
+    public GameActions.TileTypes CheckWhatNextTileIs(Vector3 pos)
+    {
+        if (pos.x < size.x && pos.z < size.y)
+        {
+            if (grid[(int)pos.x, (int)pos.z] == null)
+            {
+                return GameActions.TileTypes.None;
+            }
+            else
+            {
+                return grid[(int)pos.x, (int)pos.z].tileType;
+            }
+        }
+        return GameActions.TileTypes.None;
+    }
+
+
     void CheckIfGround(int amount, Vector3 pos)
     {
         if (pos.x >= 0 && pos.x < size.x &&
@@ -117,12 +150,12 @@ public class GridManager : MonoBehaviour
         {
             if (grid[(int)pos.x, (int)pos.z] != null)
             {
-                grid[(int)pos.x, (int)pos.z].SetColor(color);
+                grid[(int)pos.x, (int)pos.z].isHighLight = true;
                 MoveDistanceHighLight(amount - 1, grid[(int)pos.x, (int)pos.z].transform.position);
             }
         }
     }
-    
+
     public void MoveDistanceHighLight(int amount, Vector3 start)
     {
         if (amount == 0)
@@ -140,6 +173,7 @@ public class GridManager : MonoBehaviour
         CheckIfGround(amount, up);
         CheckIfGround(amount, down);
     }
+
     public void PickUpThrowHighLight(int amount)
     {
         int distance;
@@ -150,7 +184,7 @@ public class GridManager : MonoBehaviour
                 playerActions.transform.position);
             if (distance == amount)
             {
-                tile.SetColor(color);
+                tile.isHighLight = true;
             }
         }
     }
@@ -236,11 +270,11 @@ public class GridManager : MonoBehaviour
 
     public void ResetAllColor()
     {
-        if (allTiles != null)
+        if (tiles != null)
         {
             foreach (TileScript tile in tiles)
             {
-                tile.ResetColor();
+                tile.isHighLight = false;
             }
         }
     }

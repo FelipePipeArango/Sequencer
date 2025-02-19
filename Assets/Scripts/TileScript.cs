@@ -8,12 +8,15 @@ public class TileScript : MonoBehaviour
 {
     private Renderer render;
     private Color setColor;
+    public bool isHighLight;
     public GameActions.TileTypes tileType { get; set; }
     // Start is called before the first frame update
     void Start()
     {
         render = GetComponent<Renderer>();
         setColor = render.material.color;
+        isHighLight = false;
+        tileType = GameActions.TileTypes.EmptyTile;
     }
     public void SetColor(Color color)
     {

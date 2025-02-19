@@ -18,11 +18,16 @@ public class AICompanion : MonoBehaviour
     [HideInInspector] public bool hasItem = false;
     [HideInInspector] public bool hasNumber = false;
 
+    private WaitForSeconds wait;
 
     [SerializeField] public float fallSpeed = 1.0f;
 
+    private GameActions.AIActions action;
 
-    private void Start() { }
+    private void Start()
+    {
+        wait = new WaitForSeconds(5);
+    }
 
     public void MovementReceiver(int recievedNumber, GameActions.Actions usedAction)
     {
@@ -79,6 +84,8 @@ public class AICompanion : MonoBehaviour
 
     void Update()
     {
+        
+        
         if (Input.GetKeyDown(KeyCode.Q))
         {
             string currentScene = SceneManager.GetActiveScene().name;
@@ -86,13 +93,13 @@ public class AICompanion : MonoBehaviour
         }
 
         //Used constant vectors instead of hard coded numbers
-        if (Input.GetKeyDown(KeyCode.UpArrow)) Movement(Vector2Int.up);
+        if (action == GameActions.AIActions.Forward) Movement(Vector2Int.up); 
 
-        if (Input.GetKeyDown(KeyCode.DownArrow)) Movement(Vector2Int.down);
+        if (action == GameActions.AIActions.Back) Movement(Vector2Int.down);
 
-        if (Input.GetKeyDown(KeyCode.RightArrow)) Movement(Vector2Int.right);
+        if (action == GameActions.AIActions.Right) Movement(Vector2Int.right);
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow)) Movement(Vector2Int.left);
+        if (action == GameActions.AIActions.Left) Movement(Vector2Int.left);
 
 
         if (!IsBoardBelow())
@@ -132,7 +139,6 @@ public class AICompanion : MonoBehaviour
         GridManager.Instance.updateTileType(transform.position,
             GameActions.TileTypes.PlayerTile);
 
-
         moveAmount--;
 
         if (OnMovement != null)
@@ -140,8 +146,17 @@ public class AICompanion : MonoBehaviour
             OnMovement(GameActions.Actions.Move, null);
         }
     }
-    public Vector2Int GetPreviousPosition()
+
+    public void ExecuteMove()
     {
-        return playerPreviousPosition;
+        
+        //
+        //if ground check is true movement 
+        //if false movement and moveAmount = 0
+        //if check ground is null Stay
+        //if checkground to the (direction)left is Empty (AIAction)Left
+        //if checkGround to the (direction)left is PlayerTile (AIAction) Stay
+        //if checkGround to the (direction)left is ItemTile||KeyTile||GoalTile (AIAction)//
+        //if AIAction = //
     }
 }

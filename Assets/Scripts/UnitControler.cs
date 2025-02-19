@@ -121,6 +121,7 @@ public class UnitControler : MonoBehaviour
     }
     void Update()
     {
+
         if (Input.GetKeyDown(KeyCode.Q))
         {
             string currentScene = SceneManager.GetActiveScene().name; 
@@ -164,30 +165,36 @@ public class UnitControler : MonoBehaviour
     //Changed the previous movement implementation to make it more easy to calculate
     void Movement(Vector2Int direction)
     {
-        playerPreviousPosition = new Vector2Int(
-            Mathf.FloorToInt(this.transform.position.x),
-            Mathf.FloorToInt(this.transform.position.z)
-            );
-        GridManager.Instance.updateTileType(transform.position,
-            GameActions.TileTypes.EmptyTile);
+        Vector3 checkPos = new Vector3(
+            transform.position.x + direction.x, 0, transform.position.z + direction.y);
+        if (GridManager.Instance.CheckWhatNextTileIs(checkPos) == GameActions.TileTypes.None)
+        {
+            transform.position += new Vector3(direction.x, 0, direction.y);
+            moveAmount = 0;
+            if (OnMovement != null)
+            {
+                OnMovement(GameActions.Actions.Move, null);
+            }
+        }
+        else
+        {
+            GridManager.Instance.updateTileType(transform.position,
+                GameActions.TileTypes.EmptyTile);
 
-        this.transform.position += new Vector3(direction.x, 0, direction.y);
-        
+            transform.position += new Vector3(direction.x, 0, direction.y);
+
             GridManager.Instance.updateTileType(transform.position,
                 GameActions.TileTypes.PlayerTile);
-        
-        
-        moveAmount--;
 
-        if (OnMovement != null)
-        {
-            OnMovement(GameActions.Actions.Move, null);
+            moveAmount--;
+
+            if (OnMovement != null)
+            {
+                OnMovement(GameActions.Actions.Move, null);
+            }
         }
     }
-    public Vector2Int GetPreviousPosition()
-    {
-        return playerPreviousPosition;
-    }
+
     public void UndoMovement(int previousPositionX, int previousPositionY, int move)
     {
         this.transform.position = new Vector3(previousPositionX, 1, previousPositionY);
