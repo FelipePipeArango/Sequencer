@@ -3,6 +3,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using static GameActions;
+using static GridManager;
 
 public enum ArrowTiming
 {
@@ -13,23 +14,23 @@ public enum ArrowTiming
 public class ArrowCard : MonoBehaviour
 {
     [Header("Arrow Settings")]
-    public GameObject aiCompanion;
+   
     public Image arrowImage;
     public bool isBefore;
     public AIActions arrowDirection;
-    AICompanion companion;
+    
     private void Start()
     {
         ConfigureArrowPosition(isBefore);
         ConfigureArrowDirection(arrowDirection);
-        companion = aiCompanion.GetComponent<AICompanion>();
+        
     }
 
     public void TriggerCard()
     {
         Debug.Log($"ArrowCard triggered, Direction = {arrowDirection}, Timing = {isBefore}");
-        companion.action = arrowDirection;
-        companion.canMove = isBefore;
+        gridManager.companion.action = arrowDirection;
+        gridManager.companion.canMove = isBefore;
     }
 
     private void ConfigureArrowPosition(bool isbefore)

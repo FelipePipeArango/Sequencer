@@ -17,7 +17,6 @@ public class UnitControler : MonoBehaviour
 
     [SerializeField] public float fallSpeed = 1.0f;
     public GameObject aiCompanion;
-    private AICompanion companion;
     public GameObject arrow;
     private bool isBoardBelow = true;
 
@@ -25,7 +24,7 @@ public class UnitControler : MonoBehaviour
     {
         gridManager.UpdateTileType(transform.position,
             TileTypes.PlayerTile);
-        companion = aiCompanion.GetComponent<AICompanion>();
+        
     }
 
     public void MovementReceiver(int recievedNumber)
@@ -67,7 +66,7 @@ public class UnitControler : MonoBehaviour
             }
         }
     }
-
+    
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Q))
@@ -75,7 +74,7 @@ public class UnitControler : MonoBehaviour
             string currentScene = SceneManager.GetActiveScene().name; 
             SceneManager.LoadScene(currentScene);
         }
-        if (moveAmount > 0 && companion.isMoving == false) 
+        if (moveAmount > 0 && gridManager.isCompanionMoving() == false) 
         {
             if (Input.GetKeyDown(KeyCode.W)) Movement(Vector2Int.up);
 
@@ -158,7 +157,9 @@ public class UnitControler : MonoBehaviour
             }
 
             gridManager.UpdateTileType(transform.position, TileTypes.PlayerTile);
-            companion.canMove = true;
+
+            if(gridManager.companion != null) gridManager.companion.canMove = true;
+            
             moveAmount--;
         }
     }

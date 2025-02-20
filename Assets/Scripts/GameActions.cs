@@ -6,8 +6,7 @@ public class GameActions : ScriptableObject {
 
     public enum Actions
     {
-        Move, 
-        Stay, 
+        Move,
         PickUp, 
         Throw, 
         Enable
@@ -16,7 +15,6 @@ public class GameActions : ScriptableObject {
     public enum TileTypes
     {
         None,
-        Hole,
         EmptyTile, 
         PlayerTile, 
         ItemTile, 

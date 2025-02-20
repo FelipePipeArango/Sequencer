@@ -83,11 +83,6 @@ public class GameManager : MonoBehaviour
 
         #endregion
     }
-
-    private void Start()
-    {
-        
-    }
     
     void CommunicateAction(NumberItem recievedNumber, GameActions.Actions usedAction)
     {
