@@ -129,7 +129,8 @@ public class UnitControler : MonoBehaviour
         }
         else if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.PawnTile)
         {
-            Debug.Log("Companion");
+            //TODO Move the Companion
+            Debug.Log("Move the Companion");
         }
         else
         {

@@ -11,7 +11,7 @@ public class AICompanion : MonoBehaviour
 {
     [SerializeField] public float fallSpeed = 1.0f;
 
-    public GameActions.AIActions action;
+    public AIActions action;
     public bool canMove = false;
     public bool isMoving = false;
     private bool isBoardBelow = true;
@@ -24,6 +24,7 @@ public class AICompanion : MonoBehaviour
 
     void Update()
     {
+       
         if (canMove && action != AIActions.Stay)
         {
             if (action == AIActions.Forward) StartCoroutine(Movement(Vector2Int.up));
@@ -45,7 +46,6 @@ public class AICompanion : MonoBehaviour
             }
         }
     }
-
     //Changed the previous movement implementation to make it more easy to calculate
     public IEnumerator Movement(Vector2Int direction)
     {

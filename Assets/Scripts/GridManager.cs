@@ -40,7 +40,7 @@ public class GridManager : MonoBehaviour
 
         playerActions = player.GetComponent<UnitControler>(); 
 
-        if (companion != null)
+        if (AICompanion != null)
             companion = AICompanion.GetComponent<AICompanion>();
         
         grid = new TileScript[size.x, size.y];
@@ -83,7 +83,7 @@ public class GridManager : MonoBehaviour
         {
             if (tile.isHighLight) tile.SetColor(color);
             
-            else tile.ResetColor();
+           
         }
     }
    
