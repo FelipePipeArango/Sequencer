@@ -7,6 +7,7 @@ public class GameActions : ScriptableObject {
     public enum Actions
     {
         Move, 
+        Stay, 
         PickUp, 
         Throw, 
         Enable
@@ -27,14 +28,10 @@ public class GameActions : ScriptableObject {
     public enum AIActions
     {
         Stay,
+        Move,
         Left,
         Right, 
         Forward, 
         Back
     }
-
-
-    [SerializeField] List<TileTypes> types = new List<TileTypes>();
-    [SerializeField] List<Actions> actions = new List<Actions>();
-    [SerializeField] List<AIActions> aiActions = new List<AIActions>();
 }

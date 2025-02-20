@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 using TMPro;
 using UnityEngine.UI;
 using Unity.VisualScripting;
-
+using static GridManager;
 
 public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
@@ -38,24 +38,20 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
             // Display the debug message based on the card type and number value
             if (LevelActions == GameActions.Actions.Move)
-            {
-                GridManager.Instance.TurnOnHighlight(true, hoveredNumberItem.value);
-                Debug.Log("hover over move");
-            }
+                gridManager.TurnOnHighlight(true, hoveredNumberItem.value);
+            
             else if (LevelActions == GameActions.Actions.PickUp)
-            {
-                GridManager.Instance.TurnOnHighlight(false, hoveredNumberItem.value);
-            }
+                gridManager.TurnOnHighlight(false, hoveredNumberItem.value);
+            
             if (LevelActions == GameActions.Actions.Throw)
-            {
-                GridManager.Instance.TurnOnHighlight(false, hoveredNumberItem.value);
-            }
+                gridManager.TurnOnHighlight(false, hoveredNumberItem.value);
+            
         }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        GridManager.Instance.TurnOffHighlight();
+        gridManager.TurnOffHighlight();
         // Clear the hovered item reference when leaving the card
         hoveredNumberItem = null;
     }
@@ -77,6 +73,10 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             {
                 OnGrab(0, false); //Communicates with the sequencer whengrabing a number.
             }
+
+            ArrowCard arrowCard = GetComponent<ArrowCard>();
+            
+            if (arrowCard != null) arrowCard.TriggerCard();
 
         }
         if (hoveredNumberItem != null)

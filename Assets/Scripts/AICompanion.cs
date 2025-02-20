@@ -1,45 +1,39 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static GameActions;
+using static GridManager;
 
 public class AICompanion : MonoBehaviour
 {
     [SerializeField] public float fallSpeed = 1.0f;
 
-    private GameActions.AIActions action;
-
+    public GameActions.AIActions action;
+    public bool canMove = false;
+    public bool isMoving = false;
     private bool isBoardBelow = true;
+
 
     private void Start()
     {
-        GridManager.Instance.UpdateTileType(transform.position,
-            GameActions.TileTypes.PawnTile);
+        gridManager.UpdateTileType(transform.position, TileTypes.PawnTile);
     }
-
 
     void Update()
     {
-
-
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (canMove && action != AIActions.Stay)
         {
-            string currentScene = SceneManager.GetActiveScene().name;
-            SceneManager.LoadScene(currentScene);
+            if (action == AIActions.Forward) StartCoroutine(Movement(Vector2Int.up));
+
+            if (action == AIActions.Back) StartCoroutine(Movement(Vector2Int.down));
+
+            if (action == AIActions.Right) StartCoroutine(Movement(Vector2Int.right));
+
+            if (action == AIActions.Left) StartCoroutine(Movement(Vector2Int.left));
         }
-
-        //Used constant vectors instead of hard coded numbers
-        //BUG can make it go over the board fixed by the card actions
-        if (Input.GetKeyDown(KeyCode.W)) /*(action == GameActions.AIActions.Forward)*/ StartCoroutine(Movement(Vector2Int.up));
-
-        if (Input.GetKeyDown(KeyCode.S)) /*(action == GameActions.AIActions.Back)   */StartCoroutine(Movement(Vector2Int.down));
-
-        if (Input.GetKeyDown(KeyCode.D)) /*(action == GameActions.AIActions.Right)  */StartCoroutine(Movement(Vector2Int.right));
-
-        if (Input.GetKeyDown(KeyCode.A)) /*(action == GameActions.AIActions.Left)   */StartCoroutine(Movement(Vector2Int.left));
-
-
         if (!isBoardBelow)
         {
             Vector3 targetPos = new Vector3(transform.position.x, -1f, transform.position.z);
@@ -53,60 +47,73 @@ public class AICompanion : MonoBehaviour
     }
 
     //Changed the previous movement implementation to make it more easy to calculate
-    IEnumerator Movement(Vector2Int direction)
+    public IEnumerator Movement(Vector2Int direction)
     {
-        Vector3 checkPos = new Vector3(transform.position.x + direction.x, 0, transform.position.z + direction.y);
-        while (GridManager.Instance.CheckWhatNextTileIs(checkPos) != GameActions.TileTypes.None)
+        action = AIActions.Stay;
+
+        Vector3 checkPos = new Vector3(
+            transform.position.x + direction.x, 
+            0, 
+            transform.position.z + direction.y);
+
+        if (canMove)
         {
-            if (GridManager.Instance.CheckWhatNextTileIs(checkPos) == GameActions.TileTypes.GoalTile)
+            while (gridManager.CheckWhatNextTileIs(checkPos) != TileTypes.None)
             {
-                if (GridManager.Instance.playerActions.hasItem)
+                isMoving = true;
+                if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.GoalTile)
                 {
-                    GridManager.Instance.ResetTileType(GameActions.TileTypes.PawnTile);
+                    if (gridManager.playerActions.hasItem)
+                    {
+                        gridManager.ResetTileType(TileTypes.PawnTile);
+                        transform.position += new Vector3(direction.x, 0, direction.y);
+
+
+                        gridManager.GoalCheck();
+                    }
+
+                    else Debug.Log("Need key");
+                }
+                else if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.PlayerTile)
+                {
+                    Debug.Log("Player");
+                }
+                else
+                {
+                    gridManager.ResetTileType(TileTypes.PawnTile);
+
+
                     transform.position += new Vector3(direction.x, 0, direction.y);
+                    switch (gridManager.CheckWhatNextTileIs(checkPos))
+                    {
+                        case TileTypes.KeyTile:
 
+                            gridManager.KeyItemCheck();
 
-                    GridManager.Instance.GoalCheck();
+                            break;
+                        case TileTypes.ItemTile:
+
+                            gridManager.NumberItemCheck();
+
+                            break;
+                        case TileTypes.EmptyTile:
+
+                            Debug.Log("Empty");
+
+                            break;
+                    }
+
+                    gridManager.UpdateTileType(transform.position,
+                        TileTypes.PawnTile);
                 }
 
-                else Debug.Log("Need key");
-            }
-            else if (GridManager.Instance.CheckWhatNextTileIs(checkPos) == GameActions.TileTypes.PlayerTile)
-            {
-                Debug.Log("Player");
-                break;
-            }
-            else
-            {
-                GridManager.Instance.ResetTileType(GameActions.TileTypes.PawnTile);
-
-
-                transform.position += new Vector3(direction.x, 0, direction.y);
-                switch (GridManager.Instance.CheckWhatNextTileIs(checkPos))
-                {
-                    case GameActions.TileTypes.KeyTile:
-
-                        GridManager.Instance.KeyItemCheck();
-
-                        break;
-                    case GameActions.TileTypes.ItemTile:
-
-                        GridManager.Instance.NumberItemCheck();
-
-                        break;
-                    case GameActions.TileTypes.EmptyTile:
-
-                        Debug.Log("Empty");
-
-                        break;
-                }
-
-                GridManager.Instance.UpdateTileType(transform.position,
-                    GameActions.TileTypes.PawnTile);
+                yield return new WaitForSeconds(0.5f);
+                checkPos += new Vector3(direction.x, 0, direction.y);
             }
 
-            yield return new WaitForSeconds(0.5f);
-            checkPos += new Vector3(direction.x, 0, direction.y);
         }
+
+        isMoving = false;
+
     }
 }

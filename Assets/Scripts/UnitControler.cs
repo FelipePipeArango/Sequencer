@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static GameActions;
+using static GridManager;
 
 public class UnitControler : MonoBehaviour
 {
@@ -14,12 +16,16 @@ public class UnitControler : MonoBehaviour
 
 
     [SerializeField] public float fallSpeed = 1.0f;
-
+    public GameObject aiCompanion;
+    private AICompanion companion;
+    public GameObject arrow;
     private bool isBoardBelow = true;
+
     private void Start()
     {
-        GridManager.Instance.UpdateTileType(transform.position,
-            GameActions.TileTypes.PlayerTile);
+        gridManager.UpdateTileType(transform.position,
+            TileTypes.PlayerTile);
+        companion = aiCompanion.GetComponent<AICompanion>();
     }
 
     public void MovementReceiver(int recievedNumber)
@@ -33,31 +39,31 @@ public class UnitControler : MonoBehaviour
         if (hasItem)
         {
             hasItem = false;
-            if (recievedNumber >= GridManager.Instance.CalculateDistance(
-                    GridManager.Instance.goal.transform.position, transform.position))
+            if (recievedNumber >= gridManager.CalculateDistance(
+                    gridManager.goal.transform.position, transform.position))
             {
-                GridManager.Instance.GoalCheck();
+                gridManager.GoalCheck();
             }
         }
     }
 
     public void PickUpReceiver (int recievedNumber)
     {
-        if (recievedNumber == GridManager.Instance.CalculateDistance(
-                GridManager.Instance.keyItem.transform.position, transform.position))
+        if (recievedNumber == gridManager.CalculateDistance(
+                gridManager.keyItem.transform.position, transform.position))
         {
-            GridManager.Instance.KeyItemCheck();
-            GridManager.Instance.ResetTileType(GameActions.TileTypes.KeyTile);
+            gridManager.KeyItemCheck();
+            gridManager.ResetTileType(TileTypes.KeyTile);
         }
 
-        if (recievedNumber == GridManager.Instance.CalculateDistance(
-                GridManager.Instance.pickUpNumber.transform.position, transform.position))
+        if (recievedNumber == gridManager.CalculateDistance(
+                gridManager.pickUpNumber.transform.position, transform.position))
         {
-            if (GridManager.Instance.pickUpNumber != null ||
-                GridManager.Instance.numberHUD != null)
+            if (gridManager.pickUpNumber != null ||
+                gridManager.numberHUD != null)
             {
-                GridManager.Instance.NumberItemCheck();
-                GridManager.Instance.ResetTileType(GameActions.TileTypes.KeyTile);
+                gridManager.NumberItemCheck();
+                gridManager.ResetTileType(TileTypes.KeyTile);
             }
         }
     }
@@ -69,7 +75,7 @@ public class UnitControler : MonoBehaviour
             string currentScene = SceneManager.GetActiveScene().name; 
             SceneManager.LoadScene(currentScene);
         }
-        if (moveAmount > 0)
+        if (moveAmount > 0 && companion.isMoving == false) 
         {
             if (Input.GetKeyDown(KeyCode.W)) Movement(Vector2Int.up);
 
@@ -93,8 +99,6 @@ public class UnitControler : MonoBehaviour
     }
 
     
-
-    //Changed the previous movement implementation to make it more easy to calculate
     void Movement(Vector2Int direction)
     {
         Vector3 checkPos = new Vector3(
@@ -102,58 +106,59 @@ public class UnitControler : MonoBehaviour
             0, 
             transform.position.z + direction.y);
 
-        if (GridManager.Instance.CheckWhatNextTileIs(checkPos) == GameActions.TileTypes.None)
+        if (gridManager.CheckWhatNextTileIs(checkPos)
+            == TileTypes.None) 
         {
             transform.position += new Vector3(direction.x, 0, direction.y);
             moveAmount = 0;
             isBoardBelow = false;
         }
-        else if (GridManager.Instance.CheckWhatNextTileIs(checkPos) == GameActions.TileTypes.GoalTile)
+        else if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.GoalTile)
         {
             if (hasItem)
             {
-                GridManager.Instance.ResetTileType(GameActions.TileTypes.PlayerTile);
+                gridManager.ResetTileType(TileTypes.PlayerTile);
+
                 transform.position += new Vector3(direction.x, 0, direction.y);
 
                 moveAmount--;
 
-                GridManager.Instance.GoalCheck();
+                gridManager.GoalCheck();
             }
 
             else Debug.Log("Need key");
         }
-        else if (GridManager.Instance.CheckWhatNextTileIs(checkPos) == GameActions.TileTypes.PawnTile)
+        else if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.PawnTile)
         {
             Debug.Log("Companion");
         }
         else
         {
-            GridManager.Instance.ResetTileType(GameActions.TileTypes.PlayerTile);
+            gridManager.ResetTileType(TileTypes.PlayerTile);
 
-            
             transform.position += new Vector3(direction.x, 0, direction.y);
-            switch (GridManager.Instance.CheckWhatNextTileIs(checkPos))
+
+            switch (gridManager.CheckWhatNextTileIs(checkPos))
             {
-                case GameActions.TileTypes.KeyTile:
-                    
-                    GridManager.Instance.KeyItemCheck();
+                case TileTypes.KeyTile:
+
+                    gridManager.KeyItemCheck();
                    
                     break;
-                case GameActions.TileTypes.ItemTile:
-                    
-                    GridManager.Instance.NumberItemCheck();
+                case TileTypes.ItemTile:
+
+                    gridManager.NumberItemCheck();
                     
                     break;
-                case GameActions.TileTypes.EmptyTile:
+                case TileTypes.EmptyTile:
                     
                     Debug.Log("Empty");
                     
                     break;
             }
 
-            GridManager.Instance.UpdateTileType(transform.position,
-                GameActions.TileTypes.PlayerTile);
-
+            gridManager.UpdateTileType(transform.position, TileTypes.PlayerTile);
+            companion.canMove = true;
             moveAmount--;
         }
     }

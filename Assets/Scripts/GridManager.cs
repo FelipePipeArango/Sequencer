@@ -11,7 +11,7 @@ using Color = UnityEngine.Color;
 
 public class GridManager : MonoBehaviour
 {
-    public static GridManager Instance { get; private set; }
+    public static GridManager gridManager { get; private set; }
 
     [SerializeField] Color color;
 
@@ -37,13 +37,13 @@ public class GridManager : MonoBehaviour
 
     void Awake()
     {
-        if (Instance != null && Instance != this)
+        if (gridManager != null && gridManager != this)
         {
             Destroy(gameObject); 
             return;
         }
 
-        Instance = this; 
+        gridManager = this; 
 
         playerActions = player.GetComponent<UnitControler>();
         AIActions = AICompanion.GetComponent<AICompanion>();  

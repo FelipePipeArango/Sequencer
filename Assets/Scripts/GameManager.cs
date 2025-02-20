@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static GridManager;
 
 public class GameManager : MonoBehaviour
 {
@@ -98,12 +99,11 @@ public class GameManager : MonoBehaviour
                 switch (levelActions[i])
                 {
                     case GameActions.Actions.Move:
-                        GridManager.Instance.playerActions.MovementReceiver(recievedNumber.value);
+                        gridManager.playerActions.MovementReceiver(recievedNumber.value);
                         break;
 
                     case GameActions.Actions.PickUp:
-                        GridManager.Instance.playerActions.PickUpReceiver(
-                            recievedNumber.value);
+                        gridManager.playerActions.PickUpReceiver(recievedNumber.value);
                         break;
 
                     case GameActions.Actions.Enable:
@@ -111,13 +111,13 @@ public class GameManager : MonoBehaviour
                         break;
 
                     case GameActions.Actions.Throw:
-                        GridManager.Instance.playerActions.ThrowReceiver(recievedNumber.value);
+                        gridManager.playerActions.ThrowReceiver(recievedNumber.value);
                         break;
                 }
 
                 levelCards[i].Disable(recievedNumber);
                 sequencer.NextCard(recievedNumber);
-                //undoManager.ActionHistory(levelActions[i], recievedNumber);
+                
                 break;
             }
         }
