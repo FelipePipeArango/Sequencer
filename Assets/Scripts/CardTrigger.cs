@@ -76,6 +76,11 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
                 OnGrab(0, false); //Communicates with the sequencer whengrabing a number.
             }
 
+            ArrowCard arrowCard = GetComponent<ArrowCard>();
+            if (arrowCard != null)
+            {
+                arrowCard.TriggerCard();
+            }
 
         }
         if (hoveredNumberItem != null)

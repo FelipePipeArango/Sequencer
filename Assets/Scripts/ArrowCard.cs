@@ -24,39 +24,16 @@ public class ArrowCard : MonoBehaviour
     public ArrowTiming arrowTiming;
     public ArrowDirection arrowDirection;
 
-    [Header("Movement Settings")]
-    public float moveDistance;
-
     private void Start()
     {
         ConfigureArrowPosition(arrowTiming);
         ConfigureArrowDirection(arrowDirection);
     }
 
-    public void ExecuteCompanionMove(Transform companion)
+   
+    public void TriggerCard()
     {
-        Vector3 movement = Vector3.zero;
-
-        switch (arrowDirection)
-        {
-            case ArrowDirection.Up:
-                movement = Vector3.up * moveDistance;
-                break;
-
-            case ArrowDirection.Down:
-                movement = Vector3.down * moveDistance;
-                break;
-
-            case ArrowDirection.Left:
-                movement = Vector3.left * moveDistance;
-                break;
-
-            case ArrowDirection.Right:
-                movement = Vector3.right * moveDistance;
-                break;
-        }
-
-        companion.position += movement;
+        Debug.Log($"ArrowCard triggered, Direction = {arrowDirection}, Timing = {arrowTiming}");
     }
 
     private void ConfigureArrowPosition(ArrowTiming timing)
@@ -81,15 +58,12 @@ public class ArrowCard : MonoBehaviour
             case ArrowDirection.Up:
                 zRotation = -90f;
                 break;
-
             case ArrowDirection.Right:
                 zRotation = 180f;
                 break;
-
             case ArrowDirection.Down:
                 zRotation = 90f;
                 break;
-
             case ArrowDirection.Left:
                 zRotation = 0f;
                 break;
@@ -98,5 +72,8 @@ public class ArrowCard : MonoBehaviour
         arrowImage.rectTransform.rotation = Quaternion.Euler(0f, 0f, zRotation);
     }
 }
+
+
+
 
 
