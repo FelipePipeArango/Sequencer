@@ -117,6 +117,9 @@ public class Sequencer : MonoBehaviour
         //its supposed to be here but where exectly and what do I need for it to work
         for (int i = 0; i < levelCards.Length; i++)
         {
+            //BUG found it does not allow for multiple cards for the first action
+            //TODO need to make the clear which card is in use
+
                 if (usedAction == levelCards[i].LevelActions //The card slot that's equal to the recieved number
                     && levelCards[i].available == true) //allows for multiple cards of the same type
                 {
