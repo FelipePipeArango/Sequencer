@@ -17,19 +17,17 @@ public class UnitControler : MonoBehaviour
     [HideInInspector] public bool canMove = false;
 
 
-    private Actions awaitingActions; 
+    private Actions awaitingActions;
     public GameObject arrow;
     private bool isBoardBelow = true;
     private bool isComplete = false;
-    
-    private void Start()
-        gridManager.UpdateTileType(
-            transform.position,TileTypes.PlayerTile);
 
-        Debug.Log($"{canMove}, {isComplete}");
-        companion = aiCompanion.GetComponent<AICompanion>();
+    private void Start()
+    {
+        gridManager.UpdateTileType(
+            transform.position, TileTypes.PlayerTile);
     }
-   
+
 
     public void MovementReceiver(int recievedNumber, GameActions.Actions usedAction)
     {
@@ -60,7 +58,7 @@ public class UnitControler : MonoBehaviour
 
             if (gridManager.AIActions.isBefore != true)
                 gridManager.AIActions.canMove = true;
-             
+
         }
     }
 
@@ -95,24 +93,26 @@ public class UnitControler : MonoBehaviour
                 gridManager.AIActions.canMove = true;
         }
     }
-    
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            string currentScene = SceneManager.GetActiveScene().name; 
+            string currentScene = SceneManager.GetActiveScene().name;
             SceneManager.LoadScene(currentScene);
-        if (number > 0 && canMove == true) 
-        if (moveAmount > 0 && companion.isMoving == false) 
-        {
-            if (Input.GetKeyDown(KeyCode.W)) Movement(Vector2Int.up);
-
-            if (Input.GetKeyDown(KeyCode.S)) Movement(Vector2Int.down);
-
-            if (Input.GetKeyDown(KeyCode.D)) Movement(Vector2Int.right);
-
-            if (Input.GetKeyDown(KeyCode.A)) Movement(Vector2Int.left);
         }
+
+        if (number > 0 && canMove == true)
+            if (number > 0 && gridManager.AIActions.isMoving == false)
+            {
+                if (Input.GetKeyDown(KeyCode.W)) Movement(Vector2Int.up);
+
+                if (Input.GetKeyDown(KeyCode.S)) Movement(Vector2Int.down);
+
+                if (Input.GetKeyDown(KeyCode.D)) Movement(Vector2Int.right);
+
+                if (Input.GetKeyDown(KeyCode.A)) Movement(Vector2Int.left);
+            }
 
         if (!isBoardBelow)
         {
@@ -131,12 +131,12 @@ public class UnitControler : MonoBehaviour
         }
     }
 
-    
+
     void Movement(Vector2Int direction)
     {
         Vector3 checkPos = new Vector3(
             transform.position.x + direction.x,
-            0, 
+            0,
             transform.position.z + direction.y);
 
         if (gridManager.CheckWhatNextTileIs(checkPos)
@@ -146,6 +146,8 @@ public class UnitControler : MonoBehaviour
             number = 0;
             isBoardBelow = false;
         }
+
+
         else if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.GoalTile)
         {
             if (hasItem)
@@ -162,6 +164,7 @@ public class UnitControler : MonoBehaviour
             else Debug.Log("Need key");
         }
         else if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.PawnTile)
+        {
             Debug.Log("Companion");
             gridManager.AIActions.PushCompanion(direction);
             Debug.Log("Companion");
@@ -200,7 +203,7 @@ public class UnitControler : MonoBehaviour
 
 
 
-    public void GoalCheck()
+    void GoalCheck()
     {
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         int nextSceneIndex = currentSceneIndex + 1;
@@ -212,7 +215,7 @@ public class UnitControler : MonoBehaviour
         Debug.Log("GOAL");
     }
 
-    public void KeyItemCheck()
+    void KeyItemCheck()
     {
         if (hasItem)
         {
@@ -221,12 +224,12 @@ public class UnitControler : MonoBehaviour
         }
     }
 
-    public void NumberItemCheck()
+    void NumberItemCheck()
     {
         gridManager.pickUpNumber.SetActive(false);
         gridManager.numberHUD.SetActive(true);
         hasNumber = true;
-        }
     }
-
 }
+
+
