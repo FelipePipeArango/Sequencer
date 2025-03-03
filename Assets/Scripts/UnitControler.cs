@@ -18,15 +18,16 @@ public class UnitControler : MonoBehaviour
 
 
     private Actions awaitingActions; 
+    public GameObject arrow;
     private bool isBoardBelow = true;
     private bool isComplete = false;
     
     private void Start()
-    {
         gridManager.UpdateTileType(
             transform.position,TileTypes.PlayerTile);
 
         Debug.Log($"{canMove}, {isComplete}");
+        companion = aiCompanion.GetComponent<AICompanion>();
     }
    
 
@@ -94,15 +95,15 @@ public class UnitControler : MonoBehaviour
                 gridManager.AIActions.canMove = true;
         }
     }
-
+    
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
             string currentScene = SceneManager.GetActiveScene().name; 
             SceneManager.LoadScene(currentScene);
-        }
         if (number > 0 && canMove == true) 
+        if (moveAmount > 0 && companion.isMoving == false) 
         {
             if (Input.GetKeyDown(KeyCode.W)) Movement(Vector2Int.up);
 
@@ -161,9 +162,9 @@ public class UnitControler : MonoBehaviour
             else Debug.Log("Need key");
         }
         else if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.PawnTile)
-        {
             Debug.Log("Companion");
             gridManager.AIActions.PushCompanion(direction);
+            Debug.Log("Companion");
         }
         else
         {
@@ -190,7 +191,6 @@ public class UnitControler : MonoBehaviour
                     break;
             }
 
-            gridManager.UpdateTileType(transform.position, TileTypes.PlayerTile);
             if (gridManager.AIActions != null)
                 gridManager.AIActions.canMove = true;
 
@@ -226,6 +226,7 @@ public class UnitControler : MonoBehaviour
         gridManager.pickUpNumber.SetActive(false);
         gridManager.numberHUD.SetActive(true);
         hasNumber = true;
+        }
     }
 
 }

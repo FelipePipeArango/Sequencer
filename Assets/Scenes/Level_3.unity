@@ -240,6 +240,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe5f1aa0a502ed3449d7921f3ae6de93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isHighLight: 0
+  tile: 0
 --- !u!1 &115717779
 GameObject:
   m_ObjectHideFlags: 0
@@ -358,6 +360,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe5f1aa0a502ed3449d7921f3ae6de93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isHighLight: 0
+  tile: 0
 --- !u!1 &154370032
 GameObject:
   m_ObjectHideFlags: 0
@@ -781,6 +785,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2098179105}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &349900641 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3118849877111568802, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
+  m_PrefabInstance: {fileID: 2512458604966629601}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &385352475
 GameObject:
   m_ObjectHideFlags: 0
@@ -899,6 +908,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe5f1aa0a502ed3449d7921f3ae6de93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isHighLight: 0
+  tile: 0
 --- !u!1 &485421678
 GameObject:
   m_ObjectHideFlags: 0
@@ -1017,6 +1028,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe5f1aa0a502ed3449d7921f3ae6de93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isHighLight: 0
+  tile: 0
 --- !u!1001 &517663386
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1593,6 +1606,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe5f1aa0a502ed3449d7921f3ae6de93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isHighLight: 0
+  tile: 0
 --- !u!1 &736727317
 GameObject:
   m_ObjectHideFlags: 0
@@ -2339,6 +2354,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe5f1aa0a502ed3449d7921f3ae6de93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isHighLight: 0
+  tile: 0
 --- !u!1 &1029835031
 GameObject:
   m_ObjectHideFlags: 0
@@ -2660,6 +2677,8 @@ MonoBehaviour:
   hasItem: 0
   hasNumber: 0
   fallSpeed: 1
+  aiCompanion: {fileID: 0}
+  arrow: {fileID: 0}
 --- !u!65 &1330395031
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3220,6 +3239,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4393309c88483be419c637e8d1b4ff4d, type: 3}
+--- !u!1 &1449741347 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1601307394724210004, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
+  m_PrefabInstance: {fileID: 2512458604966629601}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1474629744
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3751,6 +3775,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe5f1aa0a502ed3449d7921f3ae6de93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isHighLight: 0
+  tile: 0
 --- !u!1 &1668680066
 GameObject:
   m_ObjectHideFlags: 0
@@ -4090,6 +4116,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe5f1aa0a502ed3449d7921f3ae6de93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isHighLight: 0
+  tile: 0
 --- !u!1 &1831360169
 GameObject:
   m_ObjectHideFlags: 0
@@ -4433,6 +4461,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe5f1aa0a502ed3449d7921f3ae6de93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isHighLight: 0
+  tile: 0
 --- !u!1 &2072833251
 GameObject:
   m_ObjectHideFlags: 0
@@ -4612,13 +4642,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 2098179104}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79eea3026a5a69947a87026930be05ce, type: 3}
+  m_Script: {fileID: 11500000, guid: b2720f3a8d8c44b438b66ee201634319, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tile: {fileID: 8923966650842686609, guid: d266327d5b1c3ec4789bc2c97237269e, type: 3}
-  color: {r: 0.4117647, g: 1, b: 0.41568628, a: 0}
-  tiles: []
-  size: {x: 0, y: 0}
+  color: {r: 0, g: 0, b: 0, a: 0}
+  size: {x: 4, y: 6}
+  AICompanion: {fileID: 0}
+  player: {fileID: 1330395029}
+  keyItem: {fileID: 349900641}
+  goal: {fileID: 1449741347}
+  pickUpNumber: {fileID: 2512458604966629603}
+  numberHUD: {fileID: 1497764023}
+  playerActions: {fileID: 0}
+  companion: {fileID: 0}
 --- !u!1001 &2512458604966629601
 PrefabInstance:
   m_ObjectHideFlags: 0

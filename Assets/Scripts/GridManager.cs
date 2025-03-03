@@ -1,13 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
-using Unity.Jobs;
-using Unity.VisualScripting;
-using UnityEditorInternal.Profiling.Memory.Experimental;
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Color = UnityEngine.Color;
+using static GameActions;
 
 public class GridManager : MonoBehaviour
 {
@@ -20,8 +15,6 @@ public class GridManager : MonoBehaviour
     public TileScript[,] grid;
     TileScript[] tiles;
 
-    
-
     [Header("Pieces")] [SerializeField] 
     public GameObject AICompanion;
     public GameObject player;
@@ -32,7 +25,7 @@ public class GridManager : MonoBehaviour
     public GameObject pickUpNumber;
     public GameObject numberHUD; //Should at some point go to card manager
     public UnitControler playerActions;
-    public AICompanion AIActions;
+    public AICompanion companion;
 
 
     void Awake()
@@ -43,7 +36,7 @@ public class GridManager : MonoBehaviour
             return;
         }
 
-        gridManager = this; 
+        gridManager = this;
 
         playerActions = player.GetComponent<UnitControler>();
        
@@ -56,9 +49,9 @@ public class GridManager : MonoBehaviour
 
     private void Start()
     {
-        UpdateTileType(keyItem.transform.position, GameActions.TileTypes.KeyTile);
-        UpdateTileType(pickUpNumber.transform.position, GameActions.TileTypes.ItemTile);
-        UpdateTileType(goal.transform.position, GameActions.TileTypes.GoalTile);
+        UpdateTileType(keyItem.transform.position, TileTypes.KeyTile);
+        UpdateTileType(pickUpNumber.transform.position, TileTypes.ItemTile);
+        UpdateTileType(goal.transform.position, TileTypes.GoalTile);
     }
 
     public int CalculateDistance(Vector3 position, Vector3 start)
@@ -90,7 +83,7 @@ public class GridManager : MonoBehaviour
         {
             if (tile.isHighLight) tile.SetColor(color);
             
-            else tile.ResetColor();
+           
         }
     }
    
@@ -107,14 +100,14 @@ public class GridManager : MonoBehaviour
     }
     
 
-    public GameActions.TileTypes CheckWhatNextTileIs(Vector3 pos)
+    public TileTypes CheckWhatNextTileIs(Vector3 pos)
     {
         if (pos.x >= 0 && pos.x < size.x &&
             pos.z >= 0 && pos.z < size.y)
         {
             if (grid[(int)pos.x, (int)pos.z] == null)
             {
-                return GameActions.TileTypes.None;
+                return TileTypes.None;
             }
             else
             {
@@ -196,8 +189,18 @@ public class GridManager : MonoBehaviour
             }
         }
     }
-    
 
+    public bool isCompanionMoving()
+    {
+        if (gridManager.companion != null)
+        {
+            return companion.isMoving;
+        }
+        else
+        {
+            return false;
+        }
+    }
     public void GoalCheck()
     {
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;

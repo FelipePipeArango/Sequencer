@@ -1933,6 +1933,10 @@ PrefabInstance:
       value: Card
       objectReference: {fileID: 0}
     - target: {fileID: 4360267473653594242, guid: 2923bc20a703e9241a640d5fa4357bb9, type: 3}
+      propertyPath: isBefore
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4360267473653594242, guid: 2923bc20a703e9241a640d5fa4357bb9, type: 3}
       propertyPath: aiCompanion
       value: 
       objectReference: {fileID: 0}
@@ -2333,7 +2337,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3851964850037643292, guid: 4393309c88483be419c637e8d1b4ff4d, type: 3}
       propertyPath: LevelActions
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3851964850037643292, guid: 4393309c88483be419c637e8d1b4ff4d, type: 3}
       propertyPath: numberInQueue
@@ -3297,7 +3301,7 @@ MonoBehaviour:
   pickUpNumber: {fileID: 1118563814}
   numberHUD: {fileID: 1626298301}
   playerActions: {fileID: 0}
-  AIActions: {fileID: 0}
+  companion: {fileID: 0}
 --- !u!1 &2075026482
 GameObject:
   m_ObjectHideFlags: 0

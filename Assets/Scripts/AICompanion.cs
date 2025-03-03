@@ -51,7 +51,6 @@ public class AICompanion : MonoBehaviour
             }
         }
     }
-
     //Changed the previous movement implementation to make it more easy to calculate
     public IEnumerator Movement(Vector2Int direction)
     {
