@@ -25,7 +25,7 @@ public class GridManager : MonoBehaviour
     public GameObject pickUpNumber;
     public GameObject numberHUD; //Should at some point go to card manager
     public UnitControler playerActions;
-    public AICompanion companion;
+    public AICompanion AIActions;
 
 
     void Awake()
@@ -192,9 +192,9 @@ public class GridManager : MonoBehaviour
 
     public bool isCompanionMoving()
     {
-        if (gridManager.companion != null)
+        if (gridManager.AIActions != null)
         {
-            return companion.isMoving;
+            return AIActions.isMoving;
         }
         else
         {
