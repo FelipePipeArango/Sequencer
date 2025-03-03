@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static GameActions;
@@ -8,63 +9,89 @@ using static GridManager;
 
 public class UnitControler : MonoBehaviour
 {
-    private Vector2Int playerPreviousPosition;
+    [SerializeField] public float fallSpeed = 1.0f;
 
-    public int moveAmount = 0;
+    [HideInInspector] public int number = 0;
     [HideInInspector] public bool hasItem = false;
     [HideInInspector] public bool hasNumber = false;
+    [HideInInspector] public bool canMove = false;
 
 
-    [SerializeField] public float fallSpeed = 1.0f;
-    public GameObject aiCompanion;
-    private AICompanion companion;
-    public GameObject arrow;
+    private Actions awaitingActions; 
     private bool isBoardBelow = true;
-
+    private bool isComplete = false;
+    
     private void Start()
     {
-        gridManager.UpdateTileType(transform.position,
-            TileTypes.PlayerTile);
-        companion = aiCompanion.GetComponent<AICompanion>();
+        gridManager.UpdateTileType(
+            transform.position,TileTypes.PlayerTile);
+
+        Debug.Log($"{canMove}, {isComplete}");
+    }
+   
+
+    public void MovementReceiver(int recievedNumber, GameActions.Actions usedAction)
+    {
+        awaitingActions = usedAction;
+        number = recievedNumber;
+        isComplete = true;
     }
 
-    public void MovementReceiver(int recievedNumber)
-    {
-        moveAmount = recievedNumber;
-    }
 
-
-    public void ThrowReceiver(int recievedNumber)
+    public void ThrowReceiver(int recievedNumber, GameActions.Actions usedAction)
     {
-        if (hasItem)
+        awaitingActions = usedAction;
+        number = recievedNumber;
+
+        if (gridManager.AIActions.canMove != true && canMove == true)
         {
-            hasItem = false;
-            if (recievedNumber >= gridManager.CalculateDistance(
-                    gridManager.goal.transform.position, transform.position))
+            if (hasItem)
             {
-                gridManager.GoalCheck();
+                hasItem = false;
+                if (recievedNumber >= gridManager.CalculateDistance(
+                        gridManager.goal.transform.position, transform.position))
+                {
+                    gridManager.GoalCheck();
+                }
             }
+            isComplete = true;
+            canMove = false;
+
+            if (gridManager.AIActions.isBefore != true)
+                gridManager.AIActions.canMove = true;
+             
         }
     }
 
-    public void PickUpReceiver (int recievedNumber)
+    public void PickUpReceiver(int recievedNumber, GameActions.Actions usedAction)
     {
-        if (recievedNumber == gridManager.CalculateDistance(
-                gridManager.keyItem.transform.position, transform.position))
-        {
-            gridManager.KeyItemCheck();
-            gridManager.ResetTileType(TileTypes.KeyTile);
-        }
+        awaitingActions = usedAction;
+        number = recievedNumber;
 
-        if (recievedNumber == gridManager.CalculateDistance(
-                gridManager.pickUpNumber.transform.position, transform.position))
+        if (gridManager.AIActions.canMove != true && canMove == true)
         {
-            if (gridManager.pickUpNumber != null ||
-                gridManager.numberHUD != null)
+            if (recievedNumber == gridManager.CalculateDistance(
+                    gridManager.keyItem.transform.position, transform.position))
             {
-                gridManager.NumberItemCheck();
+                gridManager.KeyItemCheck();
                 gridManager.ResetTileType(TileTypes.KeyTile);
             }
+
+            if (recievedNumber == gridManager.CalculateDistance(
+                    gridManager.pickUpNumber.transform.position, transform.position))
+            {
+                if (gridManager.pickUpNumber != null ||
+                    gridManager.numberHUD != null)
+                {
+                    gridManager.NumberItemCheck();
+                    gridManager.ResetTileType(TileTypes.KeyTile);
+                }
+            }
+            isComplete = true;
+            canMove = false;
+
+            if (gridManager.AIActions.isBefore != true)
+                gridManager.AIActions.canMove = true;
         }
     }
 
@@ -75,7 +102,7 @@ public class UnitControler : MonoBehaviour
             string currentScene = SceneManager.GetActiveScene().name; 
             SceneManager.LoadScene(currentScene);
         }
-        if (moveAmount > 0 && companion.isMoving == false) 
+        if (number > 0 && canMove == true) 
         {
             if (Input.GetKeyDown(KeyCode.W)) Movement(Vector2Int.up);
 
@@ -96,6 +123,11 @@ public class UnitControler : MonoBehaviour
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         }
+        if (canMove == true && isComplete == false)
+        {
+            Sequencer.sequencer.PlayerAfterAction(number, awaitingActions);
+            Debug.Log("Outside stuff");
+        }
     }
 
     
@@ -107,10 +139,10 @@ public class UnitControler : MonoBehaviour
             transform.position.z + direction.y);
 
         if (gridManager.CheckWhatNextTileIs(checkPos)
-            == TileTypes.None) 
+            == TileTypes.None)
         {
             transform.position += new Vector3(direction.x, 0, direction.y);
-            moveAmount = 0;
+            number = 0;
             isBoardBelow = false;
         }
         else if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.GoalTile)
@@ -121,7 +153,7 @@ public class UnitControler : MonoBehaviour
 
                 transform.position += new Vector3(direction.x, 0, direction.y);
 
-                moveAmount--;
+                number--;
 
                 gridManager.GoalCheck();
             }
@@ -131,6 +163,7 @@ public class UnitControler : MonoBehaviour
         else if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.PawnTile)
         {
             Debug.Log("Companion");
+            gridManager.AIActions.PushCompanion(direction);
         }
         else
         {
@@ -143,23 +176,56 @@ public class UnitControler : MonoBehaviour
                 case TileTypes.KeyTile:
 
                     gridManager.KeyItemCheck();
-                   
+
                     break;
                 case TileTypes.ItemTile:
 
                     gridManager.NumberItemCheck();
-                    
+
                     break;
                 case TileTypes.EmptyTile:
-                    
+
                     Debug.Log("Empty");
-                    
+
                     break;
             }
 
             gridManager.UpdateTileType(transform.position, TileTypes.PlayerTile);
-            companion.canMove = true;
-            moveAmount--;
+            if (gridManager.AIActions != null)
+                gridManager.AIActions.canMove = true;
+
+            number--;
         }
     }
+
+
+
+    public void GoalCheck()
+    {
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = currentSceneIndex + 1;
+
+        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(nextSceneIndex);
+        }
+        Debug.Log("GOAL");
+    }
+
+    public void KeyItemCheck()
+    {
+        if (hasItem)
+        {
+            hasItem = true;
+            gridManager.keyItem.SetActive(false);
+        }
+    }
+
+    public void NumberItemCheck()
+    {
+        gridManager.pickUpNumber.SetActive(false);
+        gridManager.numberHUD.SetActive(true);
+        hasNumber = true;
+    }
+
 }

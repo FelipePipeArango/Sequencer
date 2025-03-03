@@ -10,8 +10,10 @@ using static GridManager;
 public class AICompanion : MonoBehaviour
 {
     [SerializeField] public float fallSpeed = 1.0f;
-
-    public GameActions.AIActions action;
+    [HideInInspector] public bool hasItem = false;
+    [HideInInspector] public bool hasNumber = false;
+    public AIActions action = AIActions.Stay;
+    public bool isBefore = false;
     public bool canMove = false;
     public bool isMoving = false;
     private bool isBoardBelow = true;
@@ -24,6 +26,10 @@ public class AICompanion : MonoBehaviour
 
     void Update()
     {
+        if (isBefore)
+        {
+            
+        }
         if (canMove && action != AIActions.Stay)
         {
             if (action == AIActions.Forward) StartCoroutine(Movement(Vector2Int.up));
@@ -97,9 +103,6 @@ public class AICompanion : MonoBehaviour
 
                             break;
                         case TileTypes.EmptyTile:
-
-                            Debug.Log("Empty");
-
                             break;
                     }
 
@@ -112,8 +115,43 @@ public class AICompanion : MonoBehaviour
             }
 
         }
-
         isMoving = false;
+        canMove = false;
+        gridManager.playerActions.canMove = true;
+    }
 
+
+    public void PushCompanion(Vector2Int direction)
+    {
+        Debug.Log("Push");
+    }
+
+
+    public void GoalCheck()
+    {
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = currentSceneIndex + 1;
+
+        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(nextSceneIndex);
+        }
+        Debug.Log("GOAL");
+    }
+
+    public void KeyItemCheck()
+    {
+        if (hasItem)
+        {
+            hasItem = true;
+            gridManager.keyItem.SetActive(false);
+        }
+    }
+
+    public void NumberItemCheck()
+    {
+        gridManager.pickUpNumber.SetActive(false);
+        gridManager.numberHUD.SetActive(true);
+        hasNumber = true;
     }
 }

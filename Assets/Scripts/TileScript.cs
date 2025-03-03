@@ -17,11 +17,9 @@ public class TileScript : MonoBehaviour
     
     void Start()
     {
-
         render = GetComponent<Renderer>();
         setColor = render.material.color;
         isHighLight = false;
-        
     }
     public void SetColor(Color color)
     {

@@ -414,7 +414,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1688634199076368922}
   - component: {fileID: 8462474066570084425}
-  - component: {fileID: 4360267473653594242}
   m_Layer: 5
   m_Name: ArrowCard 1
   m_TagString: Untagged
@@ -466,22 +465,11 @@ MonoBehaviour:
   available: 1
   nextInSequence: 1
   LevelActions: 0
---- !u!114 &4360267473653594242
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1770860842184758047}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 213147127414c4b4c83f95ad3f79cd83, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  aiCompanion: {fileID: 0}
-  arrowImage: {fileID: 3120035134376048648}
-  isBefore: 1
-  arrowDirection: 4
+  numberInQueue: 0
+  hasArrow: 0
+  arrowImage: {fileID: 0}
+  isBefore: 0
+  arrowDirection: 0
 --- !u!1 &1795560806276576607
 GameObject:
   m_ObjectHideFlags: 0

@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nextCardText: {fileID: 860415818935269682}
+  queue: 
 --- !u!1 &2926764877737340103
 GameObject:
   m_ObjectHideFlags: 0
@@ -160,7 +161,6 @@ GameObject:
   - component: {fileID: 44922796167522784}
   - component: {fileID: 4939637585943783899}
   - component: {fileID: 8174999495719335837}
-  - component: {fileID: 6451947076222048117}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -233,21 +233,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Delegates: []
---- !u!114 &6451947076222048117
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4366984284756147693}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5bf32c55e39b8b744880c843392afec4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cardsInLevel: {fileID: 0}
-  numbersInLevel: {fileID: 0}
-  sequencer: {fileID: 8757203367334307134}
 --- !u!1 &5516168301407220548
 GameObject:
   m_ObjectHideFlags: 0

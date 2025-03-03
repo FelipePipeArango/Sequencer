@@ -2,19 +2,26 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static GameActions;
+using static GridManager;
 
 public class Sequencer : MonoBehaviour
 {
+    public static Sequencer sequencer { get; private set; }
+
     Image cardBackground;
     [SerializeField] Image nextCardText;
 
     CardTrigger[] levelCards;
-    GameActions.Actions[] levelActions;
+    //GameActions.Actions[] levelActions;
+    public int[] queue;
+    GameObject[] allCards;
 
     //Makes sure that only the next card in the sequence is considered as "next". Cards that are not next in the sequence are not avaiable to use.
-
+   
     private void OnEnable()
     {
         CardTrigger.OnGrab += ManageSequenceText;
@@ -26,47 +33,42 @@ public class Sequencer : MonoBehaviour
         CardTrigger.OnGrab -= ManageSequenceText;
         NumberItem.OnDragAction -= ManageSequenceText;
     }
-
-    public void FillCards(GameObject cardsInLevel)
+    public void Awake()
     {
-        #region CardFilling
-        //This checks the cards being used in the level and fills the required arrays
-        levelCards = new CardTrigger[cardsInLevel.transform.childCount];
-        levelActions = new GameActions.Actions[cardsInLevel.transform.childCount];
+        if (sequencer != null && sequencer != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        sequencer = this;
 
+        FillCards();
+    }
+    public void FillCards()
+    {
+        allCards = GameObject.FindGameObjectsWithTag("Card");
+
+        if (allCards != null)
+        {
+            levelCards = new CardTrigger[allCards.Length];
+           
+            for (int i = 0; i < allCards.Length; i++)            
+                levelCards[i] = allCards[i].GetComponent<CardTrigger>();
+
+            CardTrigger[] cardPlaceholder = new CardTrigger[levelCards.Length];
+
+            for (int i = 0; i < levelCards.Length; i++)
+                cardPlaceholder[levelCards[i].numberInQueue] = levelCards[i];
+
+            levelCards = cardPlaceholder;
+        }
+    }
+
+    public void NextCard(int recievedValue)
+    {
         for (int i = 0; i < levelCards.Length; i++)
         {
-            levelCards[i] = cardsInLevel.transform.GetChild(i).GetComponent<CardTrigger>();
-            levelActions[i] = levelCards[i].LevelActions;
-        }
-        #endregion
-    }
-    public void UndoSequence(NumberItem previousValue, NumberItem currentValue)
-    {
-        for (int i = 0; i < levelActions.Length; i++)
-        {
-            if (i == previousValue.value - 1) //returns to the action that was just used, the -1 is only because the array starts at 0, while the used number starts at 1
-            {
-                Debug.Log("numbero del turno anterior: " + previousValue.value);
-                levelCards[i].nextInSequence = true;
-                levelCards[i].Enable(true, currentValue);
-                cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
-                cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 1f);
-            }
-            else
-            {
-                levelCards[i].nextInSequence = false;
-                cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
-                cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 0.5f);
-            }
-        }
-    }
-
-    public void NextCard(NumberItem recievedValue)
-    {
-        for (int i = 0; i < levelActions.Length; i++)
-        {
-            if (i == recievedValue.value - 1)
+            if (i == recievedValue - 1)
             {
                 levelCards[i].nextInSequence = true;
                 cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
@@ -85,7 +87,7 @@ public class Sequencer : MonoBehaviour
     {
         if (dragging == true)
         {
-            for (int i = 0; i < levelActions.Length; i++)
+            for (int i = 0; i < levelCards.Length; i++)
             {
                 if (i == recievedNumber - 1)
                 {
@@ -100,6 +102,51 @@ public class Sequencer : MonoBehaviour
         else
         {
             nextCardText.gameObject.SetActive(false);
+        }
+    }
+
+    public void TriggerCard(bool isBefore, GameActions.AIActions direction)
+    {
+        gridManager.AIActions.action = direction;
+        gridManager.AIActions.canMove = isBefore;
+        gridManager.AIActions.isBefore = isBefore;
+    }
+
+    public void CommunicateAction(NumberItem recievedNumber, GameActions.Actions usedAction)
+    {
+        //its supposed to be here but where exectly and what do I need for it to work
+        for (int i = 0; i < levelCards.Length; i++)
+        {
+                if (usedAction == levelCards[i].LevelActions //The card slot that's equal to the recieved number
+                    && levelCards[i].available == true) //allows for multiple cards of the same type
+                {
+                    if (usedAction == GameActions.Actions.Enable)
+                        levelCards[recievedNumber.value - 1].Enable(false, recievedNumber);                                            
+                    else
+                        PlayerAfterAction(recievedNumber.value, usedAction);
+                    
+                    levelCards[i].Disable(recievedNumber);
+                    NextCard(recievedNumber.value);
+
+                    break;
+                }
+        }
+    }
+    public void PlayerAfterAction(int recievedNumber,GameActions.Actions usedAction)
+    {
+        switch (usedAction)
+        {
+            case GameActions.Actions.Move:
+                gridManager.playerActions.MovementReceiver(recievedNumber, usedAction);
+                break;
+
+            case GameActions.Actions.PickUp:
+                gridManager.playerActions.PickUpReceiver(recievedNumber, usedAction);
+                break;
+
+            case GameActions.Actions.Throw:
+                gridManager.playerActions.ThrowReceiver(recievedNumber, usedAction);
+                break;
         }
     }
 }

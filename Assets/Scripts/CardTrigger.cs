@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine.UI;
 using Unity.VisualScripting;
 using static GridManager;
+using static GameActions;
 
 public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
@@ -16,17 +17,23 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     [HideInInspector] public bool nextInSequence;
 
     public GameActions.Actions LevelActions;
+    public int numberInQueue;
 
     public delegate void GrabActions(int number, bool isGrabing);
     public static event GrabActions OnGrab;
 
-    public delegate void DropAction(NumberItem test, GameActions.Actions action);
-    public static event DropAction OnDropAction;
 
 
     private NumberItem hoveredNumberItem;
 
-
+    [Header("Arrow Settings")]
+    [Header("Check hasArrow to true only if you have Companion in the scene")]
+    public bool hasArrow;
+    
+    public Image arrowImage;
+    public bool isBefore = false;
+    public AIActions arrowDirection;
+   
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -39,12 +46,21 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             // Display the debug message based on the card type and number value
             if (LevelActions == GameActions.Actions.Move)
                 gridManager.TurnOnHighlight(true, hoveredNumberItem.value);
-            
+
             else if (LevelActions == GameActions.Actions.PickUp)
                 gridManager.TurnOnHighlight(false, hoveredNumberItem.value);
-            
+
             if (LevelActions == GameActions.Actions.Throw)
                 gridManager.TurnOnHighlight(false, hoveredNumberItem.value);
+        }
+    }
+
+    private void Start()
+    {
+        if (hasArrow == true)
+        {
+            ConfigureArrowPosition(isBefore);
+            ConfigureArrowDirection(arrowDirection);
             
         }
     }
@@ -56,7 +72,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         hoveredNumberItem = null;
     }
 
-
+    
     public void OnDrop(PointerEventData eventData)
     {
         if (available == true && nextInSequence == true)
@@ -64,26 +80,19 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             GameObject dropped = eventData.pointerDrag;
             NumberItem draggableItem = dropped.GetComponent<NumberItem>();
 
-            if (OnDropAction != null)
-            {
-                OnDropAction (draggableItem, LevelActions);
-            }
+            if (isBefore == true && hasArrow == true)
+                Sequencer.sequencer.TriggerCard(isBefore, arrowDirection);
+
+            Sequencer.sequencer.CommunicateAction(draggableItem, LevelActions);
+            //Sequencer.sequencer.ManageSequenceText(0, false);
 
             if (OnGrab != null)
-            {
                 OnGrab(0, false); //Communicates with the sequencer whengrabing a number.
-            }
-
-            ArrowCard arrowCard = GetComponent<ArrowCard>();
-            
-            if (arrowCard != null) arrowCard.TriggerCard();
-
         }
         if (hoveredNumberItem != null)
-        {
             Debug.Log($"Dropped {hoveredNumberItem.value} on {LevelActions} action.");
             // Handle drop logic (like executing the action or snapping the item to the card)
-        }
+        
     }
 
     public void Disable(NumberItem number)
@@ -123,5 +132,43 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             number.gameObject.SetActive(true);
             available = true;
         }
+    }
+
+
+
+    private void ConfigureArrowPosition(bool isbefore)
+    {
+        RectTransform arrowRect = arrowImage.GetComponent<RectTransform>();
+
+        if (isbefore == true)
+        {
+            arrowRect.anchoredPosition = new Vector2(0, 100f);
+        }
+        else
+        {
+            arrowRect.anchoredPosition = new Vector2(0, -100f);
+        }
+    }
+
+    private void ConfigureArrowDirection(AIActions direction)
+    {
+        float zRotation = 0f;
+        switch (direction)
+        {
+            case AIActions.Forward:
+                zRotation = -90f;
+                break;
+            case AIActions.Right:
+                zRotation = 180f;
+                break;
+            case AIActions.Back:
+                zRotation = 90f;
+                break;
+            case AIActions.Left:
+                zRotation = 0f;
+                break;
+        }
+
+        arrowImage.rectTransform.rotation = Quaternion.Euler(0f, 0f, zRotation);
     }
 }

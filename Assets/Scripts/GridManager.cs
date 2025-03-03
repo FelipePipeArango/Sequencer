@@ -46,7 +46,10 @@ public class GridManager : MonoBehaviour
         gridManager = this; 
 
         playerActions = player.GetComponent<UnitControler>();
-        AIActions = AICompanion.GetComponent<AICompanion>();  
+       
+        if(AICompanion != null)
+            AIActions = AICompanion.GetComponent<AICompanion>();  
+        
         grid = new TileScript[size.x, size.y];
         StoreGrid();
     }
