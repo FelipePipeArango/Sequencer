@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using static GameActions;
+using static GameDirections;
 using static GridManager;
 
 public class Sequencer : MonoBehaviour
@@ -22,7 +23,7 @@ public class Sequencer : MonoBehaviour
 
     public CardTrigger lastCard { get; private set; }
     public NumberItem lastNumber { get; private set; }
-    public AIActions lastDirection { get; set; }
+    public Directions lastDirection { get; set; }
 
     //Makes sure that only the next card in the sequence is considered as "next". Cards that are not next in the sequence are not avaiable to use.
 
@@ -118,11 +119,12 @@ public class Sequencer : MonoBehaviour
         }
     }
 
-    public void CommunicateAIActions(bool isBefore, GameActions.AIActions direction)
+    public void CommunicateAIActions(bool isBefore, Directions direction)
     {
         if (gridManager.AIActions != null)
         {
-            gridManager.AIActions.action = direction;
+            gridManager.AIActions.direction = direction;
+            gridManager.AIActions.action = AIActions.Move;
             lastDirection = direction;
             gridManager.AIActions.canMove = isBefore;
             gridManager.AIActions.isBefore = isBefore;
@@ -134,13 +136,14 @@ public class Sequencer : MonoBehaviour
         if (gridManager.AIActions != null 
             && gridManager.AIActions.action != AIActions.Stay)
         {
-            gridManager.AIActions.action = lastDirection;
+            gridManager.AIActions.direction = lastDirection;
+
             gridManager.AIActions.canMove = true;
             gridManager.AIActions.isBefore = false;
         }
     }
 
-    public void CommunicateAction(NumberItem recievedNumber, GameActions.Actions usedAction)
+    public void CommunicateAction(NumberItem recievedNumber, Actions usedAction)
     {
         for (int i = 0; i < levelCards.Length; i++)
         {

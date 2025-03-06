@@ -5,13 +5,16 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static GameActions;
+using static GameTiles;
+using static GameDirections;
 using static GridManager;
 
 public class AICompanion : UnitController
 {
-    public AIActions action = AIActions.Stay;
-    public bool isBefore = false;
-    public bool canMove = false;
+    [HideInInspector] public Directions direction;
+    [HideInInspector] public AIActions action = AIActions.Stay;
+    [HideInInspector] public bool isBefore = false;
+    [HideInInspector] public bool canMove = false;
     
     
     private void Start()
@@ -23,13 +26,13 @@ public class AICompanion : UnitController
     {
         if (canMove == true && action != AIActions.Stay)
         {
-            if (action == AIActions.Forward) StartCoroutine(Movement(Vector2Int.up));
+            if (direction == Directions.Forward) StartCoroutine(Movement(Vector2Int.up));
 
-            if (action == AIActions.Back) StartCoroutine(Movement(Vector2Int.down));
+            if (direction == Directions.Back) StartCoroutine(Movement(Vector2Int.down));
 
-            if (action == AIActions.Right) StartCoroutine(Movement(Vector2Int.right));
+            if (direction == Directions.Right) StartCoroutine(Movement(Vector2Int.right));
 
-            if (action == AIActions.Left) StartCoroutine(Movement(Vector2Int.left));
+            if (direction == Directions.Left) StartCoroutine(Movement(Vector2Int.left));
         }
         IfFall();
     }

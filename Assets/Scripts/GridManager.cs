@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Color = UnityEngine.Color;
-using static GameActions;
+using static GameTiles;
 
 public class GridManager : MonoBehaviour
 {
@@ -114,7 +114,7 @@ public class GridManager : MonoBehaviour
                 return grid[(int)pos.x, (int)pos.z].tileType;
             }
         }
-        return GameActions.TileTypes.None;
+        return TileTypes.None;
     }
 
     private void StoreGrid()
@@ -136,7 +136,7 @@ public class GridManager : MonoBehaviour
                 {
                     if (new Vector3(i, 0, j) == tile.transform.position)
                     {
-                        tile.tileType = GameActions.TileTypes.EmptyTile;
+                        tile.tileType = TileTypes.EmptyTile;
                         grid[i, j] = tile;
                     }
                 }
@@ -190,7 +190,7 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    public void UpdateTileType(Vector3 pos, GameActions.TileTypes type)
+    public void UpdateTileType(Vector3 pos, TileTypes type)
     {
         if (size.x > pos.x || size.y > pos.z)
         {
@@ -203,13 +203,13 @@ public class GridManager : MonoBehaviour
             Debug.Log("Set correct Grid size");
     }
 
-    public void ResetTileType(GameActions.TileTypes type)
+    public void ResetTileType(TileTypes type)
     {
         foreach (var tile in tiles)
         {
             if (tile.tileType == type)
             {
-                tile.tileType = GameActions.TileTypes.EmptyTile;
+                tile.tileType = TileTypes.EmptyTile;
             }
         }
     }

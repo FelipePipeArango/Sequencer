@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using Unity.VisualScripting;
 using static GridManager;
 using static GameActions;
+using static GameDirections;
 using System;
 
 public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
@@ -34,7 +35,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     
     public Image arrowImage;
     public bool isAIBefore = false;
-    public AIActions arrowDirection;
+    public Directions arrowDirection;
 
 
    
@@ -70,21 +71,21 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             arrowRect.anchoredPosition = new Vector2(0, -100f);
         }
     }
-    private void ConfigureArrowDirection(AIActions direction)
+    private void ConfigureArrowDirection(Directions direction)
     {
         float zRotation = 0f;
         switch (direction)
         {
-            case AIActions.Forward:
+            case Directions.Forward:
                 zRotation = -90f;
                 break;
-            case AIActions.Right:
+            case Directions.Right:
                 zRotation = 180f;
                 break;
-            case AIActions.Back:
+            case Directions.Back:
                 zRotation = 90f;
                 break;
-            case AIActions.Left:
+            case Directions.Left:
                 zRotation = 0f;
                 break;
         }

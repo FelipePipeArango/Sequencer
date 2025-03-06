@@ -12,24 +12,10 @@ public class GameActions : ScriptableObject {
         Enable
     }
 
-    public enum TileTypes
-    {
-        None,
-        EmptyTile, 
-        PlayerTile, 
-        ItemTile, 
-        KeyTile, 
-        GoalTile, 
-        PawnTile,
-    }
-
     public enum AIActions
     {
         Stay,
-        Move,
-        Left,
-        Right, 
-        Forward, 
-        Back
+        Move
     }
 }
+

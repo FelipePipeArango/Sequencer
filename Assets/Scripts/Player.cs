@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static GameActions;
+using static GameTiles;
 using static GridManager;
 
 public class Player : UnitController

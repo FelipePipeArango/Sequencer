@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using static GameTiles;
 
 
 public class TileScript : MonoBehaviour
@@ -10,10 +11,10 @@ public class TileScript : MonoBehaviour
     private Renderer render;
     private Color setColor;
     public bool isHighLight;
-    public GameActions.TileTypes tileType { get; set; }
+    public TileTypes tileType { get; set; }
 
     //Debug
-    [SerializeField] public GameActions.TileTypes tile;
+    [SerializeField] public TileTypes tile;
     
     void Start()
     {
