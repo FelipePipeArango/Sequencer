@@ -7,18 +7,13 @@ using UnityEngine.SceneManagement;
 using static GameActions;
 using static GridManager;
 
-public class AICompanion : MonoBehaviour
+public class AICompanion : UnitController
 {
-    [SerializeField] public float fallSpeed = 1.0f;
-    [HideInInspector] public bool hasItem = false;
-    [HideInInspector] public bool hasNumber = false;
     public AIActions action = AIActions.Stay;
     public bool isBefore = false;
     public bool canMove = false;
-    public bool isMoving = false;
-    private bool isBoardBelow = true;
-
-
+    
+    
     private void Start()
     {
         gridManager.UpdateTileType(transform.position, TileTypes.PawnTile);
@@ -26,11 +21,7 @@ public class AICompanion : MonoBehaviour
 
     void Update()
     {
-        if (isBefore)
-        {
-            
-        }
-        if (canMove && action != AIActions.Stay)
+        if (canMove == true && action != AIActions.Stay)
         {
             if (action == AIActions.Forward) StartCoroutine(Movement(Vector2Int.up));
 
@@ -40,17 +31,9 @@ public class AICompanion : MonoBehaviour
 
             if (action == AIActions.Left) StartCoroutine(Movement(Vector2Int.left));
         }
-        if (!isBoardBelow)
-        {
-            Vector3 targetPos = new Vector3(transform.position.x, -1f, transform.position.z);
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, fallSpeed * Time.deltaTime);
-
-            if (transform.position.y <= -0.99f)
-            {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-            }
-        }
+        IfFall();
     }
+
     //Changed the previous movement implementation to make it more easy to calculate
     public IEnumerator Movement(Vector2Int direction)
     {
@@ -65,92 +48,22 @@ public class AICompanion : MonoBehaviour
         {
             while (gridManager.CheckWhatNextTileIs(checkPos) != TileTypes.None)
             {
-                isMoving = true;
-                if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.GoalTile)
-                {
-                    if (gridManager.playerActions.hasItem)
-                    {
-                        gridManager.ResetTileType(TileTypes.PawnTile);
-                        transform.position += new Vector3(direction.x, 0, direction.y);
-
-
-                        gridManager.GoalCheck();
-                    }
-
-                    else Debug.Log("Need key");
-                }
-                else if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.PlayerTile)
-                {
-                    Debug.Log("Player");
-                }
-                else
-                {
-                    gridManager.ResetTileType(TileTypes.PawnTile);
-
-
-                    transform.position += new Vector3(direction.x, 0, direction.y);
-                    switch (gridManager.CheckWhatNextTileIs(checkPos))
-                    {
-                        case TileTypes.KeyTile:
-
-                            gridManager.KeyItemCheck();
-
-                            break;
-                        case TileTypes.ItemTile:
-
-                            gridManager.NumberItemCheck();
-
-                            break;
-                        case TileTypes.EmptyTile:
-                            break;
-                    }
-
-                    gridManager.UpdateTileType(transform.position,
-                        TileTypes.PawnTile);
-                }
+                MoveTo(direction, TileTypes.PawnTile);
 
                 yield return new WaitForSeconds(0.5f);
                 checkPos += new Vector3(direction.x, 0, direction.y);
             }
 
         }
-        isMoving = false;
-        canMove = false;
-        gridManager.playerActions.canMove = true;
-    }
+        if(isBefore == true)
+            Sequencer.sequencer.PlayerAfterAction();
 
+        canMove = false;
+        
+    }
 
     public void PushCompanion(Vector2Int direction)
     {
-        Debug.Log("Push");
-    }
-
-
-    public void GoalCheck()
-    {
-        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        int nextSceneIndex = currentSceneIndex + 1;
-
-        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
-        {
-            SceneManager.LoadScene(nextSceneIndex);
-        }
-        Debug.Log("GOAL");
-    }
-
-    public void KeyItemCheck()
-    {
-        if (hasItem)
-        {
-            hasItem = true;
-            gridManager.keyItem.SetActive(false);
-        }
-    }
-
-    public void NumberItemCheck()
-    {
-        gridManager.pickUpNumber.SetActive(false);
-        gridManager.numberHUD.SetActive(true);
-        hasNumber = true;
-    }
+        MoveTo(direction, TileTypes.PawnTile);
+    } 
 }

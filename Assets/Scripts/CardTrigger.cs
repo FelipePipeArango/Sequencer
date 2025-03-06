@@ -7,23 +7,25 @@ using UnityEngine.UI;
 using Unity.VisualScripting;
 using static GridManager;
 using static GameActions;
+using System;
 
 public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] TextMeshProUGUI usedText;
     [SerializeField] Image slotImage;
     [SerializeField] Image cardBackground;
-    [HideInInspector] public bool available = true; //tracks if the card has been used
     [HideInInspector] public bool nextInSequence;
 
-    public GameActions.Actions LevelActions;
     public int numberInQueue;
+    public bool available { get; protected set; } = true;
+    public bool isInUse = false;
+    public GameActions.Actions LevelActions { get; set; }
 
     public delegate void GrabActions(int number, bool isGrabing);
     public static event GrabActions OnGrab;
 
-
-
+    private Action<NumberItem> executeAction;
+   
     private NumberItem hoveredNumberItem;
 
     [Header("Arrow Settings")]
@@ -31,110 +33,29 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     public bool hasArrow;
     
     public Image arrowImage;
-    public bool isBefore = false;
+    public bool isAIBefore = false;
     public AIActions arrowDirection;
+
+
    
 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        GameObject hoveredObject = eventData.pointerDrag;
 
-        if (hoveredObject != null && hoveredObject.GetComponent<NumberItem>() != null)
-        {
-            hoveredNumberItem = hoveredObject.GetComponent<NumberItem>();
+    // Delegate to hold the execution logic
 
-            // Display the debug message based on the card type and number value
-            if (LevelActions == GameActions.Actions.Move)
-                gridManager.TurnOnHighlight(true, hoveredNumberItem.value);
-
-            else if (LevelActions == GameActions.Actions.PickUp)
-                gridManager.TurnOnHighlight(false, hoveredNumberItem.value);
-
-            if (LevelActions == GameActions.Actions.Throw)
-                gridManager.TurnOnHighlight(false, hoveredNumberItem.value);
-        }
-    }
+    // Set the execution method dynamically based on LevelActions
 
     private void Start()
     {
-        if (hasArrow == true)
+        if (gridManager.AIActions != null)
         {
-            ConfigureArrowPosition(isBefore);
-            ConfigureArrowDirection(arrowDirection);
-            
-        }
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        gridManager.TurnOffHighlight();
-        // Clear the hovered item reference when leaving the card
-        hoveredNumberItem = null;
-    }
-
-    
-    public void OnDrop(PointerEventData eventData)
-    {
-        if (available == true && nextInSequence == true)
-        {
-            GameObject dropped = eventData.pointerDrag;
-            NumberItem draggableItem = dropped.GetComponent<NumberItem>();
-
-            if (isBefore == true && hasArrow == true)
-                Sequencer.sequencer.TriggerCard(isBefore, arrowDirection);
-
-            Sequencer.sequencer.CommunicateAction(draggableItem, LevelActions);
-            //Sequencer.sequencer.ManageSequenceText(0, false);
-
-            if (OnGrab != null)
-                OnGrab(0, false); //Communicates with the sequencer whengrabing a number.
-        }
-        if (hoveredNumberItem != null)
-            Debug.Log($"Dropped {hoveredNumberItem.value} on {LevelActions} action.");
-            // Handle drop logic (like executing the action or snapping the item to the card)
-        
-    }
-
-    public void Disable(NumberItem number)
-    {
-        if (available)
-        {
-            usedText.gameObject.SetActive(true);
-            slotImage.gameObject.SetActive(false);
-            usedText.text = number.value.ToString();
-            number.transform.SetParent(number.parentTransform);
-            number.gameObject.SetActive(false);
-            available = false;
-        }
-        else
-        {
-            return;
-        }
-    }
-
-    public void Enable(bool undo, NumberItem number)
-    {
-        if (!undo) //this check if a card is being enabled through the Undo function of the game, or thorugh the Enable card action.
-        {
-            if (!available) //if it's not through undo (therefore, using the Enable action), then it does not return the used numbers.
+            if (hasArrow == true)
             {
-                available = true;
-                usedText.gameObject.SetActive(false);
-                slotImage.gameObject.SetActive(true);
+                arrowImage.gameObject.SetActive(true);
+                ConfigureArrowPosition(isAIBefore);
+                ConfigureArrowDirection(arrowDirection);
             }
         }
-        else //if it's through the undo system, then it returns the used number
-        {
-            usedText.gameObject.SetActive(false);
-            slotImage.gameObject.SetActive(true);
-
-            number.image.raycastTarget = true;
-            number.gameObject.SetActive(true);
-            available = true;
-        }
     }
-
-
 
     private void ConfigureArrowPosition(bool isbefore)
     {
@@ -149,7 +70,6 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             arrowRect.anchoredPosition = new Vector2(0, -100f);
         }
     }
-
     private void ConfigureArrowDirection(AIActions direction)
     {
         float zRotation = 0f;
@@ -170,5 +90,129 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         }
 
         arrowImage.rectTransform.rotation = Quaternion.Euler(0f, 0f, zRotation);
+    }
+
+
+    public void Enable()
+    {
+        if (!available) //if it's not through undo (therefore, using the Enable action), then it does not return the used numbers.
+        {
+            available = true;
+            usedText.gameObject.SetActive(false);
+            slotImage.gameObject.SetActive(true);
+        }
+    }
+    public void Disable(NumberItem number)
+    {
+        if (available)
+        {
+            usedText.gameObject.SetActive(true);
+            slotImage.gameObject.SetActive(false);
+            usedText.text = number.value.ToString();
+            number.transform.SetParent(number.parentTransform);
+            number.gameObject.SetActive(false);
+            available = false;
+        }
+        else
+        {
+            return;
+        }
+    }
+    public void ExecuteAction(NumberItem numberItem)
+    {
+        executeAction?.Invoke(numberItem);
+    }
+    public void Initialize(GameActions.Actions action)
+    {
+        LevelActions = action;
+        switch (action)
+        {
+            case GameActions.Actions.Move:
+                executeAction = ExecuteMoveAction;
+               
+                break;
+            case GameActions.Actions.PickUp:
+                executeAction = ExecutePickUpAction;
+               
+                break;
+            case GameActions.Actions.Throw:
+                executeAction = ExecuteThrowAction;
+               
+                break;
+            default:
+                executeAction = DefaultAction;
+                break;
+        }
+    }
+
+    
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        GameObject hoveredObject = eventData.pointerDrag;
+
+        if (hoveredObject != null && hoveredObject.GetComponent<NumberItem>() != null)
+        {
+            hoveredNumberItem = hoveredObject.GetComponent<NumberItem>();
+
+            // Display the debug message based on the card type and number value
+            if (LevelActions == GameActions.Actions.Move)
+                gridManager.TurnOnHighlight(true, hoveredNumberItem.value);
+
+            else if (LevelActions == GameActions.Actions.PickUp)
+                gridManager.TurnOnHighlight(false, hoveredNumberItem.value);
+
+            if (LevelActions == GameActions.Actions.Throw)
+                gridManager.TurnOnHighlight(false, hoveredNumberItem.value);
+            isInUse = true;
+        }
+    }
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        gridManager.TurnOffHighlight();
+        // Clear the hovered item reference when leaving the card
+        hoveredNumberItem = null;
+        isInUse = false;
+    }
+    public void OnDrop(PointerEventData eventData)
+    {
+        if (available == true && nextInSequence == true)
+        {
+            GameObject dropped = eventData.pointerDrag;
+            NumberItem draggableItem = dropped.GetComponent<NumberItem>();
+
+            if (hasArrow == true)
+                Sequencer.sequencer.CommunicateAIActions(isAIBefore, arrowDirection);
+
+            Sequencer.sequencer.CommunicateAction(draggableItem, LevelActions);
+            //Sequencer.sequencer.ManageSequenceText(0, false);
+
+            if (OnGrab != null)
+                OnGrab(0, false); //Communicates with the sequencer whengrabing a number.
+        }
+        if (hoveredNumberItem != null)
+            Debug.Log($"Dropped {hoveredNumberItem.value} on {LevelActions} action.");
+            // Handle drop logic (like executing the action or snapping the item to the card)
+        
+    }
+     
+    
+    private void ExecuteMoveAction(NumberItem numberItem)
+    {
+        gridManager.playerActions.MovementReceiver(numberItem.value, LevelActions);
+        Debug.Log($"Executing Move action with value {numberItem.value}");
+    }
+    private void ExecutePickUpAction(NumberItem numberItem)
+    {
+        gridManager.playerActions.PickUpReceiver(numberItem.value, LevelActions);
+        Debug.Log($"Executing PickUp action with value {numberItem.value}");
+    }
+    private void ExecuteThrowAction(NumberItem numberItem)
+    {
+        gridManager.playerActions.ThrowReceiver(numberItem.value, LevelActions);
+        Debug.Log($"Executing Throw action with value {numberItem.value}");
+    }
+    private void DefaultAction(NumberItem numberItem)
+    {
+        Debug.Log($"No action assigned for {LevelActions}");
     }
 }

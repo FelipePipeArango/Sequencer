@@ -8,7 +8,7 @@ public class GridManager : MonoBehaviour
 {
     public static GridManager gridManager { get; private set; }
 
-    [SerializeField] Color color;
+    [SerializeField] Color highlightColor;
 
     [SerializeField] Vector2Int size;
     private GameObject[] allTiles;
@@ -24,8 +24,8 @@ public class GridManager : MonoBehaviour
     [Header("OPTIONAL OBJECTS IN A LEVEL")] [SerializeField]
     public GameObject pickUpNumber;
     public GameObject numberHUD; //Should at some point go to card manager
-    public UnitControler playerActions;
-    public AICompanion AIActions;
+    [HideInInspector] public Player playerActions;
+    [HideInInspector] public AICompanion AIActions;
 
 
     void Awake()
@@ -38,7 +38,7 @@ public class GridManager : MonoBehaviour
 
         gridManager = this;
 
-        playerActions = player.GetComponent<UnitControler>();
+        playerActions = player.GetComponent<Player>();
        
         if(AICompanion != null)
             AIActions = AICompanion.GetComponent<AICompanion>();  
@@ -81,7 +81,7 @@ public class GridManager : MonoBehaviour
         }
         foreach (var tile in tiles)
         {
-            if (tile.isHighLight) tile.SetColor(color);
+            if (tile.isHighLight) tile.SetColor(highlightColor);
             
            
         }
@@ -190,45 +190,6 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    public bool isCompanionMoving()
-    {
-        if (gridManager.AIActions != null)
-        {
-            return AIActions.isMoving;
-        }
-        else
-        {
-            return false;
-        }
-    }
-    public void GoalCheck()
-    {
-        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        int nextSceneIndex = currentSceneIndex + 1;
-
-        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
-        {
-            SceneManager.LoadScene(nextSceneIndex);
-        }
-            Debug.Log("GOAL");
-    }
-
-    public void KeyItemCheck()
-    {
-        if (!playerActions.hasItem)
-        {
-            playerActions.hasItem = true;
-            keyItem.SetActive(false);
-        }
-    }
-
-    public void NumberItemCheck()
-    {
-        pickUpNumber.SetActive(false);
-        numberHUD.SetActive(true);
-        playerActions.hasNumber = true;
-    }
-
     public void UpdateTileType(Vector3 pos, GameActions.TileTypes type)
     {
         if (size.x > pos.x || size.y > pos.z)
@@ -252,4 +213,5 @@ public class GridManager : MonoBehaviour
             }
         }
     }
+
 }

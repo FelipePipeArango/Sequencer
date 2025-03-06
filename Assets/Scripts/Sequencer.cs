@@ -16,12 +16,16 @@ public class Sequencer : MonoBehaviour
     [SerializeField] Image nextCardText;
 
     CardTrigger[] levelCards;
-    //GameActions.Actions[] levelActions;
-    public int[] queue;
+    public Actions[] actions;
+
     GameObject[] allCards;
 
+    public CardTrigger lastCard { get; private set; }
+    public NumberItem lastNumber { get; private set; }
+    public AIActions lastDirection { get; set; }
+
     //Makes sure that only the next card in the sequence is considered as "next". Cards that are not next in the sequence are not avaiable to use.
-   
+
     private void OnEnable()
     {
         CardTrigger.OnGrab += ManageSequenceText;
@@ -50,17 +54,26 @@ public class Sequencer : MonoBehaviour
 
         if (allCards != null)
         {
-            levelCards = new CardTrigger[allCards.Length];
-           
-            for (int i = 0; i < allCards.Length; i++)            
-                levelCards[i] = allCards[i].GetComponent<CardTrigger>();
+            CardTrigger[] cardPlaceholder = new CardTrigger[allCards.Length];
 
-            CardTrigger[] cardPlaceholder = new CardTrigger[levelCards.Length];
+            for (int i = 0; i < allCards.Length; i++)
+                cardPlaceholder[i] = allCards[i].GetComponent<CardTrigger>();
+
+            levelCards = new CardTrigger[allCards.Length];
 
             for (int i = 0; i < levelCards.Length; i++)
-                cardPlaceholder[levelCards[i].numberInQueue] = levelCards[i];
 
-            levelCards = cardPlaceholder;
+            {
+                if (actions != null)
+                {
+                    levelCards[cardPlaceholder[i].numberInQueue] = cardPlaceholder[i];
+                    levelCards[cardPlaceholder[i].numberInQueue].Initialize(actions[cardPlaceholder[i].numberInQueue]);
+                }
+                else
+                {
+                    Debug.Log("Assign the Actions to the cards in sequencer.cs");
+                }
+            }
         }
     }
 
@@ -105,51 +118,62 @@ public class Sequencer : MonoBehaviour
         }
     }
 
-    public void TriggerCard(bool isBefore, GameActions.AIActions direction)
+    public void CommunicateAIActions(bool isBefore, GameActions.AIActions direction)
     {
-        gridManager.AIActions.action = direction;
-        gridManager.AIActions.canMove = isBefore;
-        gridManager.AIActions.isBefore = isBefore;
+        if (gridManager.AIActions != null)
+        {
+            gridManager.AIActions.action = direction;
+            lastDirection = direction;
+            gridManager.AIActions.canMove = isBefore;
+            gridManager.AIActions.isBefore = isBefore;
+        }
+    }
+
+    public void AIAfterAction()
+    {
+        if (gridManager.AIActions != null 
+            && gridManager.AIActions.action != AIActions.Stay)
+        {
+            gridManager.AIActions.action = lastDirection;
+            gridManager.AIActions.canMove = true;
+            gridManager.AIActions.isBefore = false;
+        }
     }
 
     public void CommunicateAction(NumberItem recievedNumber, GameActions.Actions usedAction)
     {
-        //its supposed to be here but where exectly and what do I need for it to work
         for (int i = 0; i < levelCards.Length; i++)
         {
-            //BUG found it does not allow for multiple cards for the first action
-            //TODO need to make the clear which card is in use
-
-                if (usedAction == levelCards[i].LevelActions //The card slot that's equal to the recieved number
-                    && levelCards[i].available == true) //allows for multiple cards of the same type
+            if (usedAction == levelCards[i].LevelActions //The card slot that's equal to the recieved number
+                && levelCards[i].isInUse == true) //allows for multiple cards of the same type
+            {
+                if (levelCards[i].isAIBefore != true)
                 {
-                    if (usedAction == GameActions.Actions.Enable)
-                        levelCards[recievedNumber.value - 1].Enable(false, recievedNumber);                                            
+                    if (levelCards[i].LevelActions == Actions.Enable)
+                        levelCards[recievedNumber.value - 1].Enable();                    
                     else
-                        PlayerAfterAction(recievedNumber.value, usedAction);
-                    
+                        levelCards[i].ExecuteAction(recievedNumber);
+
+                    levelCards[i].Disable(recievedNumber);
+                    NextCard(recievedNumber.value);
+                    break;
+                }
+                else
+                {
+                    lastCard = levelCards[i];
+                    lastNumber = recievedNumber;
+
                     levelCards[i].Disable(recievedNumber);
                     NextCard(recievedNumber.value);
 
                     break;
                 }
+            }
         }
     }
-    public void PlayerAfterAction(int recievedNumber,GameActions.Actions usedAction)
+
+    public void PlayerAfterAction()
     {
-        switch (usedAction)
-        {
-            case GameActions.Actions.Move:
-                gridManager.playerActions.MovementReceiver(recievedNumber, usedAction);
-                break;
-
-            case GameActions.Actions.PickUp:
-                gridManager.playerActions.PickUpReceiver(recievedNumber, usedAction);
-                break;
-
-            case GameActions.Actions.Throw:
-                gridManager.playerActions.ThrowReceiver(recievedNumber, usedAction);
-                break;
-        }
+        lastCard.ExecuteAction(lastNumber);        
     }
 }
