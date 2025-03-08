@@ -11,6 +11,8 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     [SerializeField] TextMeshProUGUI usedText;
     [SerializeField] Image slotImage;
     [SerializeField] Image cardBackground;
+    [SerializeField] private Material dissolveMaterial;
+
     [HideInInspector] public bool available = true; //tracks if the card has been used
     [HideInInspector] public bool nextInSequence;
 
@@ -66,21 +68,15 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             GameObject dropped = eventData.pointerDrag;
             NumberItem draggableItem = dropped.GetComponent<NumberItem>();
 
-            if (OnDropAction != null)
-            {
-                OnDropAction (draggableItem, LevelActions);
-            }
+            OnDropAction?.Invoke(draggableItem, LevelActions);
+            OnGrab?.Invoke(0, false);
 
-            if (OnGrab != null)
-            {
-                OnGrab(0, false); //Communicates with the sequencer whengrabing a number.
-            }
-
+            StartDissolve(); // Start the dissolve effect on the card
         }
+
         if (hoveredNumberItem != null)
         {
             Debug.Log($"Dropped {hoveredNumberItem.value} on {LevelActions} action.");
-            // Handle drop logic (like executing the action or snapping the item to the card)
         }
     }
 
@@ -94,6 +90,8 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             number.transform.SetParent(number.parentTransform);
             number.gameObject.SetActive(false);
             available = false;
+
+            StartDissolve();
         }
         else
         {
@@ -124,6 +122,31 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             number.image.raycastTarget = true;
             number.gameObject.SetActive(true);
             available = true;
+        }
+    }
+
+    private IEnumerator DissolveEffect()
+    {
+        float dissolveAmount = 0f;
+        float dissolveSpeed = 2.0f;
+        slotImage.material = new Material(dissolveMaterial);
+        Material mat = slotImage.material;
+
+        while (dissolveAmount < 1.0f)
+        {
+            dissolveAmount += Time.deltaTime * dissolveSpeed;
+            mat.SetFloat("DissolveAmount", dissolveAmount);
+            yield return null;
+        }
+
+        
+    }
+
+    private void StartDissolve()
+    {
+        if (dissolveMaterial != null)
+        {
+            StartCoroutine(DissolveEffect());
         }
     }
 }
