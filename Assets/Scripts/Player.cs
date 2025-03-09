@@ -44,12 +44,16 @@ public class Player : UnitController
             && gridManager.AIActions.canMove == false)
         {
             if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
+            else if (Input.GetKeyDown(KeyCode.UpArrow)) StartCoroutine(Movement(Vector2Int.up));
 
             if (Input.GetKeyDown(KeyCode.S)) StartCoroutine(Movement(Vector2Int.down));
+            else if (Input.GetKeyDown(KeyCode.DownArrow)) StartCoroutine(Movement(Vector2Int.down));
 
             if (Input.GetKeyDown(KeyCode.D)) StartCoroutine(Movement(Vector2Int.right));
+            else if (Input.GetKeyDown(KeyCode.RightArrow)) StartCoroutine(Movement(Vector2Int.right));
 
             if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(Movement(Vector2Int.left));
+            else if (Input.GetKeyDown(KeyCode.LeftArrow)) StartCoroutine(Movement(Vector2Int.left));
         }
         if (number == 0)
             push = 1;
