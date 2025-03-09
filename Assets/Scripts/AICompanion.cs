@@ -15,8 +15,11 @@ public class AICompanion : UnitController
     [HideInInspector] public AIActions action = AIActions.Stay;
     [HideInInspector] public bool isBefore = false;
     [HideInInspector] public bool canMove = false;
-    
-    
+    [HideInInspector] public bool isMoving = false;
+
+    public delegate void AIisMoving(bool isMoving);
+    public static event AIisMoving OnMove;
+
     private void Start()
     {
         gridManager.UpdateTileType(transform.position, TileTypes.PawnTile);
@@ -38,7 +41,7 @@ public class AICompanion : UnitController
     }
 
     //Changed the previous movement implementation to make it more easy to calculate
-    public IEnumerator Movement(Vector2Int direction)
+    protected override IEnumerator Movement(Vector2Int direction)
     {
         action = AIActions.Stay;
 
@@ -47,6 +50,9 @@ public class AICompanion : UnitController
             0, 
             transform.position.z + direction.y);
 
+        if (OnMove != null)
+            OnMove(canMove);
+        
         if (canMove)
         {
             while (gridManager.CheckWhatNextTileIs(checkPos) != TileTypes.None)
@@ -62,7 +68,9 @@ public class AICompanion : UnitController
             Sequencer.sequencer.PlayerAfterAction();
 
         canMove = false;
-        
+
+        if(OnMove != null)
+            OnMove(canMove);
     }
 
     public void PushCompanion(Vector2Int direction)

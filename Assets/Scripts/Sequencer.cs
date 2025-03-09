@@ -13,12 +13,11 @@ public class Sequencer : MonoBehaviour
 {
     public static Sequencer sequencer { get; private set; }
 
+    [SerializeField] 
+    Image nextCardText;
     Image cardBackground;
-    [SerializeField] Image nextCardText;
 
     CardTrigger[] levelCards;
-    public Actions[] actions;
-
     GameObject[] allCards;
 
     public CardTrigger lastCard { get; private set; }
@@ -29,12 +28,21 @@ public class Sequencer : MonoBehaviour
 
     private void OnEnable()
     {
+        if (gridManager.AIActions != null)
+        {
+            AICompanion.OnMove += HandleAIStateChanged;
+        }
+
         CardTrigger.OnGrab += ManageSequenceText;
         NumberItem.OnDragAction += ManageSequenceText;
     }
 
     private void OnDisable()
     {
+        if (gridManager.AIActions != null)
+        {
+            AICompanion.OnMove -= HandleAIStateChanged;
+        }
         CardTrigger.OnGrab -= ManageSequenceText;
         NumberItem.OnDragAction -= ManageSequenceText;
     }
@@ -63,17 +71,9 @@ public class Sequencer : MonoBehaviour
             levelCards = new CardTrigger[allCards.Length];
 
             for (int i = 0; i < levelCards.Length; i++)
-
             {
-                if (actions != null)
-                {
-                    levelCards[cardPlaceholder[i].numberInQueue] = cardPlaceholder[i];
-                    levelCards[cardPlaceholder[i].numberInQueue].Initialize(actions[cardPlaceholder[i].numberInQueue]);
-                }
-                else
-                {
-                    Debug.Log("Assign the Actions to the cards in sequencer.cs");
-                }
+                levelCards[cardPlaceholder[i].numberInQueue] = cardPlaceholder[i];
+                levelCards[cardPlaceholder[i].numberInQueue].Initialize();
             }
         }
     }
@@ -86,13 +86,23 @@ public class Sequencer : MonoBehaviour
             {
                 levelCards[i].nextInSequence = true;
                 cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
-                cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 1);
+
+                cardBackground.color = new Color(
+                    cardBackground.color.r,
+                    cardBackground.color.g,
+                    cardBackground.color.b,
+                    1);
             }
             else
             {
                 levelCards[i].nextInSequence = false;
                 cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
-                cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 0.5f);
+
+                cardBackground.color = new Color(
+                    cardBackground.color.r,
+                    cardBackground.color.g,
+                    cardBackground.color.b,
+                    0.5f);
             }
         }
     }
@@ -107,9 +117,10 @@ public class Sequencer : MonoBehaviour
                 {
                     nextCardText.gameObject.SetActive(true);
                     nextCardText.transform.position =
-                        new Vector3(levelCards[i].transform.position.x
-                            , levelCards[i].transform.position.y + 92
-                            , levelCards[i].transform.position.z);
+                        new Vector3(
+                            levelCards[i].transform.position.x,
+                            levelCards[i].transform.position.y + 92, 
+                            levelCards[i].transform.position.z);
                 }
             }
         }
@@ -130,7 +141,37 @@ public class Sequencer : MonoBehaviour
             gridManager.AIActions.isBefore = isBefore;
         }
     }
-
+    public void HandleAIStateChanged(bool isMoving)
+    {
+        if (isMoving)
+        {
+            DisableAll();
+        }
+        else
+        {
+            EnableNextCard();
+        }
+    }
+    private void DisableAll()
+    {
+        foreach (var card in levelCards)
+        {
+            card.Disable();
+            cardBackground = card.gameObject.GetComponentInChildren<Image>();
+            cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 0.5f);
+        }
+    }
+    private void EnableNextCard()
+    {
+        foreach (var card in levelCards)
+        {
+            if (card.nextInSequence)
+            {
+                card.Enable();
+            }
+        }
+        NextCard(lastNumber.value);
+    }
     public void AIAfterAction()
     {
         if (gridManager.AIActions != null 
@@ -157,8 +198,9 @@ public class Sequencer : MonoBehaviour
                     else
                         levelCards[i].ExecuteAction(recievedNumber);
 
-                    levelCards[i].Disable(recievedNumber);
+                    levelCards[i].DisableUsed(recievedNumber);
                     NextCard(recievedNumber.value);
+                    lastNumber = recievedNumber;
                     break;
                 }
                 else
@@ -166,7 +208,7 @@ public class Sequencer : MonoBehaviour
                     lastCard = levelCards[i];
                     lastNumber = recievedNumber;
 
-                    levelCards[i].Disable(recievedNumber);
+                    levelCards[i].DisableUsed(recievedNumber);
                     NextCard(recievedNumber.value);
 
                     break;

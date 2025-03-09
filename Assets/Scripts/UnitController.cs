@@ -13,10 +13,10 @@ public class UnitController : MonoBehaviour
     [HideInInspector] public bool hasItem = false;
     [HideInInspector] public bool hasNumber = false;
     [HideInInspector] public int number = 0;
-    [HideInInspector] public bool isBoardBelow = true;
+    [HideInInspector] protected bool isBoardBelow = true;
 
 
-    public void MoveTo(Vector2Int direction, TileTypes spawnTileType)
+    protected void MoveTo(Vector2Int direction, TileTypes spawnTileType)
     {
         Vector3 checkPos = new Vector3(
            transform.position.x + direction.x,
@@ -66,13 +66,10 @@ public class UnitController : MonoBehaviour
 
     }
 
-    public void MovementReceiver(int recievedNumber, GameActions.Actions usedAction)
-    {
-        number += recievedNumber;
-    }
+   
 
 
-    public void IfFall()
+    protected void IfFall()
     {
         if (!isBoardBelow)
         {
@@ -85,7 +82,6 @@ public class UnitController : MonoBehaviour
             }
         }
     }
-
 
     private void MoveToTile(Vector2Int direction, TileTypes pawnTileType)
     {
@@ -108,7 +104,9 @@ public class UnitController : MonoBehaviour
             Debug.Log("Need key");
     }
 
-    public void GoalCheck()
+    protected virtual IEnumerator Movement(Vector2Int direction){ return null; }
+
+    protected void GoalCheck()
     {
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         int nextSceneIndex = currentSceneIndex + 1;
@@ -119,8 +117,8 @@ public class UnitController : MonoBehaviour
         }
         Debug.Log("GOAL");
     }
-    
-    public void KeyItemCheck()
+
+    protected void KeyItemCheck()
     {
         if (hasItem != true)
         {
@@ -128,8 +126,8 @@ public class UnitController : MonoBehaviour
             gridManager.keyItem.SetActive(false);
         }
     }
-    
-    public void NumberItemCheck()
+
+    protected void NumberItemCheck()
     {
         gridManager.pickUpNumber.SetActive(false);
         gridManager.numberHUD.SetActive(true);

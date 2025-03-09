@@ -16,11 +16,11 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     [SerializeField] Image slotImage;
     [SerializeField] Image cardBackground;
     [HideInInspector] public bool nextInSequence;
+    [HideInInspector] public bool isInUse = false;
 
     public int numberInQueue;
-    public bool available { get; protected set; } = true;
-    public bool isInUse = false;
-    public GameActions.Actions LevelActions { get; set; }
+    public bool available { get; set; } = true;
+    public GameActions.Actions LevelActions;
 
     public delegate void GrabActions(int number, bool isGrabing);
     public static event GrabActions OnGrab;
@@ -30,20 +30,10 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     private NumberItem hoveredNumberItem;
 
     [Header("Arrow Settings")]
-    [Header("Check hasArrow to true only if you have Companion in the scene")]
     public bool hasArrow;
-    
     public Image arrowImage;
     public bool isAIBefore = false;
     public Directions arrowDirection;
-
-
-   
-
-
-    // Delegate to hold the execution logic
-
-    // Set the execution method dynamically based on LevelActions
 
     private void Start()
     {
@@ -71,6 +61,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             arrowRect.anchoredPosition = new Vector2(0, -100f);
         }
     }
+
     private void ConfigureArrowDirection(Directions direction)
     {
         float zRotation = 0f;
@@ -93,6 +84,27 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         arrowImage.rectTransform.rotation = Quaternion.Euler(0f, 0f, zRotation);
     }
 
+    public void Initialize()
+    {
+        switch (LevelActions)
+        {
+            case Actions.Move:
+                executeAction = ExecuteMoveAction;
+               
+                break;
+            case Actions.PickUp:
+                executeAction = ExecutePickUpAction;
+               
+                break;
+            case Actions.Throw:
+                executeAction = ExecuteThrowAction;
+               
+                break;
+            default:
+                executeAction = DefaultAction;
+                break;
+        }
+    }
 
     public void Enable()
     {
@@ -103,7 +115,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             slotImage.gameObject.SetActive(true);
         }
     }
-    public void Disable(NumberItem number)
+    public void DisableUsed(NumberItem number)
     {
         if (available)
         {
@@ -119,33 +131,12 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             return;
         }
     }
-    public void ExecuteAction(NumberItem numberItem)
+    public void Disable()
     {
-        executeAction?.Invoke(numberItem);
+        usedText.gameObject.SetActive(true);
+        slotImage.gameObject.SetActive(false);
+        available = false;
     }
-    public void Initialize(GameActions.Actions action)
-    {
-        LevelActions = action;
-        switch (action)
-        {
-            case GameActions.Actions.Move:
-                executeAction = ExecuteMoveAction;
-               
-                break;
-            case GameActions.Actions.PickUp:
-                executeAction = ExecutePickUpAction;
-               
-                break;
-            case GameActions.Actions.Throw:
-                executeAction = ExecuteThrowAction;
-               
-                break;
-            default:
-                executeAction = DefaultAction;
-                break;
-        }
-    }
-
     
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -197,20 +188,22 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     }
      
     
+    public void ExecuteAction(NumberItem numberItem)
+    {
+        executeAction?.Invoke(numberItem);
+    }
+ 
     private void ExecuteMoveAction(NumberItem numberItem)
     {
-        gridManager.playerActions.MovementReceiver(numberItem.value, LevelActions);
-        Debug.Log($"Executing Move action with value {numberItem.value}");
+        gridManager.playerActions.MovementReceiver(numberItem.value);  
     }
     private void ExecutePickUpAction(NumberItem numberItem)
     {
-        gridManager.playerActions.PickUpReceiver(numberItem.value, LevelActions);
-        Debug.Log($"Executing PickUp action with value {numberItem.value}");
+        gridManager.playerActions.PickUpReceiver(numberItem.value);    
     }
     private void ExecuteThrowAction(NumberItem numberItem)
     {
-        gridManager.playerActions.ThrowReceiver(numberItem.value, LevelActions);
-        Debug.Log($"Executing Throw action with value {numberItem.value}");
+        gridManager.playerActions.ThrowReceiver(numberItem.value);   
     }
     private void DefaultAction(NumberItem numberItem)
     {

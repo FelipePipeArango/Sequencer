@@ -8,13 +8,12 @@ using static GameTiles;
 
 public class TileScript : MonoBehaviour
 {
+    [HideInInspector] public TileTypes tileType { get; set; }
+   
     private Renderer render;
     private Color setColor;
-    public bool isHighLight;
-    public TileTypes tileType { get; set; }
 
-    //Debug
-    [SerializeField] public TileTypes tile;
+    public bool isHighLight;
     
     void Start()
     {
@@ -25,7 +24,7 @@ public class TileScript : MonoBehaviour
     public void SetColor(Color color)
     {
         render = GetComponent<Renderer>();
-        this.render.material.color = color;
+        render.material.color = color;
     }
     public Color GetColor()
     {
@@ -36,6 +35,4 @@ public class TileScript : MonoBehaviour
     {
         SetColor(setColor);
     }
-
-    
 }

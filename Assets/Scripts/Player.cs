@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using UnityEngine.SceneManagement;
 using static GameActions;
 using static GameTiles;
@@ -27,24 +28,24 @@ public class Player : UnitController
         }
         if (number > 0 && gridManager.AIActions == null)
         {
-            if (Input.GetKeyDown(KeyCode.W)) Movement(Vector2Int.up);
+            if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
 
-            if (Input.GetKeyDown(KeyCode.S)) Movement(Vector2Int.down);
+            if (Input.GetKeyDown(KeyCode.S)) StartCoroutine(Movement(Vector2Int.down));
 
-            if (Input.GetKeyDown(KeyCode.D)) Movement(Vector2Int.right);
+            if (Input.GetKeyDown(KeyCode.D)) StartCoroutine(Movement(Vector2Int.right));
 
-            if (Input.GetKeyDown(KeyCode.A)) Movement(Vector2Int.left);
+            if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(Movement(Vector2Int.left));
         }
         else if (number > 0 && gridManager.AIActions != null 
             && gridManager.AIActions.canMove == false)
         {
-            if (Input.GetKeyDown(KeyCode.W)) Movement(Vector2Int.up);
+            if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
 
-            if (Input.GetKeyDown(KeyCode.S)) Movement(Vector2Int.down);
+            if (Input.GetKeyDown(KeyCode.S)) StartCoroutine(Movement(Vector2Int.down));
 
-            if (Input.GetKeyDown(KeyCode.D)) Movement(Vector2Int.right);
+            if (Input.GetKeyDown(KeyCode.D)) StartCoroutine(Movement(Vector2Int.right));
 
-            if (Input.GetKeyDown(KeyCode.A)) Movement(Vector2Int.left);
+            if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(Movement(Vector2Int.left));
         }
         if (number == 0)
             push = 1;
@@ -53,7 +54,7 @@ public class Player : UnitController
     }
 
 
-    void Movement(Vector2Int direction)
+    protected override IEnumerator Movement(Vector2Int direction) 
     {
         Vector3 checkPos = new Vector3(
             transform.position.x + direction.x,
@@ -74,7 +75,7 @@ public class Player : UnitController
                 gridManager.AIActions.PushCompanion(direction);
                 MoveTo(direction, TileTypes.PlayerTile);
                 number--;
-
+                yield return new WaitForSeconds(0.0f);
                 push = 0;
             }
         }
@@ -82,15 +83,21 @@ public class Player : UnitController
         {
             MoveTo(direction, TileTypes.PlayerTile);
             number--;
+            yield return new WaitForSeconds(0.0f);
         }
         if(isAIBefore == false)
         {
             Sequencer.sequencer.AIAfterAction();
         }
+        
     }
 
+    public void MovementReceiver(int recievedNumber)
+    {
+        number += recievedNumber;
+    }
 
-    public void ThrowReceiver(int recievedNumber, GameActions.Actions usedAction)
+    public void ThrowReceiver(int recievedNumber)
     {
         if (hasItem)
         {
@@ -107,7 +114,7 @@ public class Player : UnitController
         }
     }
 
-    public void PickUpReceiver(int recievedNumber, GameActions.Actions usedAction)
+    public void PickUpReceiver(int recievedNumber)
     {
         if (recievedNumber == gridManager.CalculateDistance(
                 gridManager.keyItem.transform.position, transform.position))
