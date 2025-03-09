@@ -27,22 +27,15 @@ public class Sequencer : MonoBehaviour
     //Makes sure that only the next card in the sequence is considered as "next". Cards that are not next in the sequence are not avaiable to use.
 
     private void OnEnable()
-    {
-        if (gridManager.AIActions != null)
-        {
-            AICompanion.OnMove += HandleAIStateChanged;
-        }
-
+    {      
+        AICompanion.OnMove += HandleAIStateChanged;
         CardTrigger.OnGrab += ManageSequenceText;
         NumberItem.OnDragAction += ManageSequenceText;
     }
 
     private void OnDisable()
     {
-        if (gridManager.AIActions != null)
-        {
-            AICompanion.OnMove -= HandleAIStateChanged;
-        }
+        AICompanion.OnMove -= HandleAIStateChanged;
         CardTrigger.OnGrab -= ManageSequenceText;
         NumberItem.OnDragAction -= ManageSequenceText;
     }
@@ -165,7 +158,8 @@ public class Sequencer : MonoBehaviour
     {
         foreach (var card in levelCards)
         {
-            if (card.nextInSequence)
+            if (card.nextInSequence && 
+                card != lastCard)
             {
                 card.Enable();
             }
@@ -191,27 +185,42 @@ public class Sequencer : MonoBehaviour
             if (usedAction == levelCards[i].LevelActions //The card slot that's equal to the recieved number
                 && levelCards[i].isInUse == true) //allows for multiple cards of the same type
             {
-                if (levelCards[i].isAIBefore != true)
+                lastCard = levelCards[i];
+                lastNumber = recievedNumber;
+
+                if (levelCards[i].hasArrow != true)
                 {
                     if (levelCards[i].LevelActions == Actions.Enable)
-                        levelCards[recievedNumber.value - 1].Enable();                    
+                        levelCards[recievedNumber.value - 1].Enable();
                     else
                         levelCards[i].ExecuteAction(recievedNumber);
 
                     levelCards[i].DisableUsed(recievedNumber);
                     NextCard(recievedNumber.value);
-                    lastNumber = recievedNumber;
+                   
                     break;
                 }
                 else
                 {
-                    lastCard = levelCards[i];
-                    lastNumber = recievedNumber;
+                    if (levelCards[i].isAIBefore != true)
+                    {
+                        if (levelCards[i].LevelActions == Actions.Enable)
+                            levelCards[recievedNumber.value - 1].Enable();
+                        else
+                            levelCards[i].ExecuteAction(recievedNumber);
 
-                    levelCards[i].DisableUsed(recievedNumber);
-                    NextCard(recievedNumber.value);
+                        levelCards[i].DisableUsed(recievedNumber);
+                        NextCard(recievedNumber.value);
+                        
+                        break;
+                    }
+                    else
+                    {
+                        levelCards[i].DisableUsed(recievedNumber);
+                        NextCard(recievedNumber.value);
 
-                    break;
+                        break;
+                    }
                 }
             }
         }

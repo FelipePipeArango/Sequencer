@@ -50,7 +50,10 @@ public class GridManager : MonoBehaviour
     private void Start()
     {
         UpdateTileType(keyItem.transform.position, TileTypes.KeyTile);
-        UpdateTileType(pickUpNumber.transform.position, TileTypes.ItemTile);
+        if (pickUpNumber != null) 
+        { 
+            UpdateTileType(pickUpNumber.transform.position, TileTypes.ItemTile);
+        }
         UpdateTileType(goal.transform.position, TileTypes.GoalTile);
     }
 

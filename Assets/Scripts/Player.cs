@@ -29,12 +29,16 @@ public class Player : UnitController
         if (number > 0 && gridManager.AIActions == null)
         {
             if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
+            else if (Input.GetKeyDown(KeyCode.UpArrow)) StartCoroutine(Movement(Vector2Int.up));
 
             if (Input.GetKeyDown(KeyCode.S)) StartCoroutine(Movement(Vector2Int.down));
+            else if (Input.GetKeyDown(KeyCode.DownArrow)) StartCoroutine(Movement(Vector2Int.down));
 
             if (Input.GetKeyDown(KeyCode.D)) StartCoroutine(Movement(Vector2Int.right));
+            else if (Input.GetKeyDown(KeyCode.RightArrow)) StartCoroutine(Movement(Vector2Int.right));
 
             if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(Movement(Vector2Int.left));
+            else if (Input.GetKeyDown(KeyCode.LeftArrow)) StartCoroutine(Movement(Vector2Int.left));
         }
         else if (number > 0 && gridManager.AIActions != null 
             && gridManager.AIActions.canMove == false)
@@ -122,15 +126,17 @@ public class Player : UnitController
             KeyItemCheck();
             gridManager.ResetTileType(TileTypes.KeyTile);
         }
-
-        if (recievedNumber == gridManager.CalculateDistance(
-                gridManager.pickUpNumber.transform.position, transform.position))
+        if (gridManager.pickUpNumber != null)
         {
-            if (gridManager.pickUpNumber != null ||
-                gridManager.numberHUD != null)
+            if (recievedNumber == gridManager.CalculateDistance(
+                    gridManager.pickUpNumber.transform.position, transform.position))
             {
-                NumberItemCheck();
-                gridManager.ResetTileType(TileTypes.ItemTile);
+                if (gridManager.pickUpNumber != null ||
+                    gridManager.numberHUD != null)
+                {
+                    NumberItemCheck();
+                    gridManager.ResetTileType(TileTypes.ItemTile);
+                }
             }
         }
         if (isAIBefore == false)

@@ -47,7 +47,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             }
         }
     }
-
+    
     private void ConfigureArrowPosition(bool isbefore)
     {
         RectTransform arrowRect = arrowImage.GetComponent<RectTransform>();
@@ -83,7 +83,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
         arrowImage.rectTransform.rotation = Quaternion.Euler(0f, 0f, zRotation);
     }
-
+    
     public void Initialize()
     {
         switch (LevelActions)
@@ -105,7 +105,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
                 break;
         }
     }
-
+    
     public void Enable()
     {
         if (!available) //if it's not through undo (therefore, using the Enable action), then it does not return the used numbers.
@@ -192,7 +192,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     {
         executeAction?.Invoke(numberItem);
     }
- 
+    
     private void ExecuteMoveAction(NumberItem numberItem)
     {
         gridManager.playerActions.MovementReceiver(numberItem.value);  

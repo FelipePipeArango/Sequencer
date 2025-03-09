@@ -241,7 +241,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHighLight: 0
-  tile: 0
 --- !u!1 &115717779
 GameObject:
   m_ObjectHideFlags: 0
@@ -361,7 +360,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHighLight: 0
-  tile: 0
 --- !u!1 &154370032
 GameObject:
   m_ObjectHideFlags: 0
@@ -909,7 +907,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHighLight: 0
-  tile: 0
 --- !u!1 &485421678
 GameObject:
   m_ObjectHideFlags: 0
@@ -1029,7 +1026,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHighLight: 0
-  tile: 0
 --- !u!1001 &517663386
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1607,7 +1603,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHighLight: 0
-  tile: 0
 --- !u!1 &736727317
 GameObject:
   m_ObjectHideFlags: 0
@@ -2344,7 +2339,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHighLight: 0
-  tile: 0
 --- !u!1 &1029835031
 GameObject:
   m_ObjectHideFlags: 0
@@ -2666,9 +2660,9 @@ MonoBehaviour:
   hasItem: 0
   hasNumber: 0
   number: 0
-  isBoardBelow: 1
   canMove: 0
   isAIBefore: 0
+  push: 0
 --- !u!65 &1330395031
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3292,6 +3286,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1784470278596650940, guid: 6e512101945ecd648a0bdfdb6be5fca1, type: 3}
+      propertyPath: LevelActions
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1784470278596650940, guid: 6e512101945ecd648a0bdfdb6be5fca1, type: 3}
       propertyPath: numberInQueue
       value: 2
       objectReference: {fileID: 0}
@@ -3773,7 +3771,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHighLight: 0
-  tile: 0
 --- !u!1 &1668680066
 GameObject:
   m_ObjectHideFlags: 0
@@ -4114,7 +4111,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHighLight: 0
-  tile: 0
 --- !u!1 &1831360169
 GameObject:
   m_ObjectHideFlags: 0
@@ -4459,7 +4455,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHighLight: 0
-  tile: 0
 --- !u!1 &2072833251
 GameObject:
   m_ObjectHideFlags: 0
@@ -5216,6 +5211,10 @@ PrefabInstance:
     - target: {fileID: 1784470278596650940, guid: 6e512101945ecd648a0bdfdb6be5fca1, type: 3}
       propertyPath: hasArrow
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1784470278596650940, guid: 6e512101945ecd648a0bdfdb6be5fca1, type: 3}
+      propertyPath: LevelActions
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1784470278596650940, guid: 6e512101945ecd648a0bdfdb6be5fca1, type: 3}
       propertyPath: numberInQueue

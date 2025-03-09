@@ -129,7 +129,8 @@ public class UnitController : MonoBehaviour
 
     protected void NumberItemCheck()
     {
-        gridManager.pickUpNumber.SetActive(false);
+        if(gridManager.pickUpNumber != null)
+            gridManager.pickUpNumber.SetActive(false);
         gridManager.numberHUD.SetActive(true);
         hasNumber = true;
     }
