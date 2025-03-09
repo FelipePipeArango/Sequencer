@@ -11,6 +11,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     [SerializeField] TextMeshProUGUI usedText;
     [SerializeField] Image slotImage;
     [SerializeField] Image cardBackground;
+    [SerializeField] Image usedBackground;
     [SerializeField] private Material dissolveMaterial;
 
     [HideInInspector] public bool available = true; //tracks if the card has been used
@@ -27,6 +28,15 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
     private NumberItem hoveredNumberItem;
 
+
+    private void Awake()
+    {
+        if (usedBackground != null)
+        {
+            Color bgColor = usedBackground.color;
+            usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, 0f);
+        }
+    }
 
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -71,7 +81,11 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             OnDropAction?.Invoke(draggableItem, LevelActions);
             OnGrab?.Invoke(0, false);
 
-            StartDissolve(); // Start the dissolve effect on the card
+            
+
+            StartDissolve();
+            StartCoroutine(FadeInUsedBackground(0.3f));
+
         }
 
         if (hoveredNumberItem != null)
@@ -112,7 +126,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             else
             {
                 return;
-            } 
+            }
         }
         else //if it's through the undo system, then it returns the used number
         {
@@ -123,30 +137,82 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             number.gameObject.SetActive(true);
             available = true;
         }
+
+        if (usedBackground != null)
+        {
+            StartCoroutine(FadeOutUsedBackground());
+        }
+
+        //Reset cardBackground
+        if (cardBackground != null)
+        {
+            cardBackground.material = null; // Remove dissolve shader
+            cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 1f); // Fully opaque again
+        }
     }
 
     private IEnumerator DissolveEffect()
     {
         float dissolveAmount = 0f;
-        float dissolveSpeed = 2.0f;
-        slotImage.material = new Material(dissolveMaterial);
-        Material mat = slotImage.material;
+        float dissolveSpeed = 1f;
+
+        // Assign dissolve material to the foreground (cardBackground)
+        cardBackground.material = new Material(dissolveMaterial);
+        Material mat = cardBackground.material;
+        Color originalColor = cardBackground.color;
 
         while (dissolveAmount < 1.0f)
         {
             dissolveAmount += Time.deltaTime * dissolveSpeed;
-            mat.SetFloat("DissolveAmount", dissolveAmount);
+            mat.SetFloat("_DissolveAmount", dissolveAmount);
             yield return null;
+            cardBackground.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1f - dissolveAmount);
         }
 
         
+        cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 0f);
     }
 
     private void StartDissolve()
     {
-        if (dissolveMaterial != null)
+        if (dissolveMaterial != null && cardBackground != null)
         {
             StartCoroutine(DissolveEffect());
         }
     }
+
+    private IEnumerator FadeInUsedBackground(float delay)
+    {
+        yield return new WaitForSeconds(delay); // Delay before fading in
+
+        float duration = 0.5f;
+        Color bgColor = usedBackground.color;
+
+        for (float t = 0; t < duration; t += Time.deltaTime)
+        {
+            float alpha = Mathf.Lerp(0f, 1f, t / duration);
+            usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, alpha);
+            yield return null;
+        }
+
+        usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, 1f);
+    }
+
+    private IEnumerator FadeOutUsedBackground()
+    {
+        float duration = 0.5f;
+        float elapsedTime = 0f;
+        Color bgColor = usedBackground.color;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, elapsedTime / duration);
+            usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, alpha);
+            yield return null;
+        }
+
+        usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, 0f); // Fully hidden
+    }
 }
+
