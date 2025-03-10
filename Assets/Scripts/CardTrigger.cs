@@ -18,7 +18,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     [HideInInspector] public bool nextInSequence;
     [HideInInspector] public bool isInUse = false;
 
-    public int numberInQueue;
+    //public int numberInQueue;
     public bool available { get; set; } = true;
     public GameActions.Actions LevelActions;
 

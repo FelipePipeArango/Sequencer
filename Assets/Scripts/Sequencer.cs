@@ -17,8 +17,9 @@ public class Sequencer : MonoBehaviour
     Image nextCardText;
     Image cardBackground;
 
-    CardTrigger[] levelCards;
-    GameObject[] allCards;
+    public CardTrigger[] levelCards;
+    //GameObject[] allCards;
+    [SerializeField] GameObject cardsInLevel;
 
     public CardTrigger lastCard { get; private set; }
     public NumberItem lastNumber { get; private set; }
@@ -52,7 +53,9 @@ public class Sequencer : MonoBehaviour
     }
     public void FillCards()
     {
-        allCards = GameObject.FindGameObjectsWithTag("Card");
+        /*allCards = GameObject.FindGameObjectsWithTag("Card");
+
+        //cardsInLevel = GameObject.FindGameObjectWithTag("CardHolder"); This only requires 1 game object, if you really don't want to assign
 
         if (allCards != null)
         {
@@ -67,8 +70,18 @@ public class Sequencer : MonoBehaviour
             {
                 levelCards[cardPlaceholder[i].numberInQueue] = cardPlaceholder[i];
                 levelCards[cardPlaceholder[i].numberInQueue].Initialize();
+
             }
+        }*/
+
+        levelCards = new CardTrigger[cardsInLevel.transform.childCount]; 
+
+        for (int i = 0; i < levelCards.Length; i++)
+        {
+            levelCards[i] = cardsInLevel.transform.GetChild(i).GetComponent<CardTrigger>();
+            levelCards[i].Initialize();
         }
+
     }
 
     public void NextCard(int recievedValue)
