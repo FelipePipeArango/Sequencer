@@ -31,7 +31,7 @@ public class NumberItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDr
 
         if (UiCamera == null)
         {
-            GameObject uiCameraObj = GameObject.Find("UICamera");
+            GameObject uiCameraObj = GameObject.FindGameObjectWithTag("UICamera");
             if (uiCameraObj != null)
             {
                 UiCamera = uiCameraObj.GetComponent<Camera>();
@@ -40,7 +40,7 @@ public class NumberItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDr
 
         if (canvas == null)
         {
-            GameObject canvasObj = GameObject.Find("HUD");
+            GameObject canvasObj = GameObject.FindGameObjectWithTag("HUDCanvas");
             if (canvasObj != null)
             {
                 canvas = canvasObj.GetComponent<Canvas>();
