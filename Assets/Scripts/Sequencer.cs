@@ -2,81 +2,92 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static GameActions;
+using static GameDirections;
+using static GridManager;
 
 public class Sequencer : MonoBehaviour
 {
-    Image cardBackground;
-    [SerializeField] Image nextCardText;
+    public static Sequencer sequencer { get; private set; }
 
-    CardTrigger[] levelCards;
-    GameActions.Actions[] levelActions;
+    [SerializeField] 
+    Image nextCardText;
+    Image cardBackground;
+
+    public CardTrigger[] levelCards;
+    //GameObject[] allCards;
+    [SerializeField] GameObject cardsInLevel;
+
+    public CardTrigger lastCard { get; private set; }
+    public NumberItem lastNumber { get; private set; }
+    public Directions lastDirection { get; set; }
 
     //Makes sure that only the next card in the sequence is considered as "next". Cards that are not next in the sequence are not avaiable to use.
 
     private void OnEnable()
-    {
+    {      
+        AICompanion.OnMove += HandleAIStateChanged;
         CardTrigger.OnGrab += ManageSequenceText;
         NumberItem.OnDragAction += ManageSequenceText;
     }
 
     private void OnDisable()
     {
+        AICompanion.OnMove -= HandleAIStateChanged;
         CardTrigger.OnGrab -= ManageSequenceText;
         NumberItem.OnDragAction -= ManageSequenceText;
     }
-
-    public void FillCards(GameObject cardsInLevel)
+    public void Awake()
     {
-        #region CardFilling
-        //This checks the cards being used in the level and fills the required arrays
-        levelCards = new CardTrigger[cardsInLevel.transform.childCount];
-        levelActions = new GameActions.Actions[cardsInLevel.transform.childCount];
+        if (sequencer != null && sequencer != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        sequencer = this;
+
+        FillCards();
+    }
+    public void FillCards()
+    {
+        levelCards = new CardTrigger[cardsInLevel.transform.childCount]; 
 
         for (int i = 0; i < levelCards.Length; i++)
         {
             levelCards[i] = cardsInLevel.transform.GetChild(i).GetComponent<CardTrigger>();
-            levelActions[i] = levelCards[i].LevelActions;
+            levelCards[i].Initialize();
         }
-        #endregion
-    }
-    public void UndoSequence(NumberItem previousValue, NumberItem currentValue)
-    {
-        for (int i = 0; i < levelActions.Length; i++)
-        {
-            if (i == previousValue.value - 1) //returns to the action that was just used, the -1 is only because the array starts at 0, while the used number starts at 1
-            {
-                Debug.Log("numbero del turno anterior: " + previousValue.value);
-                levelCards[i].nextInSequence = true;
-                levelCards[i].Enable(true, currentValue);
-                cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
-                cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 1f);
-            }
-            else
-            {
-                levelCards[i].nextInSequence = false;
-                cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
-                cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 0.5f);
-            }
-        }
+
     }
 
-    public void NextCard(NumberItem recievedValue)
+    public void NextCard(int recievedValue)
     {
-        for (int i = 0; i < levelActions.Length; i++)
+        for (int i = 0; i < levelCards.Length; i++)
         {
-            if (i == recievedValue.value - 1)
+            if (i == recievedValue - 1)
             {
                 levelCards[i].nextInSequence = true;
                 cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
-                cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 1);
+
+                cardBackground.color = new Color(
+                    cardBackground.color.r,
+                    cardBackground.color.g,
+                    cardBackground.color.b,
+                    1);
             }
             else
             {
                 levelCards[i].nextInSequence = false;
                 cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
-                cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 0.5f);
+
+                cardBackground.color = new Color(
+                    cardBackground.color.r,
+                    cardBackground.color.g,
+                    cardBackground.color.b,
+                    0.5f);
             }
         }
     }
@@ -85,15 +96,16 @@ public class Sequencer : MonoBehaviour
     {
         if (dragging == true)
         {
-            for (int i = 0; i < levelActions.Length; i++)
+            for (int i = 0; i < levelCards.Length; i++)
             {
                 if (i == recievedNumber - 1)
                 {
                     nextCardText.gameObject.SetActive(true);
                     nextCardText.transform.position =
-                        new Vector3(levelCards[i].transform.position.x
-                            , levelCards[i].transform.position.y + 92
-                            , levelCards[i].transform.position.z);
+                        new Vector3(
+                            levelCards[i].transform.position.x,
+                            levelCards[i].transform.position.y + 92, 
+                            levelCards[i].transform.position.z);
                 }
             }
         }
@@ -101,5 +113,113 @@ public class Sequencer : MonoBehaviour
         {
             nextCardText.gameObject.SetActive(false);
         }
+    }
+
+    public void CommunicateAIActions(bool isBefore, Directions direction)
+    {
+        if (gridManager.AIActions != null)
+        {
+            gridManager.AIActions.direction = direction;
+            gridManager.AIActions.action = AIActions.Move;
+            lastDirection = direction;
+            gridManager.AIActions.canMove = isBefore;
+            gridManager.AIActions.isBefore = isBefore;
+        }
+    }
+    public void HandleAIStateChanged(bool isMoving)
+    {
+        if (isMoving)
+        {
+            DisableAll();
+        }
+        else
+        {
+            EnableNextCard();
+        }
+    }
+    private void DisableAll()
+    {
+        foreach (var card in levelCards)
+        {
+            card.Disable();
+            cardBackground = card.gameObject.GetComponentInChildren<Image>();
+            cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 0.5f);
+        }
+    }
+    private void EnableNextCard()
+    {
+        foreach (var card in levelCards)
+        {
+            if (card.nextInSequence && 
+                card != lastCard)
+            {
+                card.Enable();
+            }
+        }
+        NextCard(lastNumber.value);
+    }
+    public void AIAfterAction()
+    {
+        if (gridManager.AIActions != null 
+            && gridManager.AIActions.action != AIActions.Stay)
+        {
+            gridManager.AIActions.direction = lastDirection;
+
+            gridManager.AIActions.canMove = true;
+            gridManager.AIActions.isBefore = false;
+        }
+    }
+
+    public void CommunicateAction(NumberItem recievedNumber, Actions usedAction)
+    {
+        for (int i = 0; i < levelCards.Length; i++)
+        {
+            if (usedAction == levelCards[i].LevelActions //The card slot that's equal to the recieved number
+                && levelCards[i].isInUse == true) //allows for multiple cards of the same type
+            {
+                lastCard = levelCards[i];
+                lastNumber = recievedNumber;
+
+                if (levelCards[i].hasArrow != true)
+                {
+                    if (levelCards[i].LevelActions == Actions.Enable)
+                        levelCards[recievedNumber.value - 1].Enable();
+                    else
+                        levelCards[i].ExecuteAction(recievedNumber);
+
+                    levelCards[i].DisableUsed(recievedNumber);
+                    NextCard(recievedNumber.value);
+                   
+                    break;
+                }
+                else
+                {
+                    if (levelCards[i].isAIBefore != true)
+                    {
+                        if (levelCards[i].LevelActions == Actions.Enable)
+                            levelCards[recievedNumber.value - 1].Enable();
+                        else
+                            levelCards[i].ExecuteAction(recievedNumber);
+
+                        levelCards[i].DisableUsed(recievedNumber);
+                        NextCard(recievedNumber.value);
+                        
+                        break;
+                    }
+                    else
+                    {
+                        levelCards[i].DisableUsed(recievedNumber);
+                        NextCard(recievedNumber.value);
+
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    public void PlayerAfterAction()
+    {
+        lastCard.ExecuteAction(lastNumber);        
     }
 }
