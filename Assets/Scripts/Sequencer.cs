@@ -53,27 +53,6 @@ public class Sequencer : MonoBehaviour
     }
     public void FillCards()
     {
-        /*allCards = GameObject.FindGameObjectsWithTag("Card");
-
-        //cardsInLevel = GameObject.FindGameObjectWithTag("CardHolder"); This only requires 1 game object, if you really don't want to assign
-
-        if (allCards != null)
-        {
-            CardTrigger[] cardPlaceholder = new CardTrigger[allCards.Length];
-
-            for (int i = 0; i < allCards.Length; i++)
-                cardPlaceholder[i] = allCards[i].GetComponent<CardTrigger>();
-
-            levelCards = new CardTrigger[allCards.Length];
-
-            for (int i = 0; i < levelCards.Length; i++)
-            {
-                levelCards[cardPlaceholder[i].numberInQueue] = cardPlaceholder[i];
-                levelCards[cardPlaceholder[i].numberInQueue].Initialize();
-
-            }
-        }*/
-
         levelCards = new CardTrigger[cardsInLevel.transform.childCount]; 
 
         for (int i = 0; i < levelCards.Length; i++)
