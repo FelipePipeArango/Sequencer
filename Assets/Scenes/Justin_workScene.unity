@@ -1166,7 +1166,7 @@ GameObject:
   - component: {fileID: 434478065}
   - component: {fileID: 434478064}
   m_Layer: 0
-  m_Name: Camera
+  m_Name: UICamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1238,11 +1238,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &440424294 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6566747264920994794, guid: 711ec2e3e4d728b488aa929fbd135c74, type: 3}
-  m_PrefabInstance: {fileID: 997573504}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &452335984
 GameObject:
   m_ObjectHideFlags: 0
@@ -2360,6 +2355,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 240562734964002499, guid: 711ec2e3e4d728b488aa929fbd135c74, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 341425577568509141, guid: 711ec2e3e4d728b488aa929fbd135c74, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2668,6 +2667,18 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6380454590072166060, guid: 711ec2e3e4d728b488aa929fbd135c74, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6584073685085938676, guid: 711ec2e3e4d728b488aa929fbd135c74, type: 3}
+      propertyPath: canvas
+      value: 
+      objectReference: {fileID: 1900012167}
+    - target: {fileID: 6584073685085938676, guid: 711ec2e3e4d728b488aa929fbd135c74, type: 3}
+      propertyPath: UiCamera
+      value: 
+      objectReference: {fileID: 434478064}
     - target: {fileID: 6920448367905887855, guid: 711ec2e3e4d728b488aa929fbd135c74, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -3453,7 +3464,7 @@ PrefabInstance:
     - target: {fileID: 6451947076222048117, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
       propertyPath: numberHUD
       value: 
-      objectReference: {fileID: 440424294}
+      objectReference: {fileID: 1630924512}
     - target: {fileID: 6451947076222048117, guid: 4ca23c4bc507ed649b3749c0ac5e06a8, type: 3}
       propertyPath: cardsInLevel
       value: 
@@ -4176,6 +4187,11 @@ Transform:
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8923966650842686609, guid: d266327d5b1c3ec4789bc2c97237269e, type: 3}
   m_PrefabInstance: {fileID: 2019177473}
+  m_PrefabAsset: {fileID: 0}
+--- !u!223 &1900012167 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 693355251327092409, guid: 711ec2e3e4d728b488aa929fbd135c74, type: 3}
+  m_PrefabInstance: {fileID: 997573504}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &1955965559 stripped
 Transform:

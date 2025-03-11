@@ -16,8 +16,6 @@ public class NumberItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDr
     public delegate void DragActions(int number, bool isGrabing);
     public static event DragActions OnDragAction;
 
-    public Transform target;  // The target object the player or item approaches
-
     float lockedPosition = 0f;
     [SerializeField] Camera UiCamera;
     public Vector3 mousePosition;
@@ -30,6 +28,26 @@ public class NumberItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDr
     {
         numberText.text = value.ToString();
         thisRectTransform = GetComponent<RectTransform>();
+
+        if (UiCamera == null)
+        {
+            GameObject uiCameraObj = GameObject.Find("UICamera");
+            if (uiCameraObj != null)
+            {
+                UiCamera = uiCameraObj.GetComponent<Camera>();
+            }
+        }
+
+        if (canvas == null)
+        {
+            GameObject canvasObj = GameObject.Find("HUD");
+            if (canvasObj != null)
+            {
+                canvas = canvasObj.GetComponent<Canvas>();
+            }
+        }
+
+
     }
 
     public void OnBeginDrag(PointerEventData eventData)

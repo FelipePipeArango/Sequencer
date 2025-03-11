@@ -25,9 +25,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     public delegate void DropAction(NumberItem test, GameActions.Actions action);
     public static event DropAction OnDropAction;
 
-
     private NumberItem hoveredNumberItem;
-
 
     private void Awake()
     {
@@ -38,7 +36,6 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         }
     }
 
-
     public void OnPointerEnter(PointerEventData eventData)
     {
         GameObject hoveredObject = eventData.pointerDrag;
@@ -47,7 +44,6 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         {
             hoveredNumberItem = hoveredObject.GetComponent<NumberItem>();
 
-            // Display the debug message based on the card type and number value
             if (LevelActions == GameActions.Actions.Move)
             {
                 GridGenerator.Instance.MoveDistanceCheck(hoveredNumberItem.value, GameManager.Instance.GetPlayerPos());
@@ -66,10 +62,8 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     public void OnPointerExit(PointerEventData eventData)
     {
         GridGenerator.Instance.Reset();
-        // Clear the hovered item reference when leaving the card
         hoveredNumberItem = null;
     }
-
 
     public void OnDrop(PointerEventData eventData)
     {
@@ -81,11 +75,19 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             OnDropAction?.Invoke(draggableItem, LevelActions);
             OnGrab?.Invoke(0, false);
 
-            
-
             StartDissolve();
-            StartCoroutine(FadeInUsedBackground(0.3f));
 
+            if (usedBackground != null)
+            {
+                Color bgColor = usedBackground.color;
+                usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, 1f);
+                usedBackground.transform.SetAsFirstSibling();
+            }
+        }
+
+        if (usedText != null)
+        {
+            usedText.gameObject.SetActive(false);
         }
 
         if (hoveredNumberItem != null)
@@ -115,9 +117,9 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
     public void Enable(bool undo, NumberItem number)
     {
-        if (!undo) //this check if a card is being enabled through the Undo function of the game, or thorugh the Enable card action.
+        if (!undo)
         {
-            if (!available) //if it's not through undo (therefore, using the Enable action), then it does not return the used numbers.
+            if (!available)
             {
                 available = true;
                 usedText.gameObject.SetActive(false);
@@ -128,7 +130,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
                 return;
             }
         }
-        else //if it's through the undo system, then it returns the used number
+        else
         {
             usedText.gameObject.SetActive(false);
             slotImage.gameObject.SetActive(true);
@@ -138,16 +140,10 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             available = true;
         }
 
-        if (usedBackground != null)
-        {
-            StartCoroutine(FadeOutUsedBackground());
-        }
-
-        //Reset cardBackground
         if (cardBackground != null)
         {
-            cardBackground.material = null; // Remove dissolve shader
-            cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 1f); // Fully opaque again
+            cardBackground.material = null;
+            cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 1f);
         }
     }
 
@@ -156,7 +152,6 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         float dissolveAmount = 0f;
         float dissolveSpeed = 1f;
 
-        // Assign dissolve material to the foreground (cardBackground)
         cardBackground.material = new Material(dissolveMaterial);
         Material mat = cardBackground.material;
         Color originalColor = cardBackground.color;
@@ -169,7 +164,6 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             cardBackground.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1f - dissolveAmount);
         }
 
-        
         cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 0f);
     }
 
@@ -180,39 +174,6 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             StartCoroutine(DissolveEffect());
         }
     }
-
-    private IEnumerator FadeInUsedBackground(float delay)
-    {
-        yield return new WaitForSeconds(delay); // Delay before fading in
-
-        float duration = 0.5f;
-        Color bgColor = usedBackground.color;
-
-        for (float t = 0; t < duration; t += Time.deltaTime)
-        {
-            float alpha = Mathf.Lerp(0f, 1f, t / duration);
-            usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, alpha);
-            yield return null;
-        }
-
-        usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, 1f);
-    }
-
-    private IEnumerator FadeOutUsedBackground()
-    {
-        float duration = 0.5f;
-        float elapsedTime = 0f;
-        Color bgColor = usedBackground.color;
-
-        while (elapsedTime < duration)
-        {
-            elapsedTime += Time.deltaTime;
-            float alpha = Mathf.Lerp(1f, 0f, elapsedTime / duration);
-            usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, alpha);
-            yield return null;
-        }
-
-        usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, 0f); // Fully hidden
-    }
 }
+
 
