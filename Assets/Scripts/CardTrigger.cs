@@ -1,31 +1,38 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using TMPro;
 using UnityEngine.UI;
-using Unity.VisualScripting;
+using TMPro;
+using static GridManager;
+using static GameActions;
+using static GameDirections;
 
 public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    [SerializeField] TextMeshProUGUI usedText;
-    [SerializeField] Image slotImage;
-    [SerializeField] Image cardBackground;
-    [SerializeField] Image usedBackground;
+    [SerializeField] private TextMeshProUGUI usedText;
+    [SerializeField] private Image slotImage;
+    [SerializeField] private Image cardBackground;
+    [SerializeField] private Image usedBackground;
     [SerializeField] private Material dissolveMaterial;
 
-    [HideInInspector] public bool available = true; //tracks if the card has been used
-    [HideInInspector] public bool nextInSequence;
+    public bool nextInSequence;
+    public bool isInUse = false;
+    public bool available { get; set; } = true;
+    public Actions LevelActions;
 
-    public GameActions.Actions LevelActions;
-
-    public delegate void GrabActions(int number, bool isGrabing);
+    public delegate void GrabActions(int number, bool isGrabbing);
     public static event GrabActions OnGrab;
-
-    public delegate void DropAction(NumberItem test, GameActions.Actions action);
+    public delegate void DropAction(NumberItem item, Actions action);
     public static event DropAction OnDropAction;
 
+    private Action<NumberItem> executeAction;
     private NumberItem hoveredNumberItem;
+
+    public bool hasArrow;
+    public Image arrowImage;
+    public bool isAIBefore;
+    public Directions arrowDirection;
 
     private void Awake()
     {
@@ -36,144 +43,172 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         }
     }
 
+    private void Start()
+    {
+        if (gridManager.AIActions != null && hasArrow && arrowImage != null)
+        {
+            arrowImage.gameObject.SetActive(true);
+            ConfigureArrowPosition(isAIBefore);
+            ConfigureArrowDirection(arrowDirection);
+        }
+    }
+
+    private void ConfigureArrowPosition(bool isBefore)
+    {
+        if (arrowImage == null) return;
+        RectTransform arrowRect = arrowImage.GetComponent<RectTransform>();
+        if (isBefore) arrowRect.anchoredPosition = new Vector2(0, 100f);
+        else arrowRect.anchoredPosition = new Vector2(0, -100f);
+    }
+
+    private void ConfigureArrowDirection(Directions direction)
+    {
+        if (arrowImage == null) return;
+        float zRotation = 0f;
+        if (direction == Directions.Forward) zRotation = -90f;
+        else if (direction == Directions.Right) zRotation = 180f;
+        else if (direction == Directions.Back) zRotation = 90f;
+        else if (direction == Directions.Left) zRotation = 0f;
+        arrowImage.rectTransform.rotation = Quaternion.Euler(0f, 0f, zRotation);
+    }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         GameObject hoveredObject = eventData.pointerDrag;
-
-        if (hoveredObject != null && hoveredObject.GetComponent<NumberItem>() != null)
+        if (hoveredObject != null)
         {
             hoveredNumberItem = hoveredObject.GetComponent<NumberItem>();
-
-            if (LevelActions == GameActions.Actions.Move)
+            if (hoveredNumberItem != null)
             {
-                GridGenerator.Instance.MoveDistanceCheck(hoveredNumberItem.value, GameManager.Instance.GetPlayerPos());
+                if (LevelActions == Actions.Move) gridManager.TurnOnHighlight(true, hoveredNumberItem.value);
+                else if (LevelActions == Actions.PickUp) gridManager.TurnOnHighlight(false, hoveredNumberItem.value);
+                else if (LevelActions == Actions.Throw) gridManager.TurnOnHighlight(false, hoveredNumberItem.value);
+                isInUse = true;
             }
-            else if (LevelActions == GameActions.Actions.PickUp)
-            {
-                GridGenerator.Instance.PickUpThrowCheck(hoveredNumberItem.value);
-            }
-            else if (LevelActions == GameActions.Actions.Throw)
-            {
-                GridGenerator.Instance.PickUpThrowCheck(hoveredNumberItem.value);
-            }
+        }
+        if (cardBackground != null)
+        {
+            cardBackground.material = null;
+            Color cbColor = cardBackground.color;
+            cardBackground.color = new Color(cbColor.r, cbColor.g, cbColor.b, 1f);
         }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        GridGenerator.Instance.Reset();
+        gridManager.TurnOffHighlight();
         hoveredNumberItem = null;
+        isInUse = false;
     }
 
     public void OnDrop(PointerEventData eventData)
     {
-        if (available == true && nextInSequence == true)
+        if (!available || !nextInSequence) return;
+        GameObject droppedObj = eventData.pointerDrag;
+        NumberItem draggableItem = droppedObj != null ? droppedObj.GetComponent<NumberItem>() : null;
+        if (draggableItem == null) return;
+        OnDropAction?.Invoke(draggableItem, LevelActions);
+        if (hasArrow && arrowImage != null) Sequencer.sequencer.CommunicateAIActions(isAIBefore, arrowDirection);
+        Sequencer.sequencer.CommunicateAction(draggableItem, LevelActions);
+        OnGrab?.Invoke(0, false);
+        StartDissolve();
+        if (usedBackground != null)
         {
-            GameObject dropped = eventData.pointerDrag;
-            NumberItem draggableItem = dropped.GetComponent<NumberItem>();
-
-            OnDropAction?.Invoke(draggableItem, LevelActions);
-            OnGrab?.Invoke(0, false);
-
-            StartDissolve();
-
-            if (usedBackground != null)
-            {
-                Color bgColor = usedBackground.color;
-                usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, 1f);
-                usedBackground.transform.SetAsFirstSibling();
-            }
+            Color bgColor = usedBackground.color;
+            usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, 1f);
+            usedBackground.transform.SetAsFirstSibling();
         }
-
-        if (usedText != null)
-        {
-            usedText.gameObject.SetActive(false);
-        }
-
-        if (hoveredNumberItem != null)
-        {
-            Debug.Log($"Dropped {hoveredNumberItem.value} on {LevelActions} action.");
-        }
-    }
-
-    public void Disable(NumberItem number)
-    {
-        if (available)
-        {
-            usedText.gameObject.SetActive(true);
-            slotImage.gameObject.SetActive(false);
-            usedText.text = number.value.ToString();
-            number.transform.SetParent(number.parentTransform);
-            number.gameObject.SetActive(false);
-            available = false;
-
-            StartDissolve();
-        }
-        else
-        {
-            return;
-        }
-    }
-
-    public void Enable(bool undo, NumberItem number)
-    {
-        if (!undo)
-        {
-            if (!available)
-            {
-                available = true;
-                usedText.gameObject.SetActive(false);
-                slotImage.gameObject.SetActive(true);
-            }
-            else
-            {
-                return;
-            }
-        }
-        else
-        {
-            usedText.gameObject.SetActive(false);
-            slotImage.gameObject.SetActive(true);
-
-            number.image.raycastTarget = true;
-            number.gameObject.SetActive(true);
-            available = true;
-        }
-
-        if (cardBackground != null)
-        {
-            cardBackground.material = null;
-            cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 1f);
-        }
+        if (usedText != null) usedText.gameObject.SetActive(false);
+        if (hoveredNumberItem != null) Debug.Log($"Dropped {hoveredNumberItem.value} on {LevelActions} action.");
     }
 
     private IEnumerator DissolveEffect()
     {
         float dissolveAmount = 0f;
         float dissolveSpeed = 1f;
-
         cardBackground.material = new Material(dissolveMaterial);
         Material mat = cardBackground.material;
         Color originalColor = cardBackground.color;
-
-        while (dissolveAmount < 1.0f)
+        while (dissolveAmount < 1f)
         {
             dissolveAmount += Time.deltaTime * dissolveSpeed;
             mat.SetFloat("_DissolveAmount", dissolveAmount);
-            yield return null;
             cardBackground.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1f - dissolveAmount);
+            yield return null;
         }
-
         cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 0f);
     }
 
     private void StartDissolve()
     {
-        if (dissolveMaterial != null && cardBackground != null)
+        if (dissolveMaterial != null && cardBackground != null) StartCoroutine(DissolveEffect());
+    }
+
+    public void Initialize()
+    {
+        if (LevelActions == Actions.Move) executeAction = ExecuteMoveAction;
+        else if (LevelActions == Actions.PickUp) executeAction = ExecutePickUpAction;
+        else if (LevelActions == Actions.Throw) executeAction = ExecuteThrowAction;
+        else executeAction = DefaultAction;
+    }
+
+    public void ExecuteAction(NumberItem numberItem)
+    {
+        executeAction?.Invoke(numberItem);
+    }
+
+    private void ExecuteMoveAction(NumberItem numberItem)
+    {
+        gridManager.playerActions.MovementReceiver(numberItem.value);
+    }
+
+    private void ExecutePickUpAction(NumberItem numberItem)
+    {
+        gridManager.playerActions.PickUpReceiver(numberItem.value);
+    }
+
+    private void ExecuteThrowAction(NumberItem numberItem)
+    {
+        gridManager.playerActions.ThrowReceiver(numberItem.value);
+    }
+
+    private void DefaultAction(NumberItem numberItem)
+    {
+        Debug.Log("No action assigned for " + LevelActions);
+    }
+
+    public void Enable()
+    {
+        if (!available)
         {
-            StartCoroutine(DissolveEffect());
+            available = true;
+            if (usedText != null) usedText.gameObject.SetActive(false);
+            if (slotImage != null) slotImage.gameObject.SetActive(true);
         }
     }
-}
 
+    public void DisableUsed(NumberItem number)
+    {
+        if (available)
+        {
+            if (usedText != null)
+            {
+                usedText.gameObject.SetActive(true);
+                usedText.text = number.value.ToString();
+            }
+            if (slotImage != null) slotImage.gameObject.SetActive(false);
+            number.transform.SetParent(number.parentTransform);
+            number.gameObject.SetActive(false);
+            available = false;
+            StartDissolve();
+        }
+    }
+
+    public void Disable()
+    {
+        if (usedText != null) usedText.gameObject.SetActive(true);
+        if (slotImage != null) slotImage.gameObject.SetActive(false);
+        available = false;
+    }
+}
 
