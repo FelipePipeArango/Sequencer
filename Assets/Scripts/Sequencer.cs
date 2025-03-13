@@ -30,15 +30,11 @@ public class Sequencer : MonoBehaviour
     private void OnEnable()
     {      
         AICompanion.OnMove += HandleAIStateChanged;
-        CardTrigger.OnGrab += ManageSequenceText;
-        NumberItem.OnDragAction += ManageSequenceText;
     }
 
     private void OnDisable()
     {
         AICompanion.OnMove -= HandleAIStateChanged;
-        CardTrigger.OnGrab -= ManageSequenceText;
-        NumberItem.OnDragAction -= ManageSequenceText;
     }
     public void Awake()
     {
@@ -91,29 +87,7 @@ public class Sequencer : MonoBehaviour
             }
         }
     }
-    //Manages the "next" text on the actions.
-    public void ManageSequenceText(int recievedNumber, bool dragging)
-    {
-        if (dragging == true)
-        {
-            for (int i = 0; i < levelCards.Length; i++)
-            {
-                if (i == recievedNumber - 1)
-                {
-                    nextCardText.gameObject.SetActive(true);
-                    nextCardText.transform.position =
-                        new Vector3(
-                            levelCards[i].transform.position.x,
-                            levelCards[i].transform.position.y + 92, 
-                            levelCards[i].transform.position.z);
-                }
-            }
-        }
-        else
-        {
-            nextCardText.gameObject.SetActive(false);
-        }
-    }
+
 
     public void CommunicateAIActions(bool isBefore, Directions direction)
     {

@@ -182,10 +182,26 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         if (!available)
         {
             available = true;
+
+            if (usedBackground != null)
+            {
+                Color bgColor = usedBackground.color;
+                usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, 0f);
+            }
+
+            if (cardBackground != null)
+            {
+                cardBackground.material = null;
+                Color cbColor = cardBackground.color;
+                cardBackground.color = new Color(cbColor.r, cbColor.g, cbColor.b, 1f);
+            }
+
+            
             if (usedText != null) usedText.gameObject.SetActive(false);
             if (slotImage != null) slotImage.gameObject.SetActive(true);
         }
     }
+
 
     public void DisableUsed(NumberItem number)
     {
