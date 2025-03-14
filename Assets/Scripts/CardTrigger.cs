@@ -23,6 +23,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
     public delegate void GrabActions(int number, bool isGrabbing);
     public static event GrabActions OnGrab;
+
     public delegate void DropAction(NumberItem item, Actions action);
     public static event DropAction OnDropAction;
 
@@ -34,16 +35,17 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     public bool isAIBefore;
     public Directions arrowDirection;
 
-    private void Awake()
+    void Awake()
     {
         if (usedBackground != null)
         {
+            usedBackground.enabled = false;
             Color bgColor = usedBackground.color;
             usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, 0f);
         }
     }
 
-    private void Start()
+    void Start()
     {
         if (gridManager.AIActions != null && hasArrow && arrowImage != null)
         {
@@ -53,7 +55,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         }
     }
 
-    private void ConfigureArrowPosition(bool isBefore)
+    void ConfigureArrowPosition(bool isBefore)
     {
         if (arrowImage == null) return;
         RectTransform arrowRect = arrowImage.GetComponent<RectTransform>();
@@ -61,7 +63,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         else arrowRect.anchoredPosition = new Vector2(0, -100f);
     }
 
-    private void ConfigureArrowDirection(Directions direction)
+    void ConfigureArrowDirection(Directions direction)
     {
         if (arrowImage == null) return;
         float zRotation = 0f;
@@ -104,44 +106,75 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     public void OnDrop(PointerEventData eventData)
     {
         if (!available || !nextInSequence) return;
+
         GameObject droppedObj = eventData.pointerDrag;
         NumberItem draggableItem = droppedObj != null ? droppedObj.GetComponent<NumberItem>() : null;
         if (draggableItem == null) return;
+
         OnDropAction?.Invoke(draggableItem, LevelActions);
-        if (hasArrow && arrowImage != null) Sequencer.sequencer.CommunicateAIActions(isAIBefore, arrowDirection);
+
+        if (hasArrow && arrowImage != null)
+        {
+            Sequencer.sequencer.CommunicateAIActions(isAIBefore, arrowDirection);
+        }
+
         Sequencer.sequencer.CommunicateAction(draggableItem, LevelActions);
         OnGrab?.Invoke(0, false);
-        StartDissolve();
+
+       
+        available = false;
         if (usedBackground != null)
         {
+            usedBackground.enabled = true;
             Color bgColor = usedBackground.color;
             usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, 1f);
             usedBackground.transform.SetAsFirstSibling();
         }
         if (usedText != null) usedText.gameObject.SetActive(false);
-        if (hoveredNumberItem != null) Debug.Log($"Dropped {hoveredNumberItem.value} on {LevelActions} action.");
+        StartDissolve();
+
+        if (hoveredNumberItem != null)
+        {
+            Debug.Log("Dropped " + hoveredNumberItem.value + " on " + LevelActions + " action.");
+        }
     }
 
-    private IEnumerator DissolveEffect()
+    IEnumerator DissolveEffect()
     {
         float dissolveAmount = 0f;
         float dissolveSpeed = 1f;
+
         cardBackground.material = new Material(dissolveMaterial);
         Material mat = cardBackground.material;
         Color originalColor = cardBackground.color;
+
         while (dissolveAmount < 1f)
         {
             dissolveAmount += Time.deltaTime * dissolveSpeed;
             mat.SetFloat("_DissolveAmount", dissolveAmount);
-            cardBackground.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1f - dissolveAmount);
+            cardBackground.color = new Color(
+                originalColor.r,
+                originalColor.g,
+                originalColor.b,
+                1f - dissolveAmount
+            );
             yield return null;
         }
-        cardBackground.color = new Color(cardBackground.color.r, cardBackground.color.g, cardBackground.color.b, 0f);
+
+        cardBackground.color = new Color(
+            cardBackground.color.r,
+            cardBackground.color.g,
+            cardBackground.color.b,
+            0f
+        );
     }
 
-    private void StartDissolve()
+    void StartDissolve()
     {
-        if (dissolveMaterial != null && cardBackground != null) StartCoroutine(DissolveEffect());
+        if (dissolveMaterial != null && cardBackground != null)
+        {
+            StartCoroutine(DissolveEffect());
+        }
     }
 
     public void Initialize()
@@ -157,22 +190,22 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         executeAction?.Invoke(numberItem);
     }
 
-    private void ExecuteMoveAction(NumberItem numberItem)
+    void ExecuteMoveAction(NumberItem numberItem)
     {
         gridManager.playerActions.MovementReceiver(numberItem.value);
     }
 
-    private void ExecutePickUpAction(NumberItem numberItem)
+    void ExecutePickUpAction(NumberItem numberItem)
     {
         gridManager.playerActions.PickUpReceiver(numberItem.value);
     }
 
-    private void ExecuteThrowAction(NumberItem numberItem)
+    void ExecuteThrowAction(NumberItem numberItem)
     {
         gridManager.playerActions.ThrowReceiver(numberItem.value);
     }
 
-    private void DefaultAction(NumberItem numberItem)
+    void DefaultAction(NumberItem numberItem)
     {
         Debug.Log("No action assigned for " + LevelActions);
     }
@@ -185,6 +218,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
             if (usedBackground != null)
             {
+                usedBackground.enabled = false;
                 Color bgColor = usedBackground.color;
                 usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, 0f);
             }
@@ -196,12 +230,10 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
                 cardBackground.color = new Color(cbColor.r, cbColor.g, cbColor.b, 1f);
             }
 
-            
             if (usedText != null) usedText.gameObject.SetActive(false);
             if (slotImage != null) slotImage.gameObject.SetActive(true);
         }
     }
-
 
     public void DisableUsed(NumberItem number)
     {
@@ -213,9 +245,18 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
                 usedText.text = number.value.ToString();
             }
             if (slotImage != null) slotImage.gameObject.SetActive(false);
+
             number.transform.SetParent(number.parentTransform);
             number.gameObject.SetActive(false);
+
             available = false;
+            if (usedBackground != null)
+            {
+                usedBackground.enabled = true;
+                Color bgColor = usedBackground.color;
+                usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, 1f);
+                usedBackground.transform.SetAsFirstSibling();
+            }
             StartDissolve();
         }
     }
@@ -224,7 +265,18 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     {
         if (usedText != null) usedText.gameObject.SetActive(true);
         if (slotImage != null) slotImage.gameObject.SetActive(false);
+
         available = false;
+        if (usedBackground != null)
+        {
+            usedBackground.enabled = true;
+            Color bgColor = usedBackground.color;
+            usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, 1f);
+            usedBackground.transform.SetAsFirstSibling();
+        }
+        StartDissolve();
     }
 }
+
+
 
