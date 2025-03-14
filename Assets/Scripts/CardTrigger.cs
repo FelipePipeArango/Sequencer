@@ -43,6 +43,15 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             Color bgColor = usedBackground.color;
             usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, 0f);
         }
+
+      
+        if (cardBackground != null)
+        {
+            bool isTrulyUsable = (available && nextInSequence);
+            float initialAlpha = isTrulyUsable ? 1f : 0.5f;
+            Color cbColor = cardBackground.color;
+            cardBackground.color = new Color(cbColor.r, cbColor.g, cbColor.b, initialAlpha);
+        }
     }
 
     void Start()
@@ -88,11 +97,19 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
                 isInUse = true;
             }
         }
+
+    
         if (cardBackground != null)
         {
-            cardBackground.material = null;
-            Color cbColor = cardBackground.color;
-            cardBackground.color = new Color(cbColor.r, cbColor.g, cbColor.b, 1f);
+            bool usedBGActive = (usedBackground != null && usedBackground.enabled);
+            bool isTrulyUsable = (available && nextInSequence);
+            if (!usedBGActive)
+            {
+                float alpha = isTrulyUsable ? 1f : 0.5f;
+                cardBackground.material = null;
+                Color cbColor = cardBackground.color;
+                cardBackground.color = new Color(cbColor.r, cbColor.g, cbColor.b, alpha);
+            }
         }
     }
 
@@ -101,10 +118,24 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         gridManager.TurnOffHighlight();
         hoveredNumberItem = null;
         isInUse = false;
+
+        if (cardBackground != null)
+        {
+            bool usedBGActive = (usedBackground != null && usedBackground.enabled);
+            bool isTrulyUsable = (available && nextInSequence);
+            if (!usedBGActive)
+            {
+                float alpha = isTrulyUsable ? 1f : 0.5f;
+                cardBackground.material = null;
+                Color cbColor = cardBackground.color;
+                cardBackground.color = new Color(cbColor.r, cbColor.g, cbColor.b, alpha);
+            }
+        }
     }
 
     public void OnDrop(PointerEventData eventData)
     {
+        // If not truly available or nextInSequence not true, do nothing
         if (!available || !nextInSequence) return;
 
         GameObject droppedObj = eventData.pointerDrag;
@@ -121,7 +152,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         Sequencer.sequencer.CommunicateAction(draggableItem, LevelActions);
         OnGrab?.Invoke(0, false);
 
-       
+        // Mark as used
         available = false;
         if (usedBackground != null)
         {
@@ -131,6 +162,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             usedBackground.transform.SetAsFirstSibling();
         }
         if (usedText != null) usedText.gameObject.SetActive(false);
+
         StartDissolve();
 
         if (hoveredNumberItem != null)
@@ -143,6 +175,8 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     {
         float dissolveAmount = 0f;
         float dissolveSpeed = 1f;
+
+        if (cardBackground == null) yield break;
 
         cardBackground.material = new Material(dissolveMaterial);
         Material mat = cardBackground.material;
@@ -160,7 +194,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             );
             yield return null;
         }
-
+        // Once fully dissolved, set alpha = 0
         cardBackground.color = new Color(
             cardBackground.color.r,
             cardBackground.color.g,
@@ -277,6 +311,8 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         StartDissolve();
     }
 }
+
+
 
 
 
