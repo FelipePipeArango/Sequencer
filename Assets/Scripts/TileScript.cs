@@ -5,7 +5,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static GameTiles;
 
-
 public class TileScript : MonoBehaviour
 {
     [HideInInspector] public TileTypes tileType { get; set; }
@@ -13,7 +12,7 @@ public class TileScript : MonoBehaviour
     private Renderer render;
     private Color setColor;
 
-    public bool isHighLight;
+    [HideInInspector] public bool isHighLight;
     
     void Start()
     {

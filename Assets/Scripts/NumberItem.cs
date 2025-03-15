@@ -16,7 +16,6 @@ public class NumberItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDr
     public delegate void DragActions(int number, bool isGrabing);
     public static event DragActions OnDragAction;
 
-    float lockedPosition = 0f;
     [SerializeField] Camera UiCamera;
     public Vector3 mousePosition;
     public Vector3 world;

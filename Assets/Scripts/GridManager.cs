@@ -8,20 +8,21 @@ public class GridManager : MonoBehaviour
 {
     public static GridManager gridManager { get; private set; }
 
+    [Header("BOARD")]
     [SerializeField] Color highlightColor;
-
     [SerializeField] Vector2Int size;
+
     private GameObject[] allTiles;
     public TileScript[,] grid;
     TileScript[] tiles;
 
-    [Header("Pieces")] [SerializeField] 
-    public GameObject AICompanion;
+    [Header("MANDATORY PIECES IN A LEVEL")]
     public GameObject player;
     public GameObject keyItem;
     public GameObject goal;
 
-    [Header("OPTIONAL OBJECTS IN A LEVEL")] [SerializeField]
+    [Header("OPTIONAL OBJECTS IN A LEVEL")]
+    public GameObject AICompanion;
     public GameObject pickUpNumber;
     public GameObject numberHUD; //Should at some point go to card manager
     [HideInInspector] public Player playerActions;
