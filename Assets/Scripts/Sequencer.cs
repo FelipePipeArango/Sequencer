@@ -13,11 +13,11 @@ public class Sequencer : MonoBehaviour
 {
     public static Sequencer sequencer { get; private set; }
 
-    [SerializeField]
-    Image nextCardText;
     Image cardBackground;
 
-    public CardTrigger[] levelCards;
+    CardTrigger[] levelCards;
+
+    [Header ("PART OF THE HUD")] 
     [SerializeField] GameObject cardsInLevel;
 
     public CardTrigger lastCard { get; private set; }
