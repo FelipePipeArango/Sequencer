@@ -65,19 +65,21 @@ public class Player : UnitController
     }
 
 
-    protected override IEnumerator Movement(Vector2Int direction) 
+    protected override IEnumerator Movement(Vector2Int direction)
     {
         Vector3 checkPos = new Vector3(
             transform.position.x + direction.x,
             0,
             transform.position.z + direction.y);
 
-        if (gridManager.CheckWhatNextTileIs(checkPos)
-            == TileTypes.None)
+        if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.None)
         {
             transform.position += new Vector3(direction.x, 0, direction.y);
             number = 0;
             isBoardBelow = false;
+
+            if (uiHandler != null)
+                uiHandler.UpdateNumberText(number);
         }
         else if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.PawnTile)
         {
@@ -86,6 +88,10 @@ public class Player : UnitController
                 gridManager.AIActions.PushCompanion(direction);
                 MoveTo(direction, TileTypes.PlayerTile);
                 number--;
+
+                if (uiHandler != null)
+                    uiHandler.UpdateNumberText(number);
+
                 yield return new WaitForSeconds(0.0f);
                 push = 0;
             }
@@ -94,13 +100,17 @@ public class Player : UnitController
         {
             MoveTo(direction, TileTypes.PlayerTile);
             number--;
+
+            if (uiHandler != null)
+                uiHandler.UpdateNumberText(number);
+
             yield return new WaitForSeconds(0.0f);
         }
-        if(isAIBefore == false)
+
+        if (isAIBefore == false)
         {
             Sequencer.sequencer.AIAfterAction();
         }
-        
     }
 
     public void MovementReceiver(int receivedNumber)
@@ -109,9 +119,8 @@ public class Player : UnitController
 
         if (uiHandler != null)
         {
-            uiHandler.UpdateNumberText(receivedNumber);
+            uiHandler.UpdateNumberText(number);
         }
-
     }
 
     public void ThrowReceiver(int receivedNumber)
