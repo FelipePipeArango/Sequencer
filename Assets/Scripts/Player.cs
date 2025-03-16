@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using static GameActions;
 using static GameTiles;
 using static GridManager;
+using System.Security.Cryptography.X509Certificates;
 
 public class Player : UnitController
 {
@@ -11,6 +12,8 @@ public class Player : UnitController
     [HideInInspector] public bool canMove = false;
     [HideInInspector] public bool isAIBefore = false;
     [HideInInspector] public int push;
+   
+    public UIHandler uiHandler;
 
 
     private void Start()
@@ -100,17 +103,23 @@ public class Player : UnitController
         
     }
 
-    public void MovementReceiver(int recievedNumber)
+    public void MovementReceiver(int receivedNumber)
     {
-        number += recievedNumber;
+        number += receivedNumber;
+
+        if (uiHandler != null)
+        {
+            uiHandler.UpdateNumberText(receivedNumber);
+        }
+
     }
 
-    public void ThrowReceiver(int recievedNumber)
+    public void ThrowReceiver(int receivedNumber)
     {
         if (hasItem)
         {
             hasItem = false;
-            if (recievedNumber >= gridManager.CalculateDistance(
+            if (receivedNumber >= gridManager.CalculateDistance(
                     gridManager.goal.transform.position, transform.position))
             {
                 GoalCheck();
@@ -122,9 +131,9 @@ public class Player : UnitController
         }
     }
 
-    public void PickUpReceiver(int recievedNumber)
+    public void PickUpReceiver(int receivedNumber)
     {
-        if (recievedNumber == gridManager.CalculateDistance(
+        if (receivedNumber == gridManager.CalculateDistance(
                 gridManager.keyItem.transform.position, transform.position))
         {
             KeyItemCheck();
@@ -132,7 +141,7 @@ public class Player : UnitController
         }
         if (gridManager.pickUpNumber != null)
         {
-            if (recievedNumber == gridManager.CalculateDistance(
+            if (receivedNumber == gridManager.CalculateDistance(
                     gridManager.pickUpNumber.transform.position, transform.position))
             {
                 if (gridManager.pickUpNumber != null ||
