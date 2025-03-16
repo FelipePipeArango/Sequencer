@@ -1388,6 +1388,10 @@ PrefabInstance:
       propertyPath: numberHUD
       value: 
       objectReference: {fileID: 1497764023}
+    - target: {fileID: 3102977091993603097, guid: 34b4640ccd3d49b45a66ef6c09448223, type: 3}
+      propertyPath: pickUpNumber
+      value: 
+      objectReference: {fileID: 794028607}
     - target: {fileID: 3857825678911092812, guid: 34b4640ccd3d49b45a66ef6c09448223, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2
@@ -1496,6 +1500,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 34b4640ccd3d49b45a66ef6c09448223, type: 3}
+--- !u!1 &794028607 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8796626165709820186, guid: 34b4640ccd3d49b45a66ef6c09448223, type: 3}
+  m_PrefabInstance: {fileID: 794028606}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &928186438
 GameObject:
   m_ObjectHideFlags: 0
