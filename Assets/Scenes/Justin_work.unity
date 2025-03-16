@@ -240,6 +240,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   numberText: {fileID: 1523688081}
+  defaultCursor: {fileID: 2800000, guid: aa14199ee850c7e428d6aef0acd162f0, type: 3}
+  interactCursor: {fileID: 2800000, guid: 5d4f97d815df86f478a6c8d58570297b, type: 3}
+  holdingCursor: {fileID: 2800000, guid: de0a6f97e0fdaf742a94a013481dda10, type: 3}
+  cursorHotspot: {x: 0, y: 0}
+  interactableTag: Interactable
+  maxRayDistance: 100
 --- !u!1 &478603703
 GameObject:
   m_ObjectHideFlags: 0
