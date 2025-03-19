@@ -10,51 +10,61 @@ public enum CursorState
 
 public class UIHandler : MonoBehaviour
 {
+    public static UIHandler Instance { get; private set; }
+
     public TMP_Text numberText;
+    public GameObject keyItemHUD;
+
     public Texture2D defaultCursor;
     public Texture2D interactCursor;
     public Texture2D holdingCursor;
-    public Vector2 cursorHotspot = Vector2.zero;
-    public GameObject keyItemHUD;
-    private GameObject keyItem;
+
+    private bool isHoveringOverInteractable = false;
+
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
 
     void Start()
     {
-        keyItem = GameObject.FindGameObjectWithTag("Item");
+        SetCursorState(CursorState.Default);
         SetKeyItemHUD(false);
         UpdateNumberText(0);
-        SetCursorState(CursorState.Default);
     }
 
     void Update()
     {
-        if (keyItem && !keyItem.activeInHierarchy)
+        if (!isHoveringOverInteractable)
         {
-            keyItem = null;
-            SetKeyItemHUD(true);
-            enabled = false;
+            SetCursorState(CursorState.Default);
+            return;
         }
+
+        if (Input.GetMouseButton(0))
+        {
+            SetCursorState(CursorState.Holding);
+        }
+        else
+        {
+            SetCursorState(CursorState.Interact);
+        }
+    }
+
+    public void SetHoverState(bool isHovering)
+    {
+        isHoveringOverInteractable = isHovering;
     }
 
     public void UpdateNumberText(int numberValue)
     {
-        numberText.text = numberValue.ToString();
-    }
-
-    public void SetCursorState(CursorState state)
-    {
-        switch (state)
-        {
-            case CursorState.Default:
-                Cursor.SetCursor(defaultCursor, cursorHotspot, CursorMode.Auto);
-                break;
-            case CursorState.Interact:
-                Cursor.SetCursor(interactCursor, cursorHotspot, CursorMode.Auto);
-                break;
-            case CursorState.Holding:
-                Cursor.SetCursor(holdingCursor, cursorHotspot, CursorMode.Auto);
-                break;
-        }
+        if (numberText)
+            numberText.text = numberValue.ToString();
     }
 
     public void SetKeyItemHUD(bool hasKey)
@@ -62,4 +72,27 @@ public class UIHandler : MonoBehaviour
         if (keyItemHUD)
             keyItemHUD.SetActive(hasKey);
     }
+
+    public void SetCursorState(CursorState state)
+    {
+        Texture2D cursorTexture = defaultCursor;
+
+        switch (state)
+        {
+            case CursorState.Default:
+                cursorTexture = defaultCursor;
+                break;
+            case CursorState.Interact:
+                cursorTexture = interactCursor;
+                break;
+            case CursorState.Holding:
+                cursorTexture = holdingCursor;
+                break;
+        }
+
+        Cursor.SetCursor(cursorTexture, Vector2.zero, CursorMode.Auto);
+    }
 }
+
+
+
