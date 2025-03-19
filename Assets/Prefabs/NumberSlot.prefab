@@ -222,7 +222,7 @@ GameObject:
   - component: {fileID: 6266694025930799847}
   m_Layer: 5
   m_Name: NumberSlot
-  m_TagString: Untagged
+  m_TagString: Interactable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -333,4 +333,7 @@ MonoBehaviour:
   value: 0
   parentTransform: {fileID: 0}
   numberText: {fileID: 7774656382515588725}
-  target: {fileID: 0}
+  UiCamera: {fileID: 0}
+  mousePosition: {x: 0, y: 0, z: 0}
+  world: {x: 0, y: 0, z: 0}
+  canvas: {fileID: 0}
