@@ -122,6 +122,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &131495869 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5791705906782163138, guid: 34b4640ccd3d49b45a66ef6c09448223, type: 3}
+  m_PrefabInstance: {fileID: 704271441}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &154370032
 GameObject:
   m_ObjectHideFlags: 0
@@ -644,6 +649,10 @@ PrefabInstance:
       propertyPath: cardsInLevel
       value: 
       objectReference: {fileID: 1187270321}
+    - target: {fileID: 3102977091993603097, guid: 34b4640ccd3d49b45a66ef6c09448223, type: 3}
+      propertyPath: keyItem
+      value: 
+      objectReference: {fileID: 131495869}
     - target: {fileID: 3102977091993603097, guid: 34b4640ccd3d49b45a66ef6c09448223, type: 3}
       propertyPath: pickUpNumber
       value: 
