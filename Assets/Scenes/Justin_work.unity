@@ -248,7 +248,6 @@ MonoBehaviour:
   keyItemHUD: {fileID: 890863974}
   defaultCursor: {fileID: 2800000, guid: aa14199ee850c7e428d6aef0acd162f0, type: 3}
   interactCursor: {fileID: 2800000, guid: 5d4f97d815df86f478a6c8d58570297b, type: 3}
-  holdingCursor: {fileID: 2800000, guid: de0a6f97e0fdaf742a94a013481dda10, type: 3}
 --- !u!1 &216001077 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5131192903137520530, guid: 6aaeca9ca1db64c4897d856dd5cd9036, type: 3}
@@ -618,7 +617,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.29531926, y: 0.29237553}
   m_AnchorMax: {x: 0.7083193, y: 0.36524898}
-  m_AnchoredPosition: {x: 1.5, y: 0.44174194}
+  m_AnchoredPosition: {x: 1.5, y: 0.44177246}
   m_SizeDelta: {x: 0.24847412, y: -1.1165009}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &534631000
@@ -1366,7 +1365,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &890863975
 Transform:
   m_ObjectHideFlags: 0
@@ -2176,6 +2175,14 @@ PrefabInstance:
     - target: {fileID: 1292207020091880484, guid: 6aaeca9ca1db64c4897d856dd5cd9036, type: 3}
       propertyPath: m_Color.r
       value: 0.5058824
+      objectReference: {fileID: 0}
+    - target: {fileID: 1343452042586157846, guid: 6aaeca9ca1db64c4897d856dd5cd9036, type: 3}
+      propertyPath: m_TagString
+      value: Interactable
+      objectReference: {fileID: 0}
+    - target: {fileID: 2960394257363964497, guid: 6aaeca9ca1db64c4897d856dd5cd9036, type: 3}
+      propertyPath: m_TagString
+      value: Interactable
       objectReference: {fileID: 0}
     - target: {fileID: 3767215707280523383, guid: 6aaeca9ca1db64c4897d856dd5cd9036, type: 3}
       propertyPath: m_Pivot.x

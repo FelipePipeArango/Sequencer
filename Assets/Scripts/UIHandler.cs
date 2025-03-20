@@ -4,8 +4,7 @@ using TMPro;
 public enum CursorState
 {
     Default,
-    Interact,
-    Holding
+    Interact
 }
 
 public class UIHandler : MonoBehaviour
@@ -14,10 +13,8 @@ public class UIHandler : MonoBehaviour
 
     public TMP_Text numberText;
     public GameObject keyItemHUD;
-
     public Texture2D defaultCursor;
     public Texture2D interactCursor;
-    public Texture2D holdingCursor;
 
     private bool isHoveringOverInteractable = false;
 
@@ -33,26 +30,32 @@ public class UIHandler : MonoBehaviour
 
     void Start()
     {
+        keyItemHUD.SetActive(false); // Start with USB icon hidden
         SetCursorState(CursorState.Default);
-        SetKeyItemHUD(false);
         UpdateNumberText(0);
     }
 
     void Update()
     {
-        if (!isHoveringOverInteractable)
+        if (isHoveringOverInteractable)
         {
-            SetCursorState(CursorState.Default);
-            return;
-        }
-
-        if (Input.GetMouseButton(0))
-        {
-            SetCursorState(CursorState.Holding);
+            SetCursorState(CursorState.Interact);
         }
         else
         {
-            SetCursorState(CursorState.Interact);
+            SetCursorState(CursorState.Default);
+        }
+
+        CheckForKeyItem(); // Check every frame if key item exists
+    }
+
+    private void CheckForKeyItem()
+    {
+        GameObject[] items = GameObject.FindGameObjectsWithTag("Item");
+
+        if (items.Length == 0)
+        {
+            keyItemHUD.SetActive(true); // Show USB icon if no items remain
         }
     }
 
@@ -67,32 +70,31 @@ public class UIHandler : MonoBehaviour
             numberText.text = numberValue.ToString();
     }
 
-    public void SetKeyItemHUD(bool hasKey)
-    {
-        if (keyItemHUD)
-            keyItemHUD.SetActive(hasKey);
-    }
-
-    public void SetCursorState(CursorState state)
+    public void SetCursorState(CursorState state)   //Adjust cursor
     {
         Texture2D cursorTexture = defaultCursor;
+        Vector2 hotspot = Vector2.zero;
 
         switch (state)
         {
             case CursorState.Default:
                 cursorTexture = defaultCursor;
+                hotspot = new Vector2(5, 5);
                 break;
             case CursorState.Interact:
                 cursorTexture = interactCursor;
-                break;
-            case CursorState.Holding:
-                cursorTexture = holdingCursor;
+                hotspot = new Vector2(5, 5); 
                 break;
         }
 
-        Cursor.SetCursor(cursorTexture, Vector2.zero, CursorMode.Auto);
+        Cursor.SetCursor(cursorTexture, hotspot, CursorMode.Auto);
     }
+
 }
+
+
+
+
 
 
 
