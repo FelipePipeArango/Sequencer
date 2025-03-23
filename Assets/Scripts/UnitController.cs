@@ -8,10 +8,7 @@ using static GridManager;
 
 public class UnitController : MonoBehaviour
 {
-    [SerializeField]
-    public GameObject CardsInLevel;
-    public GameObject NumberSlot   ;
-    public GameObject CompleteLevel;
+    [SerializeField] public CompleteScreen goalSequence;
 
     [HideInInspector] public float fallSpeed = 1.0f;
     [HideInInspector] public bool hasItem = false;
@@ -112,45 +109,11 @@ public class UnitController : MonoBehaviour
 
     protected void GoalCheck()
     {
-        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        int nextSceneIndex = currentSceneIndex + 1;
-
-        //if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
-        //{
-        //    SceneManager.LoadScene(nextSceneIndex);
-        //}
         Debug.Log("GOAL");
         //TODO Add functional for this function
         //make it so when triggerred makes the completelevel active and everything else disabled 
-        StartCoroutine(CompleteScreen(1));
+        StartCoroutine(goalSequence.OpenCompleteScreen());
     }
-
-    IEnumerator CompleteScreen(int count)
-    {
-        if (count < 0)
-        {
-          yield return null;
-        }
-        if (count == 1)
-        {
-            CardsInLevel.GameObject().SetActive(false);
-            NumberSlot.GameObject().SetActive(false);
-            CompleteLevel.GameObject().SetActive(true);
-
-            yield return new WaitForSeconds(5.0f);
-        }
-        else if(count == 0)
-        {
-            MenuScreen();
-        }
-        StartCoroutine(CompleteScreen(count-1));
-    }
-    void MenuScreen()
-    {
-        SceneManager.LoadScene("MainMenu");
-    }
-
-
 
     protected void KeyItemCheck()
     {
