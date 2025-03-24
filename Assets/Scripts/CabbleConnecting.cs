@@ -7,6 +7,7 @@ public class CabbleConnecting : MonoBehaviour
     [SerializeField] GameObject cardHolder;
 
     GameObject[] cables;
+    GameObject selectedCable;
     int slotDistance;
 
     private void Start()
@@ -31,14 +32,28 @@ public class CabbleConnecting : MonoBehaviour
             pointedPosition = cardHolder.transform.GetChild(pointedSlot - 1).GetComponent<RectTransform>().localPosition;
             float UIdistance = (pointedPosition.x + initialPosition.x)/2;
 
-            Vector2 newPos = cables[slotDistance - 1].GetComponent<RectTransform>().anchoredPosition;
-            cables[slotDistance - 1].GetComponent<RectTransform>().anchoredPosition = new Vector2(UIdistance + 30f, newPos.y);
-            cables[slotDistance - 1].SetActive(true);
+            selectedCable = cables[slotDistance - 1];
+
+            Vector2 newPos = selectedCable.GetComponent<RectTransform>().anchoredPosition;
+            selectedCable.GetComponent<RectTransform>().anchoredPosition = new Vector2(UIdistance + 30f, newPos.y);
+            selectedCable.SetActive(true);
+            if (pointedSlot - currentSlot > 0)
+            {
+                selectedCable.transform.GetChild(0).GetComponent<Animator>().SetBool("StartsLeft", false);
+            }
+            else
+            {
+                selectedCable.transform.GetChild(0).GetComponent<Animator>().SetBool("StartsLeft", true);
+            }
         }
     }
 
     public void EndCable()
     {
-        cables[slotDistance - 1].SetActive(false);
+        if (slotDistance > 0)
+        {
+            selectedCable.transform.GetChild(0).GetComponent<Animator>().SetBool("HasEnded", true);
+            cables[slotDistance - 1].SetActive(false); 
+        }
     }
 }
