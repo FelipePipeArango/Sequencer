@@ -8,6 +8,7 @@ public class CompleteScreen : MonoBehaviour
     [SerializeField]
     public GameObject CardsInLevel;
     public GameObject NumberSlot;
+    public GameObject HUDIcons;
 
     bool isPaused = false;
     float seconds;
@@ -16,6 +17,7 @@ public class CompleteScreen : MonoBehaviour
     {
         CardsInLevel.GameObject().SetActive(false);
         NumberSlot.GameObject().SetActive(false);
+        HUDIcons.GameObject().SetActive(false);
         this.GameObject().SetActive(true);
 
         yield return new WaitForSeconds(5.0f);
@@ -32,6 +34,7 @@ public class CompleteScreen : MonoBehaviour
         {
             CardsInLevel.GameObject().SetActive(false);
             NumberSlot.GameObject().SetActive(false);
+            HUDIcons.GameObject().SetActive(false);
             this.GameObject().SetActive(true);
 
             yield return null;
