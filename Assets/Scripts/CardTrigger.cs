@@ -123,7 +123,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     public void OnPointerExit(PointerEventData eventData)
     {
         gridManager.TurnOffHighlight();
-        cabbleConnecting.EndCable();
+        cabbleConnecting.CancelCable(false);
         hoveredNumberItem = null;
         isInUse = false;
 
@@ -144,6 +144,8 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     public void OnDrop(PointerEventData eventData)
     {
         // If not truly available or nextInSequence not true, do nothing
+
+        cabbleConnecting.EndCable(true);
         if (!available || !nextInSequence) return;
 
         GameObject droppedObj = eventData.pointerDrag;
