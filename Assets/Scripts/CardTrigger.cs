@@ -7,6 +7,7 @@ using TMPro;
 using static GridManager;
 using static GameActions;
 using static GameDirections;
+using Unity.VisualScripting;
 
 public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
@@ -172,6 +173,8 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         }
         if (usedText != null) usedText.gameObject.SetActive(false);
 
+
+        //Explain
         StartDissolve();
 
         if (hoveredNumberItem != null)
@@ -214,7 +217,9 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
     void StartDissolve()
     {
-        if (dissolveMaterial != null && cardBackground != null)
+        if (dissolveMaterial != null && 
+            cardBackground != null && 
+            this.GameObject().active != false)
         {
             StartCoroutine(DissolveEffect());
         }
@@ -300,6 +305,8 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
                 usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, 1f);
                 usedBackground.transform.SetAsFirstSibling();
             }
+
+            //Explain
             StartDissolve();
         }
     }

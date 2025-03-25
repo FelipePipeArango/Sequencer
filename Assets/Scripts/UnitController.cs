@@ -8,6 +8,7 @@ using static GridManager;
 
 public class UnitController : MonoBehaviour
 {
+    [SerializeField] public CompleteScreen goalSequence;
 
     [HideInInspector] public float fallSpeed = 1.0f;
     [HideInInspector] public bool hasItem = false;
@@ -108,14 +109,10 @@ public class UnitController : MonoBehaviour
 
     protected void GoalCheck()
     {
-        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        int nextSceneIndex = currentSceneIndex + 1;
-
-        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
-        {
-            SceneManager.LoadScene(nextSceneIndex);
-        }
         Debug.Log("GOAL");
+        //TODO Add functional for this function
+        //make it so when triggerred makes the completelevel active and everything else disabled 
+        StartCoroutine(goalSequence.OpenCompleteScreen());
     }
 
     protected void KeyItemCheck()
