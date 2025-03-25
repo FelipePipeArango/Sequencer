@@ -17,10 +17,10 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     [SerializeField] private Image usedBackground;
     [SerializeField] private Material dissolveMaterial;
 
-    public bool nextInSequence;
-    public bool isInUse = false;
+    [HideInInspector] public bool nextInSequence;
+    [HideInInspector] public bool isInUse = false;
     public bool available { get; set; } = true;
-    public Actions LevelActions;
+    public Actions cardAction;
 
     public delegate void GrabActions(int number, bool isGrabbing);
     public static event GrabActions OnGrab;
@@ -33,8 +33,11 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
     public bool hasArrow;
     public Image arrowImage;
-    public bool isAIBefore;
+    [HideInInspector] public bool isAIBefore;
     public Directions arrowDirection;
+
+    [HideInInspector] public int slot;
+    [SerializeField] CabbleConnecting cabbleConnecting;
 
     void Awake()
     {
@@ -86,15 +89,19 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        
         GameObject hoveredObject = eventData.pointerDrag;
         if (hoveredObject != null)
         {
             hoveredNumberItem = hoveredObject.GetComponent<NumberItem>();
+
+            cabbleConnecting.StartCable(slot, hoveredNumberItem.value);
+
             if (hoveredNumberItem != null)
             {
-                if (LevelActions == Actions.Move) gridManager.TurnOnHighlight(true, hoveredNumberItem.value);
-                else if (LevelActions == Actions.PickUp) gridManager.TurnOnHighlight(false, hoveredNumberItem.value);
-                else if (LevelActions == Actions.Throw) gridManager.TurnOnHighlight(false, hoveredNumberItem.value);
+                if (cardAction == Actions.Move) gridManager.TurnOnHighlight(true, hoveredNumberItem.value);
+                else if (cardAction == Actions.PickUp) gridManager.TurnOnHighlight(false, hoveredNumberItem.value);
+                else if (cardAction == Actions.Throw) gridManager.TurnOnHighlight(false, hoveredNumberItem.value);
                 isInUse = true;
             }
         }
@@ -117,6 +124,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     public void OnPointerExit(PointerEventData eventData)
     {
         gridManager.TurnOffHighlight();
+        cabbleConnecting.CancelCable(false);
         hoveredNumberItem = null;
         isInUse = false;
 
@@ -143,14 +151,15 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         NumberItem draggableItem = droppedObj != null ? droppedObj.GetComponent<NumberItem>() : null;
         if (draggableItem == null) return;
 
-        OnDropAction?.Invoke(draggableItem, LevelActions);
+        OnDropAction?.Invoke(draggableItem, cardAction);
+        cabbleConnecting.EndCable(true);
 
         if (hasArrow && arrowImage != null)
         {
             Sequencer.sequencer.CommunicateAIActions(isAIBefore, arrowDirection);
         }
 
-        Sequencer.sequencer.CommunicateAction(draggableItem, LevelActions);
+        Sequencer.sequencer.CommunicateAction(draggableItem, cardAction);
         OnGrab?.Invoke(0, false);
 
         // Mark as used
@@ -170,7 +179,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
         if (hoveredNumberItem != null)
         {
-            Debug.Log("Dropped " + hoveredNumberItem.value + " on " + LevelActions + " action.");
+            Debug.Log("Dropped " + hoveredNumberItem.value + " on " + cardAction + " action.");
         }
     }
 
@@ -210,7 +219,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     {
         if (dissolveMaterial != null && 
             cardBackground != null && 
-            this.GameObject().active != false)
+            this.gameObject.activeSelf != false)
         {
             StartCoroutine(DissolveEffect());
         }
@@ -218,9 +227,9 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
     public void Initialize()
     {
-        if (LevelActions == Actions.Move) executeAction = ExecuteMoveAction;
-        else if (LevelActions == Actions.PickUp) executeAction = ExecutePickUpAction;
-        else if (LevelActions == Actions.Throw) executeAction = ExecuteThrowAction;
+        if (cardAction == Actions.Move) executeAction = ExecuteMoveAction;
+        else if (cardAction == Actions.PickUp) executeAction = ExecutePickUpAction;
+        else if (cardAction == Actions.Throw) executeAction = ExecuteThrowAction;
         else executeAction = DefaultAction;
     }
 
@@ -246,7 +255,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
     void DefaultAction(NumberItem numberItem)
     {
-        Debug.Log("No action assigned for " + LevelActions);
+        Debug.Log("No action assigned for " + cardAction);
     }
 
     public void Enable()

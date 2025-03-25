@@ -52,6 +52,7 @@ public class Sequencer : MonoBehaviour
         for (int i = 0; i < levelCards.Length; i++)
         {
             levelCards[i] = cardsInLevel.transform.GetChild(i).GetComponent<CardTrigger>();
+            levelCards[i].slot = i + 1; //this lets the card know what slot it is occupying, it's i + 1 becasue array starts from 0, while slots start from 1.
             levelCards[i].Initialize();
         }
     }
@@ -179,14 +180,14 @@ public class Sequencer : MonoBehaviour
         for (int i = 0; i < levelCards.Length; i++)
         {
             // Must match the usedAction AND be "inUse == true"
-            if (usedAction == levelCards[i].LevelActions && levelCards[i].isInUse == true)
+            if (usedAction == levelCards[i].cardAction && levelCards[i].isInUse == true)
             {
                 lastCard = levelCards[i];
                 lastNumber = recievedNumber;
 
                 if (!levelCards[i].hasArrow)
                 {
-                    if (levelCards[i].LevelActions == Actions.Enable)
+                    if (levelCards[i].cardAction == Actions.Enable)
                         levelCards[recievedNumber.value - 1].Enable();
                     else
                         levelCards[i].ExecuteAction(recievedNumber);
@@ -199,7 +200,7 @@ public class Sequencer : MonoBehaviour
                 {
                     if (!levelCards[i].isAIBefore)
                     {
-                        if (levelCards[i].LevelActions == Actions.Enable)
+                        if (levelCards[i].cardAction == Actions.Enable)
                             levelCards[recievedNumber.value - 1].Enable();
                         else
                             levelCards[i].ExecuteAction(recievedNumber);
