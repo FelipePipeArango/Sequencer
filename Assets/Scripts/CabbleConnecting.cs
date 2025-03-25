@@ -39,7 +39,7 @@ public class CabbleConnecting : MonoBehaviour
             cableTransform = selectedCable.GetComponent<RectTransform>();
             selectedCable.transform.GetComponent<Animator>().SetBool("HasEnded", false);
             selectedCable.transform.GetComponent<Animator>().SetBool("Dropped", false);
-            cableTransform.anchoredPosition = new Vector2(UIdistance + 30f, cableTransform.anchoredPosition.y);
+            cableTransform.anchoredPosition = new Vector2(UIdistance, cableTransform.anchoredPosition.y);
 
             if (slotDistance > 0)
             {
