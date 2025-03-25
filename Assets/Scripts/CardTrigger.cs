@@ -144,8 +144,6 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     public void OnDrop(PointerEventData eventData)
     {
         // If not truly available or nextInSequence not true, do nothing
-
-        cabbleConnecting.EndCable(true);
         if (!available || !nextInSequence) return;
 
         GameObject droppedObj = eventData.pointerDrag;
@@ -153,6 +151,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         if (draggableItem == null) return;
 
         OnDropAction?.Invoke(draggableItem, cardAction);
+        cabbleConnecting.EndCable(true);
 
         if (hasArrow && arrowImage != null)
         {

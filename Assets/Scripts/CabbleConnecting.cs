@@ -52,11 +52,12 @@ public class CabbleConnecting : MonoBehaviour
         }
     }
 
-    public void CancelCable(bool hasDropped)
+    public void EndCable(bool hasDropped)
     {
-        if (absoluteSlotDistance > 0 && hasDropped == false)
+        if (absoluteSlotDistance > 0 && hasDropped == true)
         {
-            selectedCable.transform.GetComponent<Animator>().SetBool("HasEnded", true);
+            selectedCable.transform.GetComponent<Animator>().SetBool("HasEnded", false);
+            selectedCable.transform.GetComponent<Animator>().SetBool("Dropped", true);
 
             if (slotDistance > 0)
             {
@@ -69,11 +70,11 @@ public class CabbleConnecting : MonoBehaviour
         }
     }
 
-    public void EndCable(bool hasDropped)
+    public void CancelCable(bool hasDropped)
     {
-        if (absoluteSlotDistance > 0 && hasDropped == true)
+        if (absoluteSlotDistance > 0 && hasDropped == false)
         {
-            selectedCable.transform.GetComponent<Animator>().SetBool("Dropped", true);
+            selectedCable.transform.GetComponent<Animator>().SetBool("HasEnded", true);
 
             if (slotDistance > 0)
             {
