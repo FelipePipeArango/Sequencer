@@ -219,7 +219,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     {
         if (dissolveMaterial != null && 
             cardBackground != null && 
-            this.GameObject().active != false)
+            this.gameObject.activeSelf != false)
         {
             StartCoroutine(DissolveEffect());
         }
