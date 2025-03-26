@@ -19,7 +19,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
     [HideInInspector] public bool nextInSequence;
     [HideInInspector] public bool isInUse = false;
-    public bool available { get; set; } = true;
+    public bool available = true;
     public Actions cardAction;
 
     public delegate void GrabActions(int number, bool isGrabbing);
@@ -65,6 +65,22 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             arrowImage.gameObject.SetActive(true);
             ConfigureArrowPosition(isAIBefore);
             ConfigureArrowDirection(arrowDirection);
+        }
+
+        if (available == false)
+        {
+            if (usedBackground != null)
+            {
+                usedBackground.enabled = true;
+                Color bgColor = usedBackground.color;
+                usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, 1f);
+                usedBackground.transform.SetAsFirstSibling();
+            }
+
+            cardBackground.color = new Color(cardBackground.color.r,
+                cardBackground.color.g,
+                cardBackground.color.b,
+                0f);
         }
     }
 
