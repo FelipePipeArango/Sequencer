@@ -28,7 +28,7 @@ public class CompleteScreen : MonoBehaviour
     {
         if(!isPaused)
         {
-            OpenMenuScreen();
+            NextScene();
         }
         else
         {
@@ -40,9 +40,18 @@ public class CompleteScreen : MonoBehaviour
             yield return null;
         }
     }
-    void OpenMenuScreen()
+
+   
+
+    void NextScene()
     {
-        SceneManager.LoadScene("MainMenu");
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = currentSceneIndex + 1;
+
+        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(nextSceneIndex);
+        }
     }
 
     public void PauseButton()
