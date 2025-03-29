@@ -1588,6 +1588,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &675259820 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8618797435722813756, guid: a265c7b9f92c91946ad66efdb4416982, type: 3}
+  m_PrefabInstance: {fileID: 675259817}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &704271441
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2186,7 +2191,7 @@ MonoBehaviour:
         m_MethodName: SettingsButton
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 675259820}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
