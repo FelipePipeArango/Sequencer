@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -38,5 +39,15 @@ public class GameButtons : MonoBehaviour
     {
         string currentScene = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(currentScene); 
+    }
+
+    public void SettingsButton(GameObject settings)
+    {
+        settings.GameObject().SetActive(true);
+    }
+
+    public void ResumeButton(GameObject settings)
+    {
+        settings.GameObject().SetActive(false);
     }
 }
