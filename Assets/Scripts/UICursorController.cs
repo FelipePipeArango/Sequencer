@@ -53,7 +53,7 @@ public class UICursorController : MonoBehaviour
 
     public void SetCursorState(CursorState state)
     {
-        if (isDragging && state != CursorState.Default)
+        if (isDragging && state != CursorState.Interact)
             return;
 
         if (cursorImageComponent == null) return;
