@@ -52,7 +52,7 @@ public class Sequencer : MonoBehaviour
         for (int i = 0; i < levelCards.Length; i++)
         {
             levelCards[i] = cardsInLevel.transform.GetChild(i).GetComponent<CardTrigger>();
-            levelCards[i].slot = i + 1; //this lets the card know what slot it is occupying, it's i + 1 becasue array starts from 0, while slots start from 1.
+            levelCards[i].SetSlotNumber(i + 1);
             levelCards[i].Initialize();
         }
     }

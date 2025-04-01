@@ -16,6 +16,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     [SerializeField] private Image cardBackground;
     [SerializeField] private Image usedBackground;
     [SerializeField] private Material dissolveMaterial;
+    [SerializeField] private TextMeshProUGUI slotText;
 
     [HideInInspector] public bool nextInSequence;
     [HideInInspector] public bool isInUse = false;
@@ -60,6 +61,12 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
     void Start()
     {
+
+        if (slotText != null)
+        {
+            slotText.text = slot.ToString();
+        }
+
         if (gridManager.AIActions != null && hasArrow && arrowImage != null)
         {
             arrowImage.gameObject.SetActive(true);
@@ -341,6 +348,13 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             usedBackground.transform.SetAsFirstSibling();
         }
         StartDissolve();
+    }
+
+    public void SetSlotNumber(int number)
+    {
+        slot = number;
+        if (slotText != null)
+            slotText.text = number.ToString();
     }
 }
 
