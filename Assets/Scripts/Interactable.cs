@@ -1,21 +1,18 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class Interactable : MonoBehaviour
+public class UIHoverCursorSwap : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    void OnMouseEnter()
+    public void OnPointerEnter(PointerEventData eventData)
     {
-        if (UIHandler.Instance != null)
-        {
-            UIHandler.Instance.SetHoverState(true);
-        }
+        UICursorController.Instance.SetCursorState(CursorState.Interact);
     }
 
-    void OnMouseExit()
+    public void OnPointerExit(PointerEventData eventData)
     {
-        if (UIHandler.Instance != null)
-        {
-            UIHandler.Instance.SetHoverState(false);
-        }
+        UICursorController.Instance.SetCursorState(CursorState.Default);
     }
 }
+
+
 
