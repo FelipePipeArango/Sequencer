@@ -1949,6 +1949,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 154370036}
     m_Modifications:
+    - target: {fileID: 938628073551138902, guid: a265c7b9f92c91946ad66efdb4416982, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -1.4508057
+      objectReference: {fileID: 0}
     - target: {fileID: 2443269708330969512, guid: a265c7b9f92c91946ad66efdb4416982, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 1
@@ -2711,7 +2715,7 @@ RectTransform:
   m_AnchorMin: {x: 0.2368734, y: 0.019253094}
   m_AnchorMax: {x: 0.75868076, y: 0.2777469}
   m_AnchoredPosition: {x: 1.5, y: 1}
-  m_SizeDelta: {x: 1, y: -1.6793823}
+  m_SizeDelta: {x: 1, y: -1.76}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1187270323
 MonoBehaviour:
