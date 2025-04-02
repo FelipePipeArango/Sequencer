@@ -9,6 +9,7 @@ public class CompleteScreen : MonoBehaviour
     public GameObject CardsInLevel;
     public GameObject NumberSlot;
     public GameObject HUDIcons;
+    public float waitTime;
 
     bool isPaused = false;
     float seconds;
@@ -20,7 +21,7 @@ public class CompleteScreen : MonoBehaviour
         HUDIcons.GameObject().SetActive(false);
         this.GameObject().SetActive(true);
 
-        yield return new WaitForSeconds(5.0f);
+        yield return new WaitForSeconds(waitTime);
         
         StartCoroutine(ifPaused());
     }

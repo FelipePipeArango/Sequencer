@@ -96,18 +96,6 @@ public class Player : UnitController
                 push = 0;
             }
         }
-        else if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.GoalTile)
-        {
-            if (hasItem)
-            {
-                MoveTo(direction, TileTypes.PlayerTile);
-                number--;
-            }
-            if (uiHandler != null)
-                uiHandler.UpdateNumberText(number);
-
-            yield return new WaitForSeconds(0.0f);
-        }
         else
         {
             MoveTo(direction, TileTypes.PlayerTile);
