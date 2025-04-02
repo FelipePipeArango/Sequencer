@@ -103,9 +103,6 @@ public class UnitController : MonoBehaviour
 
     protected void GoalCheck()
     {
-        Debug.Log("GOAL");
-        //TODO Add functional for this function
-        //make it so when triggerred makes the completelevel active and everything else disabled 
         if (hasItem)
         {
             StartCoroutine(goalSequence.OpenCompleteScreen());
