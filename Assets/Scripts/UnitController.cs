@@ -95,24 +95,18 @@ public class UnitController : MonoBehaviour
 
     private void MoveToGoal(Vector2Int direction, TileTypes pawnTileType)
     {
-        if (hasItem)
-        {
-            MoveToTile(direction, pawnTileType);
-
-            GoalCheck();
-        }
-        else
-            Debug.Log("Need key");
+        MoveToTile(direction, pawnTileType);
+        GoalCheck();
     }
 
     protected virtual IEnumerator Movement(Vector2Int direction){ return null; }
 
     protected void GoalCheck()
     {
-        Debug.Log("GOAL");
-        //TODO Add functional for this function
-        //make it so when triggerred makes the completelevel active and everything else disabled 
-        StartCoroutine(goalSequence.OpenCompleteScreen());
+        if (hasItem)
+        {
+            StartCoroutine(goalSequence.OpenCompleteScreen());
+        }
     }
 
     protected void KeyItemCheck()

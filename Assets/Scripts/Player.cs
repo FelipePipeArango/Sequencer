@@ -31,39 +31,18 @@ public class Player : UnitController
         }
         if (number > 0 && gridManager.AIActions == null)
         {
-            if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
-            else if (Input.GetKeyDown(KeyCode.UpArrow)) StartCoroutine(Movement(Vector2Int.up));
-
-            if (Input.GetKeyDown(KeyCode.S)) StartCoroutine(Movement(Vector2Int.down));
-            else if (Input.GetKeyDown(KeyCode.DownArrow)) StartCoroutine(Movement(Vector2Int.down));
-
-            if (Input.GetKeyDown(KeyCode.D)) StartCoroutine(Movement(Vector2Int.right));
-            else if (Input.GetKeyDown(KeyCode.RightArrow)) StartCoroutine(Movement(Vector2Int.right));
-
-            if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(Movement(Vector2Int.left));
-            else if (Input.GetKeyDown(KeyCode.LeftArrow)) StartCoroutine(Movement(Vector2Int.left));
+            ControlMovement();
         }
         else if (number > 0 && gridManager.AIActions != null 
             && gridManager.AIActions.canMove == false)
         {
-            if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
-            else if (Input.GetKeyDown(KeyCode.UpArrow)) StartCoroutine(Movement(Vector2Int.up));
-
-            if (Input.GetKeyDown(KeyCode.S)) StartCoroutine(Movement(Vector2Int.down));
-            else if (Input.GetKeyDown(KeyCode.DownArrow)) StartCoroutine(Movement(Vector2Int.down));
-
-            if (Input.GetKeyDown(KeyCode.D)) StartCoroutine(Movement(Vector2Int.right));
-            else if (Input.GetKeyDown(KeyCode.RightArrow)) StartCoroutine(Movement(Vector2Int.right));
-
-            if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(Movement(Vector2Int.left));
-            else if (Input.GetKeyDown(KeyCode.LeftArrow)) StartCoroutine(Movement(Vector2Int.left));
+            ControlMovement();
         }
         if (number == 0)
             push = 1;
         
         IfFall();
     }
-
 
     protected override IEnumerator Movement(Vector2Int direction)
     {
@@ -79,7 +58,9 @@ public class Player : UnitController
             isBoardBelow = false;
 
             if (uiHandler != null)
+            {
                 uiHandler.UpdateNumberText(number);
+            }
         }
         else if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.PawnTile)
         {
@@ -90,7 +71,9 @@ public class Player : UnitController
                 number--;
 
                 if (uiHandler != null)
+                {
                     uiHandler.UpdateNumberText(number);
+                }
 
                 yield return new WaitForSeconds(0.0f);
                 push = 0;
@@ -101,8 +84,10 @@ public class Player : UnitController
             MoveTo(direction, TileTypes.PlayerTile);
             number--;
 
-            if (uiHandler != null)
+            if (uiHandler != null) 
+            { 
                 uiHandler.UpdateNumberText(number);
+            }
 
             yield return new WaitForSeconds(0.0f);
         }
@@ -165,6 +150,20 @@ public class Player : UnitController
         {
             Sequencer.sequencer.AIAfterAction();
         }
+    }
+    private void ControlMovement()
+    {
+        if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
+        else if (Input.GetKeyDown(KeyCode.UpArrow)) StartCoroutine(Movement(Vector2Int.up));
+
+        if (Input.GetKeyDown(KeyCode.S)) StartCoroutine(Movement(Vector2Int.down));
+        else if (Input.GetKeyDown(KeyCode.DownArrow)) StartCoroutine(Movement(Vector2Int.down));
+
+        if (Input.GetKeyDown(KeyCode.D)) StartCoroutine(Movement(Vector2Int.right));
+        else if (Input.GetKeyDown(KeyCode.RightArrow)) StartCoroutine(Movement(Vector2Int.right));
+
+        if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(Movement(Vector2Int.left));
+        else if (Input.GetKeyDown(KeyCode.LeftArrow)) StartCoroutine(Movement(Vector2Int.left));
     }
 }
 

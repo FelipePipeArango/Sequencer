@@ -2488,6 +2488,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 154370036}
     m_Modifications:
+    - target: {fileID: 938628073551138902, guid: a265c7b9f92c91946ad66efdb4416982, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -1.4508057
+      objectReference: {fileID: 0}
     - target: {fileID: 2443269708330969512, guid: a265c7b9f92c91946ad66efdb4416982, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 1
@@ -4033,7 +4037,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3035722585940310870, guid: 834e8d97885f3cf4a914430f9900e225, type: 3}
       propertyPath: m_Name
-      value: CompleteLevel
+      value: UI_OnLevelComplete
       objectReference: {fileID: 0}
     - target: {fileID: 3035722585940310870, guid: 834e8d97885f3cf4a914430f9900e225, type: 3}
       propertyPath: m_IsActive
