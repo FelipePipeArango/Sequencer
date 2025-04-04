@@ -15,6 +15,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     [SerializeField] private Image slotImage;
     [SerializeField] private Image cardBackground;
     [SerializeField] private Image usedBackground;
+    [SerializeField] public Image notNextCover;
     [SerializeField] private Material dissolveMaterial;
     [SerializeField] private TextMeshProUGUI slotText;
 
@@ -114,7 +115,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     {
         
         GameObject hoveredObject = eventData.pointerDrag;
-        if (hoveredObject != null)
+        if (hoveredObject != null && available == true && nextInSequence == true)
         {
             hoveredNumberItem = hoveredObject.GetComponent<NumberItem>();
 
@@ -139,7 +140,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
                 float alpha = isTrulyUsable ? 1f : 0.5f;
                 cardBackground.material = null;
                 Color cbColor = cardBackground.color;
-                cardBackground.color = new Color(cbColor.r, cbColor.g, cbColor.b, alpha);
+                cardBackground.color = new Color(cbColor.r, cbColor.g, cbColor.b, 1);
             }
         }
     }
@@ -160,7 +161,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
                 float alpha = isTrulyUsable ? 1f : 0.5f;
                 cardBackground.material = null;
                 Color cbColor = cardBackground.color;
-                cardBackground.color = new Color(cbColor.r, cbColor.g, cbColor.b, alpha);
+                cardBackground.color = new Color(cbColor.r, cbColor.g, cbColor.b, 1);
             }
         }
     }
@@ -242,7 +243,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     {
         if (dissolveMaterial != null && 
             cardBackground != null && 
-            this.GameObject().active != false)
+            gameObject.activeSelf != false)
         {
             StartCoroutine(DissolveEffect());
         }

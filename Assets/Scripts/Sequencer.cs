@@ -14,6 +14,7 @@ public class Sequencer : MonoBehaviour
     public static Sequencer sequencer { get; private set; }
 
     Image cardBackground;
+    Image notNextCardCover;
 
     CardTrigger[] levelCards;
 
@@ -62,16 +63,18 @@ public class Sequencer : MonoBehaviour
         for (int i = 0; i < levelCards.Length; i++)
         {
             cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
+            notNextCardCover = levelCards[i].notNextCover;
 
             if (i == recievedValue - 1)
             {
                         // This is the next card
                 levelCards[i].nextInSequence = true;
-                cardBackground.color = new Color(
+                /*cardBackground.color = new Color(
                     cardBackground.color.r,
                     cardBackground.color.g,
                     cardBackground.color.b,
-                    1f);
+                    1f);*/
+                notNextCardCover.gameObject.SetActive(false);
             }
             else
             {
@@ -90,11 +93,12 @@ public class Sequencer : MonoBehaviour
                 else
                 {
                         // NOT used, NOT next => alpha = 0.5
-                    cardBackground.color = new Color(
+                    /*cardBackground.color = new Color(
                         cardBackground.color.r,
                         cardBackground.color.g,
                         cardBackground.color.b,
-                        0.5f);
+                        0.5f);*/
+                    notNextCardCover.gameObject.SetActive(true);
                 }
             }
         }

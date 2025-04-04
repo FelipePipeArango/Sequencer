@@ -681,6 +681,10 @@ PrefabInstance:
       propertyPath: characterMoveUI
       value: 
       objectReference: {fileID: 794028609}
+    - target: {fileID: 7860224139406968923, guid: 8745b7532223bb242838254a3a820683, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1124934641839044047, guid: 8745b7532223bb242838254a3a820683, type: 3}
     m_RemovedGameObjects: []
@@ -1008,11 +1012,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!223 &798770846 stripped
-Canvas:
-  m_CorrespondingSourceObject: {fileID: 5327511874071776178, guid: 34b4640ccd3d49b45a66ef6c09448223, type: 3}
-  m_PrefabInstance: {fileID: 794028606}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &896240571
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1613,7 +1612,7 @@ PrefabInstance:
     - target: {fileID: 6426200500595082626, guid: 6aaeca9ca1db64c4897d856dd5cd9036, type: 3}
       propertyPath: canvas
       value: 
-      objectReference: {fileID: 798770846}
+      objectReference: {fileID: 0}
     - target: {fileID: 8197302704326047218, guid: 6aaeca9ca1db64c4897d856dd5cd9036, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
