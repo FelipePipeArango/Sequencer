@@ -6,7 +6,7 @@ public class UIHandler : MonoBehaviour
 {
     public static UIHandler Instance { get; private set; }
 
-    public TMP_Text numberText;
+    public TMP_Text characterMoveUI;
     public GameObject keyItemHUD;
 
     private bool isHoveringOverInteractable = false;
@@ -49,8 +49,8 @@ public class UIHandler : MonoBehaviour
 
     public void UpdateNumberText(int numberValue)
     {
-        if (numberText)
-            numberText.text = numberValue.ToString();
+        if (characterMoveUI)
+            characterMoveUI.text = numberValue.ToString();
     }
 }
 
