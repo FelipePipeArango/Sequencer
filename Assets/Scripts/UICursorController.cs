@@ -1,10 +1,14 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public enum CursorState
 {
     Default,
-    Interact
+    Interact,
+    HoverDraggable
 }
 
 public class UICursorController : MonoBehaviour
@@ -15,8 +19,9 @@ public class UICursorController : MonoBehaviour
     public Canvas canvas;
     public Sprite defaultCursorSprite;
     public Sprite interactCursorSprite;
+    public Sprite hoverDraggableSprite;
 
-    private bool isDragging = false;
+    public bool isDragging = false;
 
     [SerializeField] private Vector2 hotspotOffset = new Vector2(15, -30);
     private Image cursorImageComponent;
@@ -35,6 +40,7 @@ public class UICursorController : MonoBehaviour
     {
         Cursor.visible = false;
         cursorImageComponent = cursorImage.GetComponent<Image>();
+        cursorImageComponent.raycastTarget = false; // Prevent blocking UI clicks
         SetCursorState(CursorState.Default);
     }
 
@@ -49,6 +55,11 @@ public class UICursorController : MonoBehaviour
         );
 
         cursorImage.localPosition = localPoint + hotspotOffset;
+    }
+
+    void LateUpdate()
+    {
+        cursorImage.SetAsLastSibling(); // Ensures cursor always renders on top
     }
 
     public void SetCursorState(CursorState state)
@@ -69,8 +80,14 @@ public class UICursorController : MonoBehaviour
                 cursorImageComponent.sprite = interactCursorSprite;
                 cursorImage.sizeDelta = new Vector2(48, 48);
                 break;
+
+            case CursorState.HoverDraggable:
+                cursorImageComponent.sprite = hoverDraggableSprite;
+                cursorImage.sizeDelta = new Vector2(56, 56);
+                break;
         }
     }
+
     public void BeginDragCursor()
     {
         isDragging = true;
@@ -80,12 +97,32 @@ public class UICursorController : MonoBehaviour
     public void EndDragCursor()
     {
         isDragging = false;
-        SetCursorState(CursorState.Default);
+        StartCoroutine(RefreshCursorAfterDrag());
     }
 
+    private IEnumerator RefreshCursorAfterDrag()
+    {
+        yield return null; // Wait one frame
+
+        PointerEventData pointerData = new PointerEventData(EventSystem.current)
+        {
+            position = Input.mousePosition
+        };
+
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(pointerData, results);
+
+        foreach (var result in results)
+        {
+            var swap = result.gameObject.GetComponent<UIHoverCursorSwap>();
+            if (swap != null)
+            {
+                SetCursorState(swap.CursorState);
+                yield break;
+            }
+        }
+
+        // Nothing under the cursor
+        SetCursorState(CursorState.Default);
+    }
 }
-
-
-
-
-
