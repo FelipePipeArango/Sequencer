@@ -220,7 +220,6 @@ GameObject:
   - component: {fileID: 3767215707280523383}
   - component: {fileID: 154131852695811383}
   - component: {fileID: 6266694025930799847}
-  - component: {fileID: -7649864035749607429}
   m_Layer: 5
   m_Name: NumberSlot
   m_TagString: Interactable
@@ -280,19 +279,6 @@ MonoBehaviour:
   m_Spacing: {x: 0, y: 0}
   m_Constraint: 0
   m_ConstraintCount: 2
---- !u!114 &-7649864035749607429
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5131192903137520530}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6167a9a9ceee49b49a07ac39af3b7510, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cursorStateOnHover: 2
 --- !u!1 &5596116490235334550
 GameObject:
   m_ObjectHideFlags: 0
@@ -303,6 +289,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8197302704326047218}
   - component: {fileID: 6426200500595082626}
+  - component: {fileID: 1822725243496378402}
   m_Layer: 5
   m_Name: Number
   m_TagString: Untagged
@@ -350,4 +337,16 @@ MonoBehaviour:
   UiCamera: {fileID: 0}
   mousePosition: {x: 0, y: 0, z: 0}
   world: {x: 0, y: 0, z: 0}
-  canvas: {fileID: 0}
+--- !u!114 &1822725243496378402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5596116490235334550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6167a9a9ceee49b49a07ac39af3b7510, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CursorState: 2

@@ -57,8 +57,6 @@ public class NumberItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDr
         image.raycastTarget = false;
         transform.SetAsLastSibling();
 
-        UICursorController.Instance.BeginDragCursor();
-
         if (OnDragAction != null)
         {
             OnDragAction(value, true);
@@ -92,8 +90,6 @@ public class NumberItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDr
     {
         transform.SetParent(parentTransform);
         image.raycastTarget = true;
-
-        UICursorController.Instance.EndDragCursor();
 
         if (OnDragAction != null)
         {

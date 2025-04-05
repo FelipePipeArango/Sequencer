@@ -3,23 +3,17 @@ using UnityEngine.EventSystems;
 
 public class UIHoverCursorSwap : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [SerializeField] private CursorState cursorStateOnHover = CursorState.Interact;
-
-    public CursorState CursorState => cursorStateOnHover;
+    public CursorState CursorState = CursorState.Interact;
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (!UICursorController.Instance.isDragging)
-        {
-            UICursorController.Instance.SetCursorState(cursorStateOnHover);
-        }
+        UICursorController.Instance.SetCursorState(CursorState);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (!UICursorController.Instance.isDragging)
-        {
-            UICursorController.Instance.SetCursorState(CursorState.Default);
-        }
+        UICursorController.Instance.SetCursorState(CursorState.Default);
     }
 }
+
+
