@@ -7,7 +7,6 @@ using TMPro;
 using static GridManager;
 using static GameActions;
 using static GameDirections;
-using Unity.VisualScripting;
 
 public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
