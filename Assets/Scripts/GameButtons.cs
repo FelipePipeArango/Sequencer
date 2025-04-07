@@ -1,12 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameButtons : MonoBehaviour
 {
+    enum availableBuilds
+    {
+        WebCredits,
+        PcCredits
+    }
+
+    [SerializeField] availableBuilds targetBuild;
+
     public void PlayGameButton()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
@@ -18,7 +23,14 @@ public class GameButtons : MonoBehaviour
     }
     public void CreditButton()
     {
-        SceneManager.LoadScene("CreditScene");
+        if (targetBuild == availableBuilds.PcCredits)
+        {
+            SceneManager.LoadScene(availableBuilds.PcCredits.ToString()); 
+        }
+        else if (targetBuild == availableBuilds.WebCredits)
+        {
+            SceneManager.LoadScene(availableBuilds.WebCredits.ToString());
+        }
     }
     public void BackButton()
     {
