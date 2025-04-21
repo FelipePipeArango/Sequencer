@@ -29,7 +29,7 @@ public class Player : UnitController
             string currentScene = SceneManager.GetActiveScene().name;
             SceneManager.LoadScene(currentScene);
         }
-        if (number > 0 && gridManager.AIActions == null)
+        if (availableMoves > 0 && gridManager.AIActions == null)
         {
             if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
             else if (Input.GetKeyDown(KeyCode.UpArrow)) StartCoroutine(Movement(Vector2Int.up));
@@ -43,7 +43,7 @@ public class Player : UnitController
             if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(Movement(Vector2Int.left));
             else if (Input.GetKeyDown(KeyCode.LeftArrow)) StartCoroutine(Movement(Vector2Int.left));
         }
-        else if (number > 0 && gridManager.AIActions != null 
+        else if (availableMoves > 0 && gridManager.AIActions != null 
             && gridManager.AIActions.canMove == false)
         {
             if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
@@ -58,7 +58,7 @@ public class Player : UnitController
             if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(Movement(Vector2Int.left));
             else if (Input.GetKeyDown(KeyCode.LeftArrow)) StartCoroutine(Movement(Vector2Int.left));
         }
-        if (number == 0)
+        if (availableMoves == 0)
             push = 1;
         
         IfFall();
@@ -75,11 +75,11 @@ public class Player : UnitController
         if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.None)
         {
             transform.position += new Vector3(direction.x, 0, direction.y);
-            number = 0;
+            availableMoves = 0;
             isBoardBelow = false;
 
             if (uiHandler != null)
-                uiHandler.UpdateNumberText(number);
+                uiHandler.UpdateNumberText(availableMoves);
         }
         else if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.PawnTile)
         {
@@ -87,10 +87,10 @@ public class Player : UnitController
             {
                 gridManager.AIActions.PushCompanion(direction);
                 MoveTo(direction, TileTypes.PlayerTile);
-                number--;
+                availableMoves--;
 
                 if (uiHandler != null)
-                    uiHandler.UpdateNumberText(number);
+                    uiHandler.UpdateNumberText(availableMoves);
 
                 yield return new WaitForSeconds(0.0f);
                 push = 0;
@@ -99,10 +99,10 @@ public class Player : UnitController
         else
         {
             MoveTo(direction, TileTypes.PlayerTile);
-            number--;
+            availableMoves--;
 
             if (uiHandler != null)
-                uiHandler.UpdateNumberText(number);
+                uiHandler.UpdateNumberText(availableMoves);
 
             yield return new WaitForSeconds(0.0f);
         }
@@ -115,11 +115,11 @@ public class Player : UnitController
 
     public void MovementReceiver(int receivedNumber)
     {
-        number += receivedNumber;
+        availableMoves += receivedNumber;
 
         if (uiHandler != null)
         {
-            uiHandler.UpdateNumberText(number);
+            uiHandler.UpdateNumberText(availableMoves);
         }
     }
 

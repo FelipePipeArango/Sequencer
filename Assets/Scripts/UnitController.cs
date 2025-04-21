@@ -13,7 +13,7 @@ public class UnitController : MonoBehaviour
     [HideInInspector] public float fallSpeed = 1.0f;
     [HideInInspector] public bool hasItem = false;
     [HideInInspector] public bool hasNumber = false;
-    [HideInInspector] public int number = 0;
+    [HideInInspector] public int availableMoves = 0;
     [HideInInspector] protected bool isBoardBelow = true;
 
 

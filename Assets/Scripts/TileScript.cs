@@ -22,12 +22,10 @@ public class TileScript : MonoBehaviour
     }
     public void SetColor(Color color)
     {
-        render = GetComponent<Renderer>();
         render.material.color = color;
     }
     public Color GetColor()
     {
-        render = GetComponent<Renderer>();
         return render.material.color;
     }
     public void ResetColor()
