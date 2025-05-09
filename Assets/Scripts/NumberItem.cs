@@ -19,7 +19,7 @@ public class NumberItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDr
     [SerializeField] Camera UiCamera;
     public Vector3 mousePosition;
     public Vector3 world;
-    public Canvas canvas;
+    Canvas canvas;
 
     private RectTransform thisRectTransform;
 
@@ -53,9 +53,7 @@ public class NumberItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDr
     {
         parentTransform = transform.parent;
         transform.SetParent(transform.root);
-        /*Vector3 currentPosition = transform.localPosition;
-        currentPosition.z = lockedPosition;
-        transform.localPosition = currentPosition;*/
+
         image.raycastTarget = false;
         transform.SetAsLastSibling();
 
@@ -67,13 +65,6 @@ public class NumberItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDr
 
     public void OnDrag(PointerEventData eventData)
     {
-        /*mousePosition = Input.mousePosition;
-        mousePosition.z = lockedPosition;
-        world = UiCamera.ScreenToWorldPoint(mousePosition);
-        //world.z = lockedPosition;
-        transform.position = UiCamera.ScreenToWorldPoint(mousePosition);
-        //transform.position = Input.mousePosition;*/
-
         Vector2 localPosition;
         RectTransformUtility.ScreenPointToLocalPointInRectangle (canvas.transform as RectTransform, eventData.position, UiCamera, out localPosition);
 
