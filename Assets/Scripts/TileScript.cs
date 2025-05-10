@@ -8,7 +8,8 @@ using static GameTiles;
 public class TileScript : MonoBehaviour
 {
     [HideInInspector] public TileTypes tileType { get; set; }
-   
+    public GameObject pointer;
+
     private Renderer render;
     private Color setColor;
 
