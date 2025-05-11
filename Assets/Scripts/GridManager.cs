@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Color = UnityEngine.Color;
 using static GameTiles;
+using System.Collections;
 
 public class GridManager : MonoBehaviour
 {
@@ -27,6 +28,11 @@ public class GridManager : MonoBehaviour
     public GameObject numberHUD; //Should at some point go to card manager
     [HideInInspector] public Player playerActions;
     [HideInInspector] public AICompanion AIActions;
+
+    [Header("OBJECT POINTERS")]
+    [SerializeField] float goalPointerHeight;
+    [SerializeField] float keyItemPointerHeight;
+    [SerializeField] float tileHeight;
 
 
     void Awake()
@@ -73,21 +79,27 @@ public class GridManager : MonoBehaviour
         return distance;
     }
    
-    public void TurnOnHighlight(bool isMoveAction, int value)
+    public void TurnOnHighlight(GameActions.Actions action, int value)
     {
-        if (isMoveAction)
+        switch (action)
         {
-            MoveDistanceHighLight(value, playerActions.transform.position);
+            case GameActions.Actions.Move:
+                MoveDistanceHighLight(value, playerActions.transform.position);
+                break;
+
+            case GameActions.Actions.PickUp:
+                PickUpHighLight(value);
+                break;
+
+            case GameActions.Actions.Throw:
+                ThrowHighLight(value);
+                break;
+
         }
-        else
-        {
-            PickUpThrowHighLight(value);
-        }
+
         foreach (var tile in tiles)
         {
             if (tile.isHighLight) tile.SetColor(highlightColor);
-            
-           
         }
     }
    
@@ -98,6 +110,8 @@ public class GridManager : MonoBehaviour
             foreach (TileScript tile in tiles)
             {
                 tile.isHighLight = false;
+                if(tile.pointer.activeSelf)
+                    tile.pointer.SetActive(false);
                 tile.ResetColor();
             }
         }
@@ -179,7 +193,7 @@ public class GridManager : MonoBehaviour
         CheckIfGround(amount, down);
     }
 
-    private void PickUpThrowHighLight(int amount)
+    private void PickUpHighLight(int amount)
     {
         int distance;
         foreach (var tile in tiles)
@@ -190,14 +204,50 @@ public class GridManager : MonoBehaviour
             if (distance == amount)
             {
                 tile.isHighLight = true;
+                if (tile.tileType == TileTypes.KeyTile || tile.tileType == TileTypes.ItemTile)
+                {
+                    tile.pointer.transform.position = new Vector3 (tile.pointer.transform.position.x, keyItemPointerHeight, tile.pointer.transform.position.z);
+
+                    tile.pointer.gameObject.SetActive(true);
+                }
+                if (tile.tileType == TileTypes.EmptyTile)
+                {
+                    //No PickUp Available
+                }
             }
         }
     }
 
+    private void ThrowHighLight(int amount)
+    {
+        int distance;
+        foreach (var tile in tiles)
+        {
+            distance = CalculateDistance(
+                tile.transform.position,
+                playerActions.transform.position);
+            if (distance == amount)
+            {
+                tile.isHighLight = true;
+                if (tile.tileType == TileTypes.EmptyTile)
+                {
+                    tile.pointer.transform.position = new Vector3(tile.pointer.transform.position.x, tileHeight, tile.pointer.transform.position.z);
+                    tile.pointer.gameObject.SetActive(true);
+                }
+                else if (tile.tileType == TileTypes.GoalTile)
+                {
+                    tile.pointer.transform.position = new Vector3(tile.pointer.transform.position.x, goalPointerHeight, tile.pointer.transform.position.z);
+                    tile.pointer.gameObject.SetActive(true);
+                }
+            }
+        }
+    }
+
+
     public void UpdateTileType(Vector3 pos, TileTypes type)
     {
         if (size.x > pos.x || size.y > pos.z)
-        {
+        {   
             if (grid[(int)pos.x, (int)pos.z] != null)
                 grid[(int)pos.x, (int)pos.z].tileType = type;
             else
