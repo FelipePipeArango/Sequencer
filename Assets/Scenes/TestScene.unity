@@ -251,7 +251,8 @@ MonoBehaviour:
   aiButton: {fileID: 0}
   keyButton: {fileID: 0}
   goalButton: {fileID: 0}
-  gridSize: {x: 10, y: 10}
+  gridSize: {x: 3, y: 3}
+  gridVFX: {fileID: 2008745170}
 --- !u!4 &1120739724
 Transform:
   m_ObjectHideFlags: 0
@@ -261,7 +262,7 @@ Transform:
   m_GameObject: {fileID: 1120739722}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 100}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -352,13 +353,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1630072298}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.11848203, y: -0, z: -0, w: 0.9929562}
-  m_LocalPosition: {x: 0.66, y: 3.43, z: -10}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 10, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 13.609, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &1952009204
 GameObject:
   m_ObjectHideFlags: 0
@@ -504,8 +505,8 @@ Transform:
   m_GameObject: {fileID: 2008745170}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.99609995, y: -0.25, z: 1.4561}
-  m_LocalScale: {x: 0.49898, y: 1, z: 0.59755}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}

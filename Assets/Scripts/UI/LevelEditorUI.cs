@@ -4,6 +4,7 @@ using static GameTiles;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.IO;
 
 public class LevelEditorUI : MonoBehaviour
 {
@@ -22,10 +23,13 @@ public class LevelEditorUI : MonoBehaviour
     private Vector2Int? keyPos = null;
     private Vector2Int? goalPos = null;
 
+    private string savePath;
+
     private void Start()
     {
         //saveButton.onClick.AddListener(SaveLevel);
-
+        //loadButton.onClick.AddListener(LoadLevel);
+        //savePath = Path.Combine(Application.persistentDataPath, "level.json");
         // Generate visual placeholder grid for editing
         for (int x = 0; x < gridSize.x; x++)
         {
@@ -41,16 +45,17 @@ public class LevelEditorUI : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                if (hit.collider.gameObject != gridVFX && selectedTileType != TileTypes.None) return; // Only interact if it's the grid
+                //if (hit.collider.gameObject != gridVFX && selectedTileType != TileTypes.None) return; // Only interact if it's the grid
 
                 Vector3 hitPoint = hit.point;
                 Vector3 localPos = gridVFX.transform.InverseTransformPoint(hitPoint);
                 Vector2 gridCellSize = new Vector2(gridVFX.transform.localScale.x, gridVFX.transform.localScale.z);
                 int x = Mathf.FloorToInt(localPos.x / gridCellSize.x);
                 int z = Mathf.FloorToInt(localPos.z / gridCellSize.y);
-                Vector2Int pos = new Vector2Int(x+1, z+1);
+                Vector2Int pos = new Vector2Int(x + 6, z + 6);
 
                 //if (playerButton.interactable == false) playerPos = pos;
                 //else if (aiButton.interactable == false) aiPos = pos;
