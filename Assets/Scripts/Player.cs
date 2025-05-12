@@ -5,6 +5,7 @@ using static GameActions;
 using static GameTiles;
 using static GridManager;
 using System.Security.Cryptography.X509Certificates;
+using Unity.VisualScripting;
 
 public class Player : UnitController
 {
@@ -45,11 +46,12 @@ public class Player : UnitController
                     TileMap.transform.localScale.z
                     );
                 int x = Mathf.FloorToInt(localPos.x / gridCellSize.x + 0.5f);
-                int z = Mathf.FloorToInt(localPos.z / gridCellSize.y - 0.3f);
+                int z = Mathf.FloorToInt(localPos.z / gridCellSize.y - 0.4f);
                 
-                //Right now this value is not dynamic I dont know what it does
-                //but it keeps changing if I change the scene 
-                Vector2Int pos = new Vector2Int(x + 3/*2*/, z + 4/*5*/);
+                Vector2Int pos = new Vector2Int(
+                    x + gridManager.size.x,
+                    z + gridManager.size.y + 1
+                    );
                 
                 if (gridManager.GetTile(pos) != null)
                     gridManager.GetTile(pos).SetColor(Color.clear);

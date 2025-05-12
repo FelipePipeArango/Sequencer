@@ -12,7 +12,7 @@ public class GridManager : MonoBehaviour
 
     [Header("BOARD")]
     [SerializeField] Color highlightColor;
-    [SerializeField] Vector2Int size;
+    [SerializeField] public Vector2Int size;
 
     private GameObject[] allTiles;
     public TileScript[,] grid;
