@@ -24,6 +24,48 @@ public class Player : UnitController
 
     void Update()
     {
+
+
+
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                //if (hit.collider.gameObject != gridVFX && selectedTileType != TileTypes.None) return; // Only interact if it's the grid
+
+                Vector3 hitPoint = hit.point;
+                GameObject TileMap = new GameObject();
+                TileMap.transform.position = gridManager.GetTileMap();
+                Vector3 localPos = TileMap.transform.InverseTransformPoint(hitPoint);
+                Vector2 gridCellSize = new Vector2(
+                    TileMap.transform.localScale.x,
+                    TileMap.transform.localScale.z
+                    );
+                int x = Mathf.FloorToInt(localPos.x / gridCellSize.x + 0.5f);
+                int z = Mathf.FloorToInt(localPos.z / gridCellSize.y - 0.3f);
+                
+                //Right now this value is not dynamic I dont know what it does
+                //but it keeps changing if I change the scene 
+                Vector2Int pos = new Vector2Int(x + 3/*2*/, z + 4/*5*/);
+                
+                if (gridManager.GetTile(pos) != null)
+                    gridManager.GetTile(pos).SetColor(Color.clear);
+
+                Debug.Log(pos);
+
+                Destroy(TileMap);
+            }
+        }
+    
+
+
+
+
+
+
         if (Input.GetKeyDown(KeyCode.Q))
         {
             string currentScene = SceneManager.GetActiveScene().name;

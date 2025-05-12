@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using Color = UnityEngine.Color;
 using static GameTiles;
 using System.Collections;
+using static UnityEditor.PlayerSettings;
 
 public class GridManager : MonoBehaviour
 {
@@ -64,6 +65,23 @@ public class GridManager : MonoBehaviour
         UpdateTileType(goal.transform.position, TileTypes.GoalTile);
     }
 
+    public Vector3 GetTileMap()
+    {
+        return new Vector3(size.x, 1, size.y);   
+    }
+    public TileScript GetTile(Vector2Int pos)
+    {
+        if(size.x > pos.x && pos.x >= 0 
+            && size.y > pos.y && pos.y >= 0)
+        { 
+            if (grid[pos.x, pos.y] != null)
+                return grid[pos.x, pos.y];
+            else
+                return null;
+        }
+        else
+            return null;
+    }
     public int CalculateDistance(Vector3 position, Vector3 start)
     {
         Vector2Int currentPosition = new Vector2Int(
@@ -110,8 +128,8 @@ public class GridManager : MonoBehaviour
             foreach (TileScript tile in tiles)
             {
                 tile.isHighLight = false;
-                if(tile.pointer.activeSelf)
-                    tile.pointer.SetActive(false);
+                //if(tile.pointer.activeSelf)
+                //    tile.pointer.SetActive(false);
                 tile.ResetColor();
             }
         }
@@ -267,5 +285,48 @@ public class GridManager : MonoBehaviour
             }
         }
     }
+    /*
+    if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                //if (hit.collider.gameObject != gridVFX && selectedTileType != TileTypes.None) return; // Only interact if it's the grid
+
+                Vector3 hitPoint = hit.point;
+    Vector3 localPos = gridVFX.transform.InverseTransformPoint(hitPoint);
+    Vector2 gridCellSize = new Vector2(gridVFX.transform.localScale.x, gridVFX.transform.localScale.z);
+    int x = Mathf.FloorToInt(localPos.x / gridCellSize.x);
+    int z = Mathf.FloorToInt(localPos.z / gridCellSize.y);
+    Vector2Int pos = new Vector2Int(x + 6, z + 6);
+
+    //if (playerButton.interactable == false) playerPos = pos;
+    //else if (aiButton.interactable == false) aiPos = pos;
+    //else if (keyButton.interactable == false) keyPos = pos;
+    //else if (goalButton.interactable == false) goalPos = pos;
+    //else
+    //{
+    var tile = TileRegistry.Instance.GetTile(pos);
+
+                    if (tile == null && selectedTileType != TileTypes.None)
+                    {
+                        TileRegistry.Instance.CreateTile(selectedTileType, pos);
+                    }
+                    else if (tile != null)
+{
+    if (selectedTileType == TileTypes.None)
+    {
+        TileRegistry.Instance.RemoveTile(pos);
+    }
+    else
+    {
+        TileRegistry.Instance.CreateTile(selectedTileType, pos);
+    }
+}
+                //}
+            }
+        }
+    }
+    */
 }
