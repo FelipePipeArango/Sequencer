@@ -12,6 +12,8 @@ public class Player : UnitController
     [HideInInspector] public bool canMove = false;
     [HideInInspector] public bool isAIBefore = false;
     [HideInInspector] public int push;
+
+    [SerializeField] Player_AnimController animController;
    
     public UIHandler uiHandler;
 
@@ -24,11 +26,19 @@ public class Player : UnitController
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q)) //Why is this on the player?
         {
             string currentScene = SceneManager.GetActiveScene().name;
             SceneManager.LoadScene(currentScene);
         }
+
+        PerformInput();
+
+        IfFall();
+    }
+
+    void PerformInput()
+    {
         if (number > 0 && gridManager.AIActions == null)
         {
             if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
@@ -43,7 +53,7 @@ public class Player : UnitController
             if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(Movement(Vector2Int.left));
             else if (Input.GetKeyDown(KeyCode.LeftArrow)) StartCoroutine(Movement(Vector2Int.left));
         }
-        else if (number > 0 && gridManager.AIActions != null 
+        else if (number > 0 && gridManager.AIActions != null
             && gridManager.AIActions.canMove == false)
         {
             if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
@@ -60,13 +70,13 @@ public class Player : UnitController
         }
         if (number == 0)
             push = 1;
-        
-        IfFall();
-    }
 
+    }
 
     protected override IEnumerator Movement(Vector2Int direction)
     {
+        animController.UpdateAnimations();
+
         Vector3 checkPos = new Vector3(
             transform.position.x + direction.x,
             0,
