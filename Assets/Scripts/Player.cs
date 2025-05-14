@@ -75,7 +75,7 @@ public class Player : UnitController
 
     protected override IEnumerator Movement(Vector2Int direction)
     {
-        animController.UpdateAnimations();
+        animController.UpdateAnimations(true);
 
         Vector3 checkPos = new Vector3(
             transform.position.x + direction.x,
@@ -103,6 +103,7 @@ public class Player : UnitController
                     uiHandler.UpdateNumberText(number);
 
                 yield return new WaitForSeconds(0.0f);
+                animController.UpdateAnimations(false);
                 push = 0;
             }
         }
@@ -115,6 +116,8 @@ public class Player : UnitController
                 uiHandler.UpdateNumberText(number);
 
             yield return new WaitForSeconds(0.0f);
+
+            animController.UpdateAnimations(false);
         }
 
         if (isAIBefore == false)
