@@ -2865,7 +2865,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 533342025}
         m_TargetAssemblyTypeName: CameraSwitcher, Assembly-CSharp
-        m_MethodName: OnBackClicked
+        m_MethodName: QuitGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3064,7 +3064,7 @@ MonoBehaviour:
   - m_Script
   m_LockStageInInspector: 
   m_StreamingVersion: 20170927
-  m_Priority: 10
+  m_Priority: 7
   m_StandbyUpdate: 2
   m_LookAt: {fileID: 0}
   m_Follow: {fileID: 0}
@@ -3095,14 +3095,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 864526801}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.15418878, y: 0.0035555235, z: -0.0005357331, w: -0.98803484}
-  m_LocalPosition: {x: 0.16362762, y: -2.934637, z: -9.379612}
+  m_LocalRotation: {x: 0.4226177, y: -0.0014868227, z: 0.00069331675, w: 0.9063066}
+  m_LocalPosition: {x: -0.33, y: -4, z: -4.41}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1187356454}
   m_Father: {fileID: 156966676}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 50, y: -0.188, z: 0}
 --- !u!1 &928186438
 GameObject:
   m_ObjectHideFlags: 0

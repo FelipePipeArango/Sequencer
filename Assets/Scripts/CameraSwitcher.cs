@@ -1,5 +1,9 @@
+using UnityEngine.SceneManagement;
+using System.Collections;
 using Cinemachine;
 using UnityEngine;
+
+
 
 public class CameraSwitcher : MonoBehaviour
 {
@@ -31,7 +35,22 @@ public class CameraSwitcher : MonoBehaviour
     public void OnLevelSelectClicked()
     {
         SetCamera(mainMenuCamera: false, levelSelectCamera: false, exitCamera: false, tableCamera: true);
+        StartCoroutine(DelayedSceneLoad("Level_1", 2f)); // Wait 2 seconds before switching scenes
     }
+
+
+    public void QuitGame()
+    {
+        Debug.Log("Quit Game Called");
+        Application.Quit();
+    }
+
+    private IEnumerator DelayedSceneLoad(string sceneName, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        SceneManager.LoadScene(sceneName);
+    }
+
 
     private void SetCamera(bool mainMenuCamera, bool levelSelectCamera, bool exitCamera, bool tableCamera)
     {
