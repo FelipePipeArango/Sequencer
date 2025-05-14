@@ -12,5 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b831121a3a10e44d9c97cb4af416708, type: 3}
   m_Name: StartText
   m_EditorClassIdentifier: 
-  storyText: 
-  options: []
+  storyText: Are the cubes a metaphor?
+  options:
+  - optionText: Both Yes and No
+    nextNode: {fileID: 11400000, guid: 4f9b839c27a4d3942a0b0321f2d9e26d, type: 2}
+  - optionText: What's a metaphor?
+    nextNode: {fileID: 11400000, guid: a41185f02dc44bd4b9834d6b81f237ac, type: 2}

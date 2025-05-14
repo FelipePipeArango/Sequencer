@@ -12,5 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b831121a3a10e44d9c97cb4af416708, type: 3}
   m_Name: Node2
   m_EditorClassIdentifier: 
-  storyText: 
-  options: []
+  storyText: What's a cube?
+  options:
+  - optionText: A Square
+    nextNode: {fileID: 11400000, guid: b97ff99601c60574ab113b2d1f1d0d79, type: 2}
+  - optionText: A Cuboid
+    nextNode: {fileID: 11400000, guid: b97ff99601c60574ab113b2d1f1d0d79, type: 2}
+  - optionText: Everything is a cube
+    nextNode: {fileID: 11400000, guid: 4f9b839c27a4d3942a0b0321f2d9e26d, type: 2}
