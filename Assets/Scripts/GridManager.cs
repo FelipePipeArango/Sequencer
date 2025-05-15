@@ -128,8 +128,8 @@ public class GridManager : MonoBehaviour
             foreach (TileScript tile in tiles)
             {
                 tile.isHighLight = false;
-                //if(tile.pointer.activeSelf)
-                //    tile.pointer.SetActive(false);
+                if (tile.pointer.activeSelf)
+                    tile.pointer.SetActive(false);
                 tile.ResetColor();
             }
         }

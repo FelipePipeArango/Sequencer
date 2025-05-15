@@ -110,8 +110,6 @@ public class UnitController : MonoBehaviour
     protected void GoalCheck()
     {
         Debug.Log("GOAL");
-        //TODO Add functional for this function
-        //make it so when triggerred makes the completelevel active and everything else disabled 
         StartCoroutine(goalSequence.OpenCompleteScreen());
     }
 
@@ -121,6 +119,23 @@ public class UnitController : MonoBehaviour
         {
             hasItem = true;
             gridManager.keyItem.SetActive(false);
+        }
+    }
+
+    protected void ThrowKey(TileScript tile)
+    {
+        if (hasItem != false)
+        {
+            hasItem = false;
+            gridManager.keyItem.SetActive(true);
+            
+            gridManager.keyItem.transform.position =
+                tile.transform.position + new Vector3(0.0f, 0.5f, 0.0f);
+
+            gridManager.UpdateTileType(
+                tile.transform.position,
+                TileTypes.KeyTile
+                );
         }
     }
 

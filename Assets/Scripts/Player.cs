@@ -6,13 +6,16 @@ using static GameTiles;
 using static GridManager;
 using System.Security.Cryptography.X509Certificates;
 using Unity.VisualScripting;
+using static UnityEditor.PlayerSettings;
 
 public class Player : UnitController
 {
 
     [HideInInspector] public bool canMove = false;
+    [HideInInspector] public bool canThrow = false;
     [HideInInspector] public bool isAIBefore = false;
     [HideInInspector] public int push;
+    [HideInInspector] public int throwNumber;
    
     public UIHandler uiHandler;
 
@@ -22,52 +25,13 @@ public class Player : UnitController
         gridManager.UpdateTileType(
             transform.position, TileTypes.PlayerTile);
     }
-
+    
     void Update()
     {
-
-
-
-
-        if (Input.GetMouseButtonDown(0))
+        if (canThrow)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                //if (hit.collider.gameObject != gridVFX && selectedTileType != TileTypes.None) return; // Only interact if it's the grid
-
-                Vector3 hitPoint = hit.point;
-                GameObject TileMap = new GameObject();
-                TileMap.transform.position = gridManager.GetTileMap();
-                Vector3 localPos = TileMap.transform.InverseTransformPoint(hitPoint);
-                Vector2 gridCellSize = new Vector2(
-                    TileMap.transform.localScale.x,
-                    TileMap.transform.localScale.z
-                    );
-                int x = Mathf.FloorToInt(localPos.x / gridCellSize.x + 0.5f);
-                int z = Mathf.FloorToInt(localPos.z / gridCellSize.y - 0.4f);
-                
-                Vector2Int pos = new Vector2Int(
-                    x + gridManager.size.x,
-                    z + gridManager.size.y + 1
-                    );
-                
-                if (gridManager.GetTile(pos) != null)
-                    gridManager.GetTile(pos).SetColor(Color.clear);
-
-                Debug.Log(pos);
-
-                Destroy(TileMap);
-            }
+            ClickToThrow();
         }
-    
-
-
-
-
-
-
         if (Input.GetKeyDown(KeyCode.Q))
         {
             string currentScene = SceneManager.GetActiveScene().name;
@@ -166,17 +130,68 @@ public class Player : UnitController
             uiHandler.UpdateNumberText(number);
         }
     }
+    //
+    private void ThrowTo(int receivedNumber, TileScript tile)
+    {
+        if (receivedNumber >= gridManager.CalculateDistance(
+                   tile.transform.position, transform.position))
+        {
+            ThrowKey(tile);
+            canThrow = false;
+        }
+    }
+
+    void ClickToThrow()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                //if (hit.collider.gameObject != gridVFX && selectedTileType != TileTypes.None) return; // Only interact if it's the grid
+
+                Vector3 hitPoint = hit.point;
+                GameObject TileMap = new GameObject();
+                TileMap.transform.position = gridManager.GetTileMap();
+                Vector3 localPos = TileMap.transform.InverseTransformPoint(hitPoint);
+                Vector2 gridCellSize = new Vector2(
+                    TileMap.transform.localScale.x,
+                    TileMap.transform.localScale.z
+                    );
+                int x = Mathf.FloorToInt(localPos.x / gridCellSize.x + 0.5f);
+                int z = Mathf.FloorToInt(localPos.z / gridCellSize.y - 0.4f);
+
+                Vector2Int pos = new Vector2Int(
+                    x + gridManager.size.x,
+                    z + gridManager.size.y + 1
+                    );
+                //Need to check if the bool true.
+                //Throw to place I want
+                if (gridManager.GetTile(pos) != null)
+                {
+                    if (gridManager.GetTile(pos).tileType == TileTypes.GoalTile)
+                    {
+                        canThrow = false;
+                        GoalCheck();
+                    }
+                    else
+                        ThrowTo(throwNumber, gridManager.GetTile(pos));
+
+                }
+                Destroy(TileMap);
+
+            }
+        }
+    }
 
     public void ThrowReceiver(int receivedNumber)
     {
+        //Need to make this place as bool flip 
         if (hasItem)
         {
-            hasItem = false;
-            if (receivedNumber >= gridManager.CalculateDistance(
-                    gridManager.goal.transform.position, transform.position))
-            {
-                GoalCheck();
-            }
+            canThrow = true;
+            throwNumber = receivedNumber;
         }
         if (isAIBefore == false)
         {
@@ -186,6 +201,7 @@ public class Player : UnitController
 
     public void PickUpReceiver(int receivedNumber)
     {
+
         if (receivedNumber == gridManager.CalculateDistance(
                 gridManager.keyItem.transform.position, transform.position))
         {
@@ -199,7 +215,7 @@ public class Player : UnitController
             {
                 if (gridManager.pickUpNumber != null ||
                     gridManager.numberHUD != null)
-                {
+                {  
                     NumberItemCheck();
                     gridManager.ResetTileType(TileTypes.ItemTile);
                 }
