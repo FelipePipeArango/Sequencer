@@ -133,7 +133,7 @@ public class Player : UnitController
     //
     private void ThrowTo(int receivedNumber, TileScript tile)
     {
-        if (receivedNumber >= gridManager.CalculateDistance(
+        if (receivedNumber == gridManager.CalculateDistance(
                    tile.transform.position, transform.position))
         {
             ThrowKey(tile);
