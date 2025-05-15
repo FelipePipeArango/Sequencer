@@ -149,8 +149,6 @@ public class Player : UnitController
 
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                //if (hit.collider.gameObject != gridVFX && selectedTileType != TileTypes.None) return; // Only interact if it's the grid
-
                 Vector3 hitPoint = hit.point;
                 GameObject TileMap = new GameObject();
                 TileMap.transform.position = gridManager.GetTileMap();
@@ -166,8 +164,7 @@ public class Player : UnitController
                     x + gridManager.size.x,
                     z + gridManager.size.y + 1
                     );
-                //Need to check if the bool true.
-                //Throw to place I want
+               
                 if (gridManager.GetTile(pos) != null)
                 {
                     if (gridManager.GetTile(pos).tileType == TileTypes.GoalTile)
@@ -175,19 +172,19 @@ public class Player : UnitController
                         canThrow = false;
                         GoalCheck();
                     }
-                    else
+                    else if (gridManager.GetTile(pos).tileType == TileTypes.EmptyTile)
+                    { 
                         ThrowTo(throwNumber, gridManager.GetTile(pos));
+                    }
 
                 }
                 Destroy(TileMap);
-
             }
         }
     }
 
     public void ThrowReceiver(int receivedNumber)
     {
-        //Need to make this place as bool flip 
         if (hasItem)
         {
             canThrow = true;
