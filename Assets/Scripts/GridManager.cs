@@ -17,6 +17,7 @@ public class GridManager : MonoBehaviour
     private GameObject[] allTiles;
     public TileScript[,] grid;
     TileScript[] tiles;
+    public GameObject tileMap;
 
     [Header("MANDATORY PIECES IN A LEVEL")]
     public GameObject player;
@@ -52,6 +53,10 @@ public class GridManager : MonoBehaviour
             AIActions = AICompanion.GetComponent<AICompanion>();  
         
         grid = new TileScript[size.x, size.y];
+        
+        tileMap = new GameObject();
+        tileMap.transform.position = new Vector3(size.x, 1, size.y);
+
         StoreGrid();
     }
 
@@ -65,10 +70,6 @@ public class GridManager : MonoBehaviour
         UpdateTileType(goal.transform.position, TileTypes.GoalTile);
     }
 
-    public Vector3 GetTileMap()
-    {
-        return new Vector3(size.x, 1, size.y);   
-    }
     public TileScript GetTile(Vector2Int pos)
     {
         if(size.x > pos.x && pos.x >= 0 

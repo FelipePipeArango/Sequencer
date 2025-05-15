@@ -150,12 +150,10 @@ public class Player : UnitController
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
                 Vector3 hitPoint = hit.point;
-                GameObject TileMap = new GameObject();
-                TileMap.transform.position = gridManager.GetTileMap();
-                Vector3 localPos = TileMap.transform.InverseTransformPoint(hitPoint);
+                Vector3 localPos = gridManager.tileMap.transform.InverseTransformPoint(hitPoint);
                 Vector2 gridCellSize = new Vector2(
-                    TileMap.transform.localScale.x,
-                    TileMap.transform.localScale.z
+                    gridManager.tileMap.transform.localScale.x,
+                    gridManager.tileMap.transform.localScale.z
                     );
                 int x = Mathf.FloorToInt(localPos.x / gridCellSize.x + 0.5f);
                 int z = Mathf.FloorToInt(localPos.z / gridCellSize.y - 0.4f);
@@ -178,7 +176,6 @@ public class Player : UnitController
                     }
 
                 }
-                Destroy(TileMap);
             }
         }
     }
