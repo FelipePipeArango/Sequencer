@@ -39,6 +39,7 @@ public class Player_AnimController : MonoBehaviour
         switch (currentPlayerState)
         {
             case playerStates.Idle:
+                AnimatePlayerIdle();
                 break;
 
             case playerStates.Celebrating:
@@ -54,6 +55,12 @@ public class Player_AnimController : MonoBehaviour
                 break;  
         }
     }
+
+    void AnimatePlayerIdle()
+    {
+        animator.SetBool("Idle", true);
+    }
+
     void AnimatePlayerVictory()
     {
         animator.SetBool("Completed", true);
