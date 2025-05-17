@@ -26,7 +26,9 @@ public class Player : UnitController
             transform.position, TileTypes.PlayerTile);
     }
 
-    //
+    //I dont like this being in Player.cs
+    //I think it should be in grid manager or somewhere else 
+    /**/
     private void ThrowTo(int receivedNumber, TileScript tile)
     {
         if (receivedNumber == gridManager.CalculateDistance(
@@ -45,7 +47,7 @@ public class Player : UnitController
             }
         }
     }
-
+    //Grid manager is already bloateed...
     void Throw()
     {
         if (gridManager.ClickedTile() != null)
@@ -54,6 +56,7 @@ public class Player : UnitController
             gridManager.TurnOffHighlight();
         }
     }
+    /**/
 
     void ClickOnTheBoard()
     {
@@ -65,24 +68,8 @@ public class Player : UnitController
                 Throw();
             }
         }
-    }
 
-    void Update()
-    {
-        ClickOnTheBoard();
-
-        //pos(x,y) 
-        //if(pos.x == Pos.x but pos.y >= Pos.y) turn back 
-        //if(pos.x == Pos.x but pos.y <= Pos.y) turn up 
-        //if(pos.y == Pos.y but pos.x >= Pos.x) turn left 
-        //if(pos.y == Pos.y but pos.x <= Pos.x) turn right 
-        
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            string currentScene = SceneManager.GetActiveScene().name;
-            SceneManager.LoadScene(currentScene);
-        }
-        if (number > 0 && gridManager.AIActions == null)
+        else if (number > 0 && gridManager.AIActions == null)
         {
             if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
             else if (Input.GetKeyDown(KeyCode.UpArrow)) StartCoroutine(Movement(Vector2Int.up));
@@ -96,7 +83,7 @@ public class Player : UnitController
             if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(Movement(Vector2Int.left));
             else if (Input.GetKeyDown(KeyCode.LeftArrow)) StartCoroutine(Movement(Vector2Int.left));
         }
-        else if (number > 0 && gridManager.AIActions != null 
+        else if (number > 0 && gridManager.AIActions != null
             && gridManager.AIActions.canMove == false)
         {
             if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
@@ -113,6 +100,17 @@ public class Player : UnitController
         }
         if (number == 0)
             push = 1;
+
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            string currentScene = SceneManager.GetActiveScene().name;
+            SceneManager.LoadScene(currentScene);
+        }
+        ClickOnTheBoard();
         
         IfFall();
     }
@@ -120,6 +118,13 @@ public class Player : UnitController
 
     protected override IEnumerator Movement(Vector2Int direction)
     {
+
+        //I am thinking of improving path finding system i guess
+        //pos(x,y) 
+        //if(pos.x == Pos.x but pos.y >= Pos.y) turn back 
+        //if(pos.x == Pos.x but pos.y <= Pos.y) turn up 
+        //if(pos.y == Pos.y but pos.x >= Pos.x) turn left 
+        //if(pos.y == Pos.y but pos.x <= Pos.x) turn right 
         Vector3 checkPos = new Vector3(
             transform.position.x + direction.x,
             0,
