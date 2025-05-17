@@ -70,18 +70,38 @@ public class GridManager : MonoBehaviour
         UpdateTileType(goal.transform.position, TileTypes.GoalTile);
     }
 
-    public TileScript GetTile(Vector2Int pos)
+    public TileScript ClickedTile()
     {
-        if(size.x > pos.x && pos.x >= 0 
-            && size.y > pos.y && pos.y >= 0)
-        { 
-            if (grid[pos.x, pos.y] != null)
-                return grid[pos.x, pos.y];
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            Vector3 hitPoint = hit.point;
+            Vector3 localPos = gridManager.tileMap.transform.InverseTransformPoint(hitPoint);
+            Vector2 gridCellSize = new Vector2(
+                gridManager.tileMap.transform.localScale.x,
+                gridManager.tileMap.transform.localScale.z
+                );
+            int x = Mathf.FloorToInt(localPos.x / gridCellSize.x + 0.5f);
+            int z = Mathf.FloorToInt(localPos.z / gridCellSize.y - 0.4f);
+
+            Vector2Int pos = new Vector2Int(
+                x + gridManager.size.x,
+                z + gridManager.size.y + 1
+                );
+
+            if (size.x > pos.x && pos.x >= 0
+                && size.y > pos.y && pos.y >= 0)
+            {
+                if (grid[pos.x, pos.y] != null)
+                    return grid[pos.x, pos.y];
+                else
+                    return null;
+            }
             else
                 return null;
         }
-        else
-            return null;
+        return null;
     }
     public int CalculateDistance(Vector3 position, Vector3 start)
     {
@@ -114,11 +134,6 @@ public class GridManager : MonoBehaviour
                 ThrowHighLight(value);
                 break;
 
-        }
-
-        foreach (var tile in tiles)
-        {
-            if (tile.isHighLight) tile.SetColor(highlightColor);
         }
     }
    
@@ -233,11 +248,12 @@ public class GridManager : MonoBehaviour
                 {
                     //No PickUp Available
                 }
+                tile.SetColor(highlightColor);
             }
         }
     }
 
-    private void ThrowHighLight(int amount)
+    public void ThrowHighLight(int amount)
     {
         int distance;
         foreach (var tile in tiles)
@@ -258,6 +274,7 @@ public class GridManager : MonoBehaviour
                     tile.pointer.transform.position = new Vector3(tile.pointer.transform.position.x, goalPointerHeight, tile.pointer.transform.position.z);
                     tile.pointer.gameObject.SetActive(true);
                 }
+                tile.SetColor(highlightColor);
             }
         }
     }
@@ -286,48 +303,4 @@ public class GridManager : MonoBehaviour
             }
         }
     }
-    /*
-    if (Input.GetMouseButtonDown(0))
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                //if (hit.collider.gameObject != gridVFX && selectedTileType != TileTypes.None) return; // Only interact if it's the grid
-
-                Vector3 hitPoint = hit.point;
-    Vector3 localPos = gridVFX.transform.InverseTransformPoint(hitPoint);
-    Vector2 gridCellSize = new Vector2(gridVFX.transform.localScale.x, gridVFX.transform.localScale.z);
-    int x = Mathf.FloorToInt(localPos.x / gridCellSize.x);
-    int z = Mathf.FloorToInt(localPos.z / gridCellSize.y);
-    Vector2Int pos = new Vector2Int(x + 6, z + 6);
-
-    //if (playerButton.interactable == false) playerPos = pos;
-    //else if (aiButton.interactable == false) aiPos = pos;
-    //else if (keyButton.interactable == false) keyPos = pos;
-    //else if (goalButton.interactable == false) goalPos = pos;
-    //else
-    //{
-    var tile = TileRegistry.Instance.GetTile(pos);
-
-                    if (tile == null && selectedTileType != TileTypes.None)
-                    {
-                        TileRegistry.Instance.CreateTile(selectedTileType, pos);
-                    }
-                    else if (tile != null)
-{
-    if (selectedTileType == TileTypes.None)
-    {
-        TileRegistry.Instance.RemoveTile(pos);
-    }
-    else
-    {
-        TileRegistry.Instance.CreateTile(selectedTileType, pos);
-    }
-}
-                //}
-            }
-        }
-    }
-    */
 }

@@ -25,13 +25,58 @@ public class Player : UnitController
         gridManager.UpdateTileType(
             transform.position, TileTypes.PlayerTile);
     }
-    
-    void Update()
+
+    //
+    private void ThrowTo(int receivedNumber, TileScript tile)
+    {
+        if (receivedNumber == gridManager.CalculateDistance(
+                   tile.transform.position, transform.position))
+        {
+            if (tile.tileType == TileTypes.GoalTile)
+            {
+                canThrow = false;
+                GoalCheck();
+            }
+            else if (tile.tileType == TileTypes.EmptyTile)
+            {
+                ThrowKey(tile);
+                canThrow = false;
+
+            }
+        }
+    }
+
+    void Throw()
+    {
+        if (gridManager.ClickedTile() != null)
+        {
+            ThrowTo(throwNumber, gridManager.ClickedTile());
+            gridManager.TurnOffHighlight();
+        }
+    }
+
+    void ClickOnTheBoard()
     {
         if (canThrow)
         {
-            ClickToThrow();
+            gridManager.ThrowHighLight(throwNumber);
+            if (Input.GetMouseButtonDown(0))
+            {
+                Throw();
+            }
         }
+    }
+
+    void Update()
+    {
+        ClickOnTheBoard();
+
+        //pos(x,y) 
+        //if(pos.x == Pos.x but pos.y >= Pos.y) turn back 
+        //if(pos.x == Pos.x but pos.y <= Pos.y) turn up 
+        //if(pos.y == Pos.y but pos.x >= Pos.x) turn left 
+        //if(pos.y == Pos.y but pos.x <= Pos.x) turn right 
+        
         if (Input.GetKeyDown(KeyCode.Q))
         {
             string currentScene = SceneManager.GetActiveScene().name;
@@ -130,55 +175,9 @@ public class Player : UnitController
             uiHandler.UpdateNumberText(number);
         }
     }
-    //
-    private void ThrowTo(int receivedNumber, TileScript tile)
-    {
-        if (receivedNumber == gridManager.CalculateDistance(
-                   tile.transform.position, transform.position))
-        {
-            ThrowKey(tile);
-            canThrow = false;
-        }
-    }
+   
 
-    void ClickToThrow()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                Vector3 hitPoint = hit.point;
-                Vector3 localPos = gridManager.tileMap.transform.InverseTransformPoint(hitPoint);
-                Vector2 gridCellSize = new Vector2(
-                    gridManager.tileMap.transform.localScale.x,
-                    gridManager.tileMap.transform.localScale.z
-                    );
-                int x = Mathf.FloorToInt(localPos.x / gridCellSize.x + 0.5f);
-                int z = Mathf.FloorToInt(localPos.z / gridCellSize.y - 0.4f);
-
-                Vector2Int pos = new Vector2Int(
-                    x + gridManager.size.x,
-                    z + gridManager.size.y + 1
-                    );
-               
-                if (gridManager.GetTile(pos) != null)
-                {
-                    if (gridManager.GetTile(pos).tileType == TileTypes.GoalTile)
-                    {
-                        canThrow = false;
-                        GoalCheck();
-                    }
-                    else if (gridManager.GetTile(pos).tileType == TileTypes.EmptyTile)
-                    { 
-                        ThrowTo(throwNumber, gridManager.GetTile(pos));
-                    }
-
-                }
-            }
-        }
-    }
+  
 
     public void ThrowReceiver(int receivedNumber)
     {
