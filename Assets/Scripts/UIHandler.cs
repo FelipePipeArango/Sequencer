@@ -4,8 +4,9 @@ using TMPro;
 
 public class UIHandler : MonoBehaviour
 {
-    public static UIHandler Instance { get; private set; }
+    public static UIHandler UIHandlerInstance;
 
+    [SerializeField] public CompleteScreen goalSequence;
     public TMP_Text characterMoveUI;
     public GameObject keyItemHUD;
 
@@ -13,18 +14,18 @@ public class UIHandler : MonoBehaviour
 
     void Awake()
     {
-        if (Instance != null && Instance != this)
+        if (UIHandlerInstance != null && UIHandlerInstance != this)
         {
             Destroy(gameObject);
             return;
         }
-        Instance = this;
+        UIHandlerInstance = this;
     }
 
     void Start()
     {
         keyItemHUD.SetActive(false);
-        UpdateNumberText(0);
+        UpdateMovementPointsText(0);
     }
 
     void Update()
@@ -42,12 +43,17 @@ public class UIHandler : MonoBehaviour
         }
     }
 
+    public void OpenWinScreen()
+    {
+        goalSequence.OpenCompleteScreen();
+    }
+
     public void SetHoverState(bool isHovering)
     {
         isHoveringOverInteractable = isHovering;
     }
 
-    public void UpdateNumberText(int numberValue)
+    public void UpdateMovementPointsText(int numberValue)
     {
         if (characterMoveUI)
             characterMoveUI.text = numberValue.ToString();
