@@ -37,13 +37,20 @@ public class PlayerManager : MonoBehaviour
         UIHandler.UIHandlerInstance.OpenWinScreen();        
     }
 
+    public void PlayerPreMove(int movePoints)
+    {
+        currentPlayerState = playerStates.PreMove;
+
+        if (playerDidSomething != null)
+            playerDidSomething(currentPlayerState);
+
+        UIHandler.UIHandlerInstance.UpdateMovementPointsText(movePoints);
+    }
+
     //Observes player move
     public void PlayerMoved(int movePoints)
     {
         currentPlayerState = playerStates.Moving;
-
-        if (playerDidSomething != null)
-            playerDidSomething(currentPlayerState);
 
         UIHandler.UIHandlerInstance.UpdateMovementPointsText(movePoints);
     }

@@ -117,7 +117,6 @@ public class Player : UnitController
 
             //animController.UpdateAnimations(false);
         }
-
         PlayerManager.playerManagerInstance.PlayerMoved(number);
 
         if (isAIBefore == false)
@@ -134,7 +133,7 @@ public class Player : UnitController
         {
             uiHandler.UpdateMovementPointsText(number);
         }*/
-
+        PlayerManager.playerManagerInstance.PlayerPreMove(number);
         UIHandler.UIHandlerInstance.UpdateMovementPointsText(number);
     }
 

@@ -9,6 +9,7 @@ public class PlayerStates : ScriptableObject
         None,
         Idle,
         Celebrating,
+        PreMove,
         Moving,
         Throwing,
         PickingUp

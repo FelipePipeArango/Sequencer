@@ -46,8 +46,8 @@ public class Player_AnimController : MonoBehaviour
                 AnimatePlayerVictory();
                 break;
 
-            case playerStates.Moving:
-                AnimatePlayerMovement();
+            case playerStates.PreMove:
+                AnimatePlayerPreMovement();
                 break;
 
             case playerStates.PickingUp:
@@ -66,7 +66,7 @@ public class Player_AnimController : MonoBehaviour
         animator.SetBool("Completed", true);
     }
 
-    void AnimatePlayerMovement()
+    void AnimatePlayerPreMovement()
     {
         animator.SetBool("isMoving", true);
     }
