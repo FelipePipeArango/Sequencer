@@ -73,6 +73,6 @@ public class Player_AnimController : MonoBehaviour
 
     void AnimatePlayerPickingUp()
     {
-        animator.SetBool("pickedUp", true);
+        animator.SetBool("isPickingUp", true);
     }
 }
