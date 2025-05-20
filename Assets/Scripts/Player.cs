@@ -26,37 +26,6 @@ public class Player : UnitController
             transform.position, TileTypes.PlayerTile);
     }
 
-    //I dont like this being in Player.cs
-    //I think it should be in grid manager or somewhere else 
-    /**/
-    private void ThrowTo(int receivedNumber, TileScript tile)
-    {
-        if (receivedNumber == gridManager.CalculateDistance(
-                   tile.transform.position, transform.position))
-        {
-            if (tile.tileType == TileTypes.GoalTile)
-            {
-                canThrow = false;
-                GoalCheck();
-            }
-            else if (tile.tileType == TileTypes.EmptyTile)
-            {
-                ThrowKey(tile);
-                canThrow = false;
-
-            }
-        }
-    }
-    //Grid manager is already bloateed...
-    void Throw()
-    {
-        if (gridManager.ClickedTile() != null)
-        {
-            ThrowTo(throwNumber, gridManager.ClickedTile());
-            gridManager.TurnOffHighlight();
-        }
-    }
-    /**/
 
     void ClickOnTheBoard()
     {
@@ -68,7 +37,6 @@ public class Player : UnitController
                 Throw();
             }
         }
-
         else if (number > 0 && gridManager.AIActions == null)
         {
             if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
@@ -125,6 +93,7 @@ public class Player : UnitController
         //if(pos.x == Pos.x but pos.y <= Pos.y) turn up 
         //if(pos.y == Pos.y but pos.x >= Pos.x) turn left 
         //if(pos.y == Pos.y but pos.x <= Pos.x) turn right 
+
         Vector3 checkPos = new Vector3(
             transform.position.x + direction.x,
             0,
@@ -196,6 +165,41 @@ public class Player : UnitController
             Sequencer.sequencer.AIAfterAction();
         }
     }
+
+
+    //I dont like this being in Player.cs
+    //I think it should be in grid manager or somewhere else 
+    /**/
+
+    //Grid manager is already bloateed...
+    void Throw()
+    {
+        if (gridManager.ClickedTile() != null)
+        {
+            ThrowTo(throwNumber, gridManager.ClickedTile());
+            gridManager.TurnOffHighlight();
+        }
+    }
+
+    private void ThrowTo(int receivedNumber, TileScript tile)
+    {
+        if (receivedNumber == gridManager.CalculateDistance(
+                   tile.transform.position, transform.position))
+        {
+            if (tile.tileType == TileTypes.GoalTile)
+            {
+                canThrow = false;
+                GoalCheck();
+            }
+            else if (tile.tileType == TileTypes.EmptyTile)
+            {
+                ThrowKey(tile);
+                canThrow = false;
+
+            }
+        }
+    }
+    /**/
 
     public void PickUpReceiver(int receivedNumber)
     {
