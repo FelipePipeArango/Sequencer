@@ -10,14 +10,15 @@ using static UnityEditor.PlayerSettings;
 
 public class Player : UnitController
 {
-
     [HideInInspector] public bool canMove = false;
     [HideInInspector] public bool canThrow = false;
     [HideInInspector] public bool isAIBefore = false;
     [HideInInspector] public int push;
     [HideInInspector] public int throwNumber;
+
+    //[SerializeField] Player_AnimController animController;
    
-    public UIHandler uiHandler;
+    //public UIHandler uiHandler;
 
 
     private void Start()
@@ -37,7 +38,11 @@ public class Player : UnitController
                 Throw();
             }
         }
-        else if (number > 0 && gridManager.AIActions == null)
+    }
+
+    void PerformInput()
+    {
+        if (number > 0 && gridManager.AIActions == null)
         {
             if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
             else if (Input.GetKeyDown(KeyCode.UpArrow)) StartCoroutine(Movement(Vector2Int.up));
@@ -79,10 +84,11 @@ public class Player : UnitController
             SceneManager.LoadScene(currentScene);
         }
         ClickOnTheBoard();
-        
+        PerformInput();
         IfFall();
     }
 
+    }
 
     protected override IEnumerator Movement(Vector2Int direction)
     {
@@ -93,6 +99,8 @@ public class Player : UnitController
         //if(pos.x == Pos.x but pos.y <= Pos.y) turn up 
         //if(pos.y == Pos.y but pos.x >= Pos.x) turn left 
         //if(pos.y == Pos.y but pos.x <= Pos.x) turn right 
+        
+        //animController.UpdateAnimations(true); 
 
         Vector3 checkPos = new Vector3(
             transform.position.x + direction.x,
@@ -105,8 +113,8 @@ public class Player : UnitController
             number = 0;
             isBoardBelow = false;
 
-            if (uiHandler != null)
-                uiHandler.UpdateNumberText(number);
+            /*if (uiHandler != null)
+                uiHandler.UpdateMovementPointsText(number);*/
         }
         else if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.PawnTile)
         {
@@ -116,10 +124,11 @@ public class Player : UnitController
                 MoveTo(direction, TileTypes.PlayerTile);
                 number--;
 
-                if (uiHandler != null)
-                    uiHandler.UpdateNumberText(number);
+                /*if (uiHandler != null)
+                    uiHandler.UpdateMovementPointsText(number);*/
 
                 yield return new WaitForSeconds(0.0f);
+                //animController.UpdateAnimations(false); 
                 push = 0;
             }
         }
@@ -128,11 +137,14 @@ public class Player : UnitController
             MoveTo(direction, TileTypes.PlayerTile);
             number--;
 
-            if (uiHandler != null)
-                uiHandler.UpdateNumberText(number);
+            /*if (uiHandler != null)
+                uiHandler.UpdateMovementPointsText(number);*/
 
             yield return new WaitForSeconds(0.0f);
+
+            //animController.UpdateAnimations(false);
         }
+        PlayerManager.playerManagerInstance.PlayerMoved(number);
 
         if (isAIBefore == false)
         {
@@ -144,10 +156,12 @@ public class Player : UnitController
     {
         number += receivedNumber;
 
-        if (uiHandler != null)
+        /*if (uiHandler != null)
         {
-            uiHandler.UpdateNumberText(number);
-        }
+            uiHandler.UpdateMovementPointsText(number);
+        }*/
+        PlayerManager.playerManagerInstance.PlayerPreMove(number);
+        UIHandler.UIHandlerInstance.UpdateMovementPointsText(number);
     }
    
 
@@ -159,6 +173,13 @@ public class Player : UnitController
         {
             canThrow = true;
             throwNumber = receivedNumber;
+            
+            hasItem = false;
+            if (receivedNumber >= gridManager.CalculateDistance(
+                    gridManager.goal.transform.position, transform.position))
+            {
+                PlayerManager.playerManagerInstance.PlayerWon();
+            }
         }
         if (isAIBefore == false)
         {
@@ -207,6 +228,7 @@ public class Player : UnitController
         if (receivedNumber == gridManager.CalculateDistance(
                 gridManager.keyItem.transform.position, transform.position))
         {
+            PlayerManager.playerManagerInstance.PlayerPickedUp();
             KeyItemCheck();
             gridManager.ResetTileType(TileTypes.KeyTile);
         }
