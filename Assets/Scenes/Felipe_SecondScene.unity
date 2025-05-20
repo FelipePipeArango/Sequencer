@@ -387,6 +387,10 @@ PrefabInstance:
       value: HUD
       objectReference: {fileID: 0}
     - target: {fileID: 6763975305087453407, guid: 8745b7532223bb242838254a3a820683, type: 3}
+      propertyPath: goalSequence
+      value: 
+      objectReference: {fileID: 264712293}
+    - target: {fileID: 6763975305087453407, guid: 8745b7532223bb242838254a3a820683, type: 3}
       propertyPath: characterMoveUI
       value: 
       objectReference: {fileID: 794028609}
@@ -1802,6 +1806,14 @@ PrefabInstance:
     - target: {fileID: 5207992409626625902, guid: 34b4640ccd3d49b45a66ef6c09448223, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5557949818154886424, guid: 34b4640ccd3d49b45a66ef6c09448223, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5557949818154886424, guid: 34b4640ccd3d49b45a66ef6c09448223, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5791705906782163138, guid: 34b4640ccd3d49b45a66ef6c09448223, type: 3}
       propertyPath: m_TagString
