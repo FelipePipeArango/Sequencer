@@ -14,7 +14,7 @@ public class UnitController : MonoBehaviour
     [HideInInspector] public float fallSpeed = 1.0f;
     [HideInInspector] public bool hasItem = false;
     [HideInInspector] public bool hasNumber = false;
-    [HideInInspector] public int number = 0;
+    [HideInInspector] public int moveNumber = 0;
     [HideInInspector] protected bool isBoardBelow = true;
 
 
@@ -108,17 +108,6 @@ public class UnitController : MonoBehaviour
 
     protected virtual IEnumerator Movement(Vector2Int direction){ return null; }
 
-    /*protected void GoalCheck()
-    {
-        Debug.Log("GOAL");
-
-        GameStateManager.StateManagerInstance.CommunicateStateChange(gameStates.Completed);
-
-        //TODO Add functional for this function
-        //make it so when triggerred makes the completelevel active and everything else disabled 
-        StartCoroutine(goalSequence.OpenCompleteScreen());
-    }*/
-
     protected void KeyItemCheck()
     {
         if (hasItem != true)
@@ -147,8 +136,8 @@ public class UnitController : MonoBehaviour
 
     protected void NumberItemCheck()
     {
-        if(gridManager.pickUpNumber != null)
-            gridManager.pickUpNumber.SetActive(false);
+        if(gridManager.numberPickUp != null)
+            gridManager.numberPickUp.SetActive(false);
         gridManager.numberHUD.SetActive(true);
         hasNumber = true;
     }

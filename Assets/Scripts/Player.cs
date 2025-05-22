@@ -1,23 +1,25 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
-using static GameActions;
 using static GameTiles;
 using static GridManager;
-using System.Security.Cryptography.X509Certificates;
-using Unity.VisualScripting;
+using System.Net.Security;
 using static UnityEditor.PlayerSettings;
+
 
 public class Player : UnitController
 {
     [HideInInspector] public bool canMove = false;
     [HideInInspector] public bool canThrow = false;
+    [HideInInspector] public bool canPickUp = false;
+
     [HideInInspector] public bool isAIBefore = false;
     [HideInInspector] public int push;
     [HideInInspector] public int throwNumber;
+    [HideInInspector] public int pickUpNumber;
 
     //[SerializeField] Player_AnimController animController;
-   
+
     //public UIHandler uiHandler;
 
 
@@ -38,40 +40,109 @@ public class Player : UnitController
                 Throw();
             }
         }
+        else if (canPickUp)
+        {
+            gridManager.PickUpHighLight(pickUpNumber);
+            if (Input.GetMouseButtonDown(0))
+            {
+                PickUp();
+            }
+        }
+        else if (canMove)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Move();
+            }
+        }
     }
 
+    void PickUp()
+    {
+        if (gridManager.ClickedTile() != null)
+        {
+            PickUpFrom(gridManager.ClickedTile());
+            gridManager.TurnOffHighlight();
+        }
+    }
+
+    void Throw()
+    {
+        if (gridManager.ClickedTile() != null)
+        {
+            ThrowTo(gridManager.ClickedTile());
+            gridManager.TurnOffHighlight();
+        }
+    }
+    void Move()
+    {
+        Debug.Log("Move");
+        //Can move one by one 
+
+        //click a tile if can mmove to it "teleport" at first
+        //then make it go tile by tile by using path finding on a grid algorythm
+        //destination validated by amount of moves
+        //goes through the tiles by comparing the current with the destination
+        //
+        //It can either iterate once at a time or make the calculation once
+        //which would also require it to itarate same amount of times
+        //
+        //I am thinking of improving path finding system i guess
+        //Recieved pos(x,y) from click 
+        //Direction("The arrow directions") StorePathForNumber(recievedNumber)
+        //for(recievedNumber
+        //if(pos.x == Pos.x but pos.y >= Pos.y) turn back 
+        //else if(pos.x == Pos.x but pos.y <= Pos.y) turn up 
+        //else if(pos.y == Pos.y but pos.x >= Pos.x) turn left 
+        //else if(pos.y == Pos.y but pos.x <= Pos.x) turn right 
+        //
+        //How to make it dynamic 
+        //I can store a calulated path in a variable
+        //and only call it's when needed
+        //
+        //Design hought: if player would be draged by a hand on the board
+        //then I think it make sense to make the gaps on the tile map 
+        //as pillars that even by hand wouldnt be able to be passed through
+
+        if (gridManager.ClickedTile() != null)
+        {
+            TileScript tile = gridManager.ClickedTile();
+            int clickedTileDistance = gridManager.CalculateDistance(
+                tile.transform.position, transform.position);
+
+            if (clickedTileDistance <= moveNumber)
+            {
+                Vector3 pos = tile.transform.position;
+                Vector3 playerPos = transform.position;
+                if (pos.x == playerPos.x)
+                {
+                    if (pos.z > playerPos.z) StartCoroutine(Movement(Vector2Int.up));
+                    else if (pos.z < playerPos.z) StartCoroutine(Movement(Vector2Int.down));
+                }
+                else if (pos.z == playerPos.z)
+                {
+                    if (pos.x > playerPos.x) StartCoroutine(Movement(Vector2Int.right));
+                    else if (pos.x < playerPos.x) StartCoroutine(Movement(Vector2Int.left));
+                }
+                //if diagonaly what happens?
+                //Move twice to which direction?
+                //or just let it be one at a time for now 
+            }
+        }
+    }
     void PerformInput()
     {
-        if (number > 0 && gridManager.AIActions == null)
+
+        if (moveNumber > 0 && gridManager.AIActions == null)
         {
-            if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
-            else if (Input.GetKeyDown(KeyCode.UpArrow)) StartCoroutine(Movement(Vector2Int.up));
 
-            if (Input.GetKeyDown(KeyCode.S)) StartCoroutine(Movement(Vector2Int.down));
-            else if (Input.GetKeyDown(KeyCode.DownArrow)) StartCoroutine(Movement(Vector2Int.down));
-
-            if (Input.GetKeyDown(KeyCode.D)) StartCoroutine(Movement(Vector2Int.right));
-            else if (Input.GetKeyDown(KeyCode.RightArrow)) StartCoroutine(Movement(Vector2Int.right));
-
-            if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(Movement(Vector2Int.left));
-            else if (Input.GetKeyDown(KeyCode.LeftArrow)) StartCoroutine(Movement(Vector2Int.left));
         }
-        else if (number > 0 && gridManager.AIActions != null
+        else if (moveNumber > 0 && gridManager.AIActions != null
             && gridManager.AIActions.canMove == false)
         {
-            if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
-            else if (Input.GetKeyDown(KeyCode.UpArrow)) StartCoroutine(Movement(Vector2Int.up));
 
-            if (Input.GetKeyDown(KeyCode.S)) StartCoroutine(Movement(Vector2Int.down));
-            else if (Input.GetKeyDown(KeyCode.DownArrow)) StartCoroutine(Movement(Vector2Int.down));
-
-            if (Input.GetKeyDown(KeyCode.D)) StartCoroutine(Movement(Vector2Int.right));
-            else if (Input.GetKeyDown(KeyCode.RightArrow)) StartCoroutine(Movement(Vector2Int.right));
-
-            if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(Movement(Vector2Int.left));
-            else if (Input.GetKeyDown(KeyCode.LeftArrow)) StartCoroutine(Movement(Vector2Int.left));
         }
-        if (number == 0)
+        if (moveNumber == 0)
             push = 1;
 
     }
@@ -88,8 +159,6 @@ public class Player : UnitController
         IfFall();
     }
 
-    }
-
     protected override IEnumerator Movement(Vector2Int direction)
     {
 
@@ -99,7 +168,7 @@ public class Player : UnitController
         //if(pos.x == Pos.x but pos.y <= Pos.y) turn up 
         //if(pos.y == Pos.y but pos.x >= Pos.x) turn left 
         //if(pos.y == Pos.y but pos.x <= Pos.x) turn right 
-        
+
         //animController.UpdateAnimations(true); 
 
         Vector3 checkPos = new Vector3(
@@ -110,7 +179,8 @@ public class Player : UnitController
         if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.None)
         {
             transform.position += new Vector3(direction.x, 0, direction.y);
-            number = 0;
+            moveNumber = 0;
+            canMove = false;
             isBoardBelow = false;
 
             /*if (uiHandler != null)
@@ -122,7 +192,7 @@ public class Player : UnitController
             {
                 gridManager.AIActions.PushCompanion(direction);
                 MoveTo(direction, TileTypes.PlayerTile);
-                number--;
+                moveNumber--;
 
                 /*if (uiHandler != null)
                     uiHandler.UpdateMovementPointsText(number);*/
@@ -135,7 +205,7 @@ public class Player : UnitController
         else
         {
             MoveTo(direction, TileTypes.PlayerTile);
-            number--;
+            moveNumber--;
 
             /*if (uiHandler != null)
                 uiHandler.UpdateMovementPointsText(number);*/
@@ -144,28 +214,31 @@ public class Player : UnitController
 
             //animController.UpdateAnimations(false);
         }
-        PlayerManager.playerManagerInstance.PlayerMoved(number);
+        PlayerManager.playerManagerInstance.PlayerMoved(moveNumber);
 
         if (isAIBefore == false)
         {
             Sequencer.sequencer.AIAfterAction();
         }
+        if (moveNumber == 0) canMove = false;
+
     }
 
     public void MovementReceiver(int receivedNumber)
     {
-        number += receivedNumber;
+        moveNumber += receivedNumber;
+        canMove = true;
 
         /*if (uiHandler != null)
         {
             uiHandler.UpdateMovementPointsText(number);
         }*/
-        PlayerManager.playerManagerInstance.PlayerPreMove(number);
-        UIHandler.UIHandlerInstance.UpdateMovementPointsText(number);
+        PlayerManager.playerManagerInstance.PlayerPreMove(moveNumber);
+        UIHandler.UIHandlerInstance.UpdateMovementPointsText(moveNumber);
     }
-   
 
-  
+
+
 
     public void ThrowReceiver(int receivedNumber)
     {
@@ -173,13 +246,7 @@ public class Player : UnitController
         {
             canThrow = true;
             throwNumber = receivedNumber;
-            
             hasItem = false;
-            if (receivedNumber >= gridManager.CalculateDistance(
-                    gridManager.goal.transform.position, transform.position))
-            {
-                PlayerManager.playerManagerInstance.PlayerWon();
-            }
         }
         if (isAIBefore == false)
         {
@@ -193,24 +260,17 @@ public class Player : UnitController
     /**/
 
     //Grid manager is already bloateed...
-    void Throw()
-    {
-        if (gridManager.ClickedTile() != null)
-        {
-            ThrowTo(throwNumber, gridManager.ClickedTile());
-            gridManager.TurnOffHighlight();
-        }
-    }
 
-    private void ThrowTo(int receivedNumber, TileScript tile)
+
+    private void ThrowTo(TileScript tile)
     {
-        if (receivedNumber == gridManager.CalculateDistance(
+        if (throwNumber == gridManager.CalculateDistance(
                    tile.transform.position, transform.position))
         {
             if (tile.tileType == TileTypes.GoalTile)
             {
                 canThrow = false;
-                GoalCheck();
+                PlayerManager.playerManagerInstance.PlayerWon();
             }
             else if (tile.tileType == TileTypes.EmptyTile)
             {
@@ -221,30 +281,34 @@ public class Player : UnitController
         }
     }
     /**/
-
-    public void PickUpReceiver(int receivedNumber)
+    private void PickUpFrom(TileScript tile)
     {
-
-        if (receivedNumber == gridManager.CalculateDistance(
-                gridManager.keyItem.transform.position, transform.position))
+        if (tile.tileType == TileTypes.KeyTile)
         {
             PlayerManager.playerManagerInstance.PlayerPickedUp();
             KeyItemCheck();
             gridManager.ResetTileType(TileTypes.KeyTile);
         }
-        if (gridManager.pickUpNumber != null)
+        if (tile.tileType == TileTypes.ItemTile)
         {
-            if (receivedNumber == gridManager.CalculateDistance(
-                    gridManager.pickUpNumber.transform.position, transform.position))
-            {
-                if (gridManager.pickUpNumber != null ||
-                    gridManager.numberHUD != null)
-                {  
-                    NumberItemCheck();
-                    gridManager.ResetTileType(TileTypes.ItemTile);
-                }
-            }
+            Debug.Log("Click");
+            NumberItemCheck();
+            gridManager.ResetTileType(TileTypes.ItemTile);
         }
+        if (hasNumber && hasItem)
+                canPickUp = false;
+        
+        if(gridManager.numberPickUp == null)
+        {
+            if (hasNumber)
+                canPickUp = false;
+        }
+    }
+
+    public void PickUpReceiver(int receivedNumber)
+    {
+        pickUpNumber = receivedNumber;
+        canPickUp = true;
         if (isAIBefore == false)
         {
             Sequencer.sequencer.AIAfterAction();

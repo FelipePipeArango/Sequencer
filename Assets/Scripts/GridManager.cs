@@ -26,7 +26,7 @@ public class GridManager : MonoBehaviour
 
     [Header("OPTIONAL OBJECTS IN A LEVEL")]
     public GameObject AICompanion;
-    public GameObject pickUpNumber;
+    public GameObject numberPickUp;
     public GameObject numberHUD; //Should at some point go to card manager
     [HideInInspector] public Player playerActions;
     [HideInInspector] public AICompanion AIActions;
@@ -63,9 +63,9 @@ public class GridManager : MonoBehaviour
     private void Start()
     {
         UpdateTileType(keyItem.transform.position, TileTypes.KeyTile);
-        if (pickUpNumber != null) 
+        if (numberPickUp != null) 
         { 
-            UpdateTileType(pickUpNumber.transform.position, TileTypes.ItemTile);
+            UpdateTileType(numberPickUp.transform.position, TileTypes.ItemTile);
         }
         UpdateTileType(goal.transform.position, TileTypes.GoalTile);
     }
@@ -227,7 +227,7 @@ public class GridManager : MonoBehaviour
         CheckIfGround(amount, down);
     }
 
-    private void PickUpHighLight(int amount)
+    public void PickUpHighLight(int amount)
     {
         int distance;
         foreach (var tile in tiles)
@@ -238,7 +238,13 @@ public class GridManager : MonoBehaviour
             if (distance == amount)
             {
                 tile.isHighLight = true;
-                if (tile.tileType == TileTypes.KeyTile || tile.tileType == TileTypes.ItemTile)
+                if (tile.tileType == TileTypes.KeyTile)
+                {
+                    tile.pointer.transform.position = new Vector3 (tile.pointer.transform.position.x, keyItemPointerHeight, tile.pointer.transform.position.z);
+
+                    tile.pointer.gameObject.SetActive(true);
+                }
+                if (tile.tileType == TileTypes.ItemTile)
                 {
                     tile.pointer.transform.position = new Vector3 (tile.pointer.transform.position.x, keyItemPointerHeight, tile.pointer.transform.position.z);
 
