@@ -5,10 +5,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using static GameTiles;
 using static GridManager;
+using static GameActions;
 
 public class UnitController : MonoBehaviour
 {
-    [SerializeField] public CompleteScreen goalSequence;
+    //[SerializeField] public CompleteScreen goalSequence;
 
     [HideInInspector] public float fallSpeed = 1.0f;
     [HideInInspector] public bool hasItem = false;
@@ -99,7 +100,7 @@ public class UnitController : MonoBehaviour
         {
             MoveToTile(direction, pawnTileType);
 
-            GoalCheck();
+            PlayerManager.playerManagerInstance.PlayerWon();
         }
         else
             Debug.Log("Need key");
@@ -107,13 +108,16 @@ public class UnitController : MonoBehaviour
 
     protected virtual IEnumerator Movement(Vector2Int direction){ return null; }
 
-    protected void GoalCheck()
+    /*protected void GoalCheck()
     {
         Debug.Log("GOAL");
+
+        GameStateManager.StateManagerInstance.CommunicateStateChange(gameStates.Completed);
+
         //TODO Add functional for this function
         //make it so when triggerred makes the completelevel active and everything else disabled 
         StartCoroutine(goalSequence.OpenCompleteScreen());
-    }
+    }*/
 
     protected void KeyItemCheck()
     {
