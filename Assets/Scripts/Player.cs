@@ -4,16 +4,16 @@ using UnityEngine.SceneManagement;
 using static GameActions;
 using static GameTiles;
 using static GridManager;
-using System.Security.Cryptography.X509Certificates;
 
 public class Player : UnitController
 {
-
     [HideInInspector] public bool canMove = false;
     [HideInInspector] public bool isAIBefore = false;
     [HideInInspector] public int push;
+
+    //[SerializeField] Player_AnimController animController;
    
-    public UIHandler uiHandler;
+    //public UIHandler uiHandler;
 
 
     private void Start()
@@ -24,11 +24,19 @@ public class Player : UnitController
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q)) //Why is this on the player?
         {
             string currentScene = SceneManager.GetActiveScene().name;
             SceneManager.LoadScene(currentScene);
         }
+
+        PerformInput();
+
+        IfFall();
+    }
+
+    void PerformInput()
+    {
         if (number > 0 && gridManager.AIActions == null)
         {
             if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
@@ -43,7 +51,7 @@ public class Player : UnitController
             if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(Movement(Vector2Int.left));
             else if (Input.GetKeyDown(KeyCode.LeftArrow)) StartCoroutine(Movement(Vector2Int.left));
         }
-        else if (number > 0 && gridManager.AIActions != null 
+        else if (number > 0 && gridManager.AIActions != null
             && gridManager.AIActions.canMove == false)
         {
             if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
@@ -60,13 +68,13 @@ public class Player : UnitController
         }
         if (number == 0)
             push = 1;
-        
-        IfFall();
-    }
 
+    }
 
     protected override IEnumerator Movement(Vector2Int direction)
     {
+        //animController.UpdateAnimations(true); 
+
         Vector3 checkPos = new Vector3(
             transform.position.x + direction.x,
             0,
@@ -78,8 +86,8 @@ public class Player : UnitController
             number = 0;
             isBoardBelow = false;
 
-            if (uiHandler != null)
-                uiHandler.UpdateNumberText(number);
+            /*if (uiHandler != null)
+                uiHandler.UpdateMovementPointsText(number);*/
         }
         else if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.PawnTile)
         {
@@ -89,10 +97,11 @@ public class Player : UnitController
                 MoveTo(direction, TileTypes.PlayerTile);
                 number--;
 
-                if (uiHandler != null)
-                    uiHandler.UpdateNumberText(number);
+                /*if (uiHandler != null)
+                    uiHandler.UpdateMovementPointsText(number);*/
 
                 yield return new WaitForSeconds(0.0f);
+                //animController.UpdateAnimations(false); 
                 push = 0;
             }
         }
@@ -101,11 +110,14 @@ public class Player : UnitController
             MoveTo(direction, TileTypes.PlayerTile);
             number--;
 
-            if (uiHandler != null)
-                uiHandler.UpdateNumberText(number);
+            /*if (uiHandler != null)
+                uiHandler.UpdateMovementPointsText(number);*/
 
             yield return new WaitForSeconds(0.0f);
+
+            //animController.UpdateAnimations(false);
         }
+        PlayerManager.playerManagerInstance.PlayerMoved(number);
 
         if (isAIBefore == false)
         {
@@ -117,10 +129,12 @@ public class Player : UnitController
     {
         number += receivedNumber;
 
-        if (uiHandler != null)
+        /*if (uiHandler != null)
         {
-            uiHandler.UpdateNumberText(number);
-        }
+            uiHandler.UpdateMovementPointsText(number);
+        }*/
+        PlayerManager.playerManagerInstance.PlayerPreMove(number);
+        UIHandler.UIHandlerInstance.UpdateMovementPointsText(number);
     }
 
     public void ThrowReceiver(int receivedNumber)
@@ -131,7 +145,7 @@ public class Player : UnitController
             if (receivedNumber >= gridManager.CalculateDistance(
                     gridManager.goal.transform.position, transform.position))
             {
-                GoalCheck();
+                PlayerManager.playerManagerInstance.PlayerWon();
             }
         }
         if (isAIBefore == false)
@@ -145,6 +159,7 @@ public class Player : UnitController
         if (receivedNumber == gridManager.CalculateDistance(
                 gridManager.keyItem.transform.position, transform.position))
         {
+            PlayerManager.playerManagerInstance.PlayerPickedUp();
             KeyItemCheck();
             gridManager.ResetTileType(TileTypes.KeyTile);
         }

@@ -13,14 +13,12 @@ public class CompleteScreen : MonoBehaviour
     bool isPaused = false;
     float seconds;
 
-    public IEnumerator OpenCompleteScreen()
+    public void OpenCompleteScreen()
     {
         CardsInLevel.GameObject().SetActive(false);
         NumberSlot.GameObject().SetActive(false);
         HUDIcons.GameObject().SetActive(false);
         this.GameObject().SetActive(true);
-
-        yield return new WaitForSeconds(5.0f);
         
         StartCoroutine(ifPaused());
     }
