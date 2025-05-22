@@ -83,13 +83,13 @@ public class GridManager : MonoBehaviour
                 gridManager.tileMap.transform.localScale.z
                 );
             int x = Mathf.FloorToInt(localPos.x / gridCellSize.x + 0.5f);
-            int z = Mathf.FloorToInt(localPos.z / gridCellSize.y - 0.4f);
+            int z = Mathf.FloorToInt(localPos.z / gridCellSize.y - 0.6f);
 
             Vector2Int pos = new Vector2Int(
                 x + gridManager.size.x,
                 z + gridManager.size.y + 1
                 );
-
+            Debug.Log( pos.ToString() );
             if (size.x > pos.x && pos.x >= 0
                 && size.y > pos.y && pos.y >= 0)
             {

@@ -110,7 +110,7 @@ public class Player : UnitController
             int clickedTileDistance = gridManager.CalculateDistance(
                 tile.transform.position, transform.position);
 
-            if (clickedTileDistance <= moveNumber)
+            if (clickedTileDistance <= 1)
             {
                 Vector3 pos = tile.transform.position;
                 Vector3 playerPos = transform.position;
