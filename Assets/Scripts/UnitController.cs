@@ -122,10 +122,10 @@ public class UnitController : MonoBehaviour
         if (hasItem != false)
         {
             hasItem = false;
-            gridManager.keyItem.SetActive(true);
             
             gridManager.keyItem.transform.position =
                 tile.transform.position + new Vector3(0.0f, 0.5f, 0.0f);
+            gridManager.keyItem.SetActive(true);
 
             gridManager.UpdateTileType(
                 tile.transform.position,

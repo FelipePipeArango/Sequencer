@@ -76,44 +76,15 @@ public class Player : UnitController
     }
     void Move()
     {
-        Debug.Log("Move");
-        //Can move one by one 
-
-        //click a tile if can mmove to it "teleport" at first
-        //then make it go tile by tile by using path finding on a grid algorythm
-        //destination validated by amount of moves
-        //goes through the tiles by comparing the current with the destination
-        //
-        //It can either iterate once at a time or make the calculation once
-        //which would also require it to itarate same amount of times
-        //
-        //I am thinking of improving path finding system i guess
-        //Recieved pos(x,y) from click 
-        //Direction("The arrow directions") StorePathForNumber(recievedNumber)
-        //for(recievedNumber
-        //if(pos.x == Pos.x but pos.y >= Pos.y) turn back 
-        //else if(pos.x == Pos.x but pos.y <= Pos.y) turn up 
-        //else if(pos.y == Pos.y but pos.x >= Pos.x) turn left 
-        //else if(pos.y == Pos.y but pos.x <= Pos.x) turn right 
-        //
-        //How to make it dynamic 
-        //I can store a calulated path in a variable
-        //and only call it's when needed
-        //
-        //Design hought: if player would be draged by a hand on the board
-        //then I think it make sense to make the gaps on the tile map 
-        //as pillars that even by hand wouldnt be able to be passed through
-
         if (gridManager.ClickedTile() != null)
         {
-            TileScript tile = gridManager.ClickedTile();
-            int clickedTileDistance = gridManager.CalculateDistance(
-                tile.transform.position, transform.position);
-
-            if (clickedTileDistance <= 1)
+            if (moveNumber != 0)
             {
+                TileScript tile = gridManager.ClickedTile();
+
                 Vector3 pos = tile.transform.position;
                 Vector3 playerPos = transform.position;
+
                 if (pos.x == playerPos.x)
                 {
                     if (pos.z > playerPos.z) StartCoroutine(Movement(Vector2Int.up));
@@ -124,9 +95,6 @@ public class Player : UnitController
                     if (pos.x > playerPos.x) StartCoroutine(Movement(Vector2Int.right));
                     else if (pos.x < playerPos.x) StartCoroutine(Movement(Vector2Int.left));
                 }
-                //if diagonaly what happens?
-                //Move twice to which direction?
-                //or just let it be one at a time for now 
             }
         }
     }
@@ -135,12 +103,32 @@ public class Player : UnitController
 
         if (moveNumber > 0 && gridManager.AIActions == null)
         {
+            if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
+            else if (Input.GetKeyDown(KeyCode.UpArrow)) StartCoroutine(Movement(Vector2Int.up));
 
+            if (Input.GetKeyDown(KeyCode.S)) StartCoroutine(Movement(Vector2Int.down));
+            else if (Input.GetKeyDown(KeyCode.DownArrow)) StartCoroutine(Movement(Vector2Int.down));
+
+            if (Input.GetKeyDown(KeyCode.D)) StartCoroutine(Movement(Vector2Int.right));
+            else if (Input.GetKeyDown(KeyCode.RightArrow)) StartCoroutine(Movement(Vector2Int.right));
+
+            if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(Movement(Vector2Int.left));
+            else if (Input.GetKeyDown(KeyCode.LeftArrow)) StartCoroutine(Movement(Vector2Int.left));
         }
         else if (moveNumber > 0 && gridManager.AIActions != null
             && gridManager.AIActions.canMove == false)
         {
+            if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
+            else if (Input.GetKeyDown(KeyCode.UpArrow)) StartCoroutine(Movement(Vector2Int.up));
 
+            if (Input.GetKeyDown(KeyCode.S)) StartCoroutine(Movement(Vector2Int.down));
+            else if (Input.GetKeyDown(KeyCode.DownArrow)) StartCoroutine(Movement(Vector2Int.down));
+
+            if (Input.GetKeyDown(KeyCode.D)) StartCoroutine(Movement(Vector2Int.right));
+            else if (Input.GetKeyDown(KeyCode.RightArrow)) StartCoroutine(Movement(Vector2Int.right));
+
+            if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(Movement(Vector2Int.left));
+            else if (Input.GetKeyDown(KeyCode.LeftArrow)) StartCoroutine(Movement(Vector2Int.left));
         }
         if (moveNumber == 0)
             push = 1;
@@ -161,16 +149,6 @@ public class Player : UnitController
 
     protected override IEnumerator Movement(Vector2Int direction)
     {
-
-        //I am thinking of improving path finding system i guess
-        //pos(x,y) 
-        //if(pos.x == Pos.x but pos.y >= Pos.y) turn back 
-        //if(pos.x == Pos.x but pos.y <= Pos.y) turn up 
-        //if(pos.y == Pos.y but pos.x >= Pos.x) turn left 
-        //if(pos.y == Pos.y but pos.x <= Pos.x) turn right 
-
-        //animController.UpdateAnimations(true); 
-
         Vector3 checkPos = new Vector3(
             transform.position.x + direction.x,
             0,
@@ -246,20 +224,12 @@ public class Player : UnitController
         {
             canThrow = true;
             throwNumber = receivedNumber;
-            hasItem = false;
         }
         if (isAIBefore == false)
         {
             Sequencer.sequencer.AIAfterAction();
         }
     }
-
-
-    //I dont like this being in Player.cs
-    //I think it should be in grid manager or somewhere else 
-    /**/
-
-    //Grid manager is already bloateed...
 
 
     private void ThrowTo(TileScript tile)
@@ -280,28 +250,25 @@ public class Player : UnitController
             }
         }
     }
-    /**/
+
     private void PickUpFrom(TileScript tile)
     {
-        if (tile.tileType == TileTypes.KeyTile)
+        int distance = gridManager.CalculateDistance(tile.transform.position, transform.position);
+        if (distance == pickUpNumber)
         {
-            PlayerManager.playerManagerInstance.PlayerPickedUp();
-            KeyItemCheck();
-            gridManager.ResetTileType(TileTypes.KeyTile);
-        }
-        if (tile.tileType == TileTypes.ItemTile)
-        {
-            Debug.Log("Click");
-            NumberItemCheck();
-            gridManager.ResetTileType(TileTypes.ItemTile);
-        }
-        if (hasNumber && hasItem)
-                canPickUp = false;
-        
-        if(gridManager.numberPickUp == null)
-        {
-            if (hasNumber)
-                canPickUp = false;
+            if (tile.tileType == TileTypes.KeyTile)
+            {
+                PlayerManager.playerManagerInstance.PlayerPickedUp();
+                KeyItemCheck();
+                gridManager.ResetTileType(TileTypes.KeyTile);
+            }
+            if (tile.tileType == TileTypes.ItemTile)
+            {
+                Debug.Log("Click");
+                NumberItemCheck();
+                gridManager.ResetTileType(TileTypes.ItemTile);
+            }
+            canPickUp = false;
         }
     }
 
