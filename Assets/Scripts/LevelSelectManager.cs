@@ -4,10 +4,20 @@ using UnityEngine;
 
 public class LevelSelectManager : MonoBehaviour
 {
+    public static LevelSelectManager Instance { get; private set; }
+
+    
     public GameObject mainLevelMenu;
     public GameObject currentLevelMenu;
     public GameObject[] subLevelMenus;
 
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+    }
     void Start()
     {
         mainLevelMenu.SetActive(true);
@@ -26,7 +36,8 @@ public class LevelSelectManager : MonoBehaviour
 
     public void ReturnToMainMenu()
     {
-        currentLevelMenu.SetActive(false);
+        if (currentLevelMenu != null)
+            currentLevelMenu.SetActive(false);
         mainLevelMenu.SetActive(true);
         currentLevelMenu = mainLevelMenu;
     }

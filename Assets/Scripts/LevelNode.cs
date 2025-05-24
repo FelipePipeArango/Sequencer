@@ -9,9 +9,9 @@ public class LevelNode : MonoBehaviour
 {
     [Header("Data")]
     public string levelName;
-    public int difficulty; // use to select an image or color later
-    public Sprite thumbnailSprite;
-    public Sprite difficultySprite;
+    // public int difficulty; // use to select an image or color later
+    // public Sprite thumbnailSprite;
+    // public Sprite difficultySprite;
 
     [Header("State")]
     public bool isUnlocked = false;
@@ -27,6 +27,7 @@ public class LevelNode : MonoBehaviour
     public Button levelButton;
     public GameObject lockOverlay; // lock visual — a translucent panel on top
     
+    public LevelGroupNode parentGroup;
     void Start()
     {
         InitializeUI();
@@ -41,6 +42,7 @@ public class LevelNode : MonoBehaviour
         // difficultyImage.sprite = difficultySprite; 
         // levelThumbnail.sprite = thumbnailSprite; 
         levelButton.onClick.AddListener(OnLevelSelect);
+        
     }
 
     void OnLevelSelect()
@@ -48,22 +50,31 @@ public class LevelNode : MonoBehaviour
         if (!isUnlocked) return;
 
         isCleared = true;
-        Debug.Log($"{levelName} cleared!");
 
         // Unlock next nodes
-        foreach (LevelNode node in nextNodes)
+        if(nextNodes.Count > 0)
         {
-            node.Unlock();
+            foreach (LevelNode node in nextNodes)
+            {
+                node.Unlock();
+            }
+        }
+        
+        if (parentGroup != null)
+        {
+            parentGroup.CheckIfGroupCleared();
         }
     }
     
     public void Unlock()
     {
-        if (!isUnlocked)
-        {
-            isUnlocked = true;
-            levelButton.interactable = true;
-            lockOverlay.SetActive(false);
-        }
+        isUnlocked = true;
+        RefreshUI();
+    }
+    
+    void RefreshUI()
+    {
+        levelButton.interactable = isUnlocked;
+        lockOverlay.SetActive(!isUnlocked);
     }
 }
