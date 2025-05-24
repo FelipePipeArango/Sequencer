@@ -29,7 +29,7 @@ public class LevelSelectManager : MonoBehaviour
     
     public void OpenSubGroup(GameObject subLevelMenu)
     {
-        mainLevelMenu.SetActive(false);
+        //mainLevelMenu.SetActive(false);
         subLevelMenu.SetActive(true);
         currentLevelMenu = subLevelMenu;
     }

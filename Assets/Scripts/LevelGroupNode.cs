@@ -20,7 +20,7 @@ public class LevelGroupNode : MonoBehaviour
     public bool isUnlocked = false;
     public bool isCleared = false;
 
-    [Header("Nodes Lists")] private LevelNode[] subLevelNodes; 
+    [Header("Nodes Lists")] public LevelNode[] subLevelNodes; 
     public List<LevelGroupNode> nextNodes;
     
     [Header("Visuals")]
