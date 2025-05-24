@@ -59,12 +59,3 @@ public class UIHandler : MonoBehaviour
             characterMoveUI.text = numberValue.ToString();
     }
 }
-
-
-
-
-
-
-
-
-
