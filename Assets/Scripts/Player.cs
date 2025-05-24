@@ -5,6 +5,8 @@ using static GameTiles;
 using static GridManager;
 using System.Net.Security;
 using static UnityEditor.PlayerSettings;
+using Unity.VisualScripting;
+using UnityEditorInternal.Profiling.Memory.Experimental;
 
 
 public class Player : UnitController
@@ -29,126 +31,163 @@ public class Player : UnitController
             transform.position, TileTypes.PlayerTile);
     }
 
-
-    void ClickOnTheBoard()
+    void Update()
     {
-        if (canThrow)
-        {
-            gridManager.ThrowHighLight(throwNumber);
-            if (Input.GetMouseButtonDown(0))
-            {
-                Throw();
-            }
-        }
-        else if (canPickUp)
+        PerformInput();
+        IfFall();
+    }
+
+    private void ClickToPickUp()
+    {
+        if (IsSomethingWithinPickUpRadiusOfPlayer(pickUpNumber))
         {
             gridManager.PickUpHighLight(pickUpNumber);
             if (Input.GetMouseButtonDown(0))
             {
-                PickUp();
-            }
-        }
-        else if (canMove)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                Move();
-            }
-        }
-    }
-
-    void PickUp()
-    {
-        if (gridManager.ClickedTile() != null)
-        {
-            PickUpFrom(gridManager.ClickedTile());
-            gridManager.TurnOffHighlight();
-        }
-    }
-
-    void Throw()
-    {
-        if (gridManager.ClickedTile() != null)
-        {
-            ThrowTo(gridManager.ClickedTile());
-            gridManager.TurnOffHighlight();
-        }
-    }
-    void Move()
-    {
-        if (gridManager.ClickedTile() != null)
-        {
-            if (moveNumber != 0)
-            {
-                TileScript tile = gridManager.ClickedTile();
-
-                Vector3 pos = tile.transform.position;
-                Vector3 playerPos = transform.position;
-
-                if (pos.x == playerPos.x)
+                if (gridManager.ClickedTile() != null)
                 {
-                    if (pos.z > playerPos.z) StartCoroutine(Movement(Vector2Int.up));
-                    else if (pos.z < playerPos.z) StartCoroutine(Movement(Vector2Int.down));
-                }
-                else if (pos.z == playerPos.z)
-                {
-                    if (pos.x > playerPos.x) StartCoroutine(Movement(Vector2Int.right));
-                    else if (pos.x < playerPos.x) StartCoroutine(Movement(Vector2Int.left));
+                    PickUpFrom(gridManager.ClickedTile());
+                    gridManager.TurnOffHighlight();
                 }
             }
         }
+        else
+        {
+            Debug.Log("Nothing to pick up");
+            canPickUp = false;
+        }
     }
-    void PerformInput()
+    private void ClickToThrow()
     {
+        gridManager.ThrowHighLight(throwNumber);
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (gridManager.ClickedTile() != null)
+            {
+                ThrowTo(gridManager.ClickedTile());
+                gridManager.TurnOffHighlight();
+            }
+        }
+    }
+    private void ClickToMove()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (gridManager.ClickedTile() != null)
+            {
+                if (moveNumber != 0)
+                {
+                    TileScript tile = gridManager.ClickedTile();
 
+                    Vector3 pos = tile.transform.position;
+                    Vector3 playerPos = transform.position;
+
+                    if (pos.x == playerPos.x)
+                    {
+                        if (pos.z > playerPos.z) StartCoroutine(Movement(Vector2Int.up));
+                        else if (pos.z < playerPos.z) StartCoroutine(Movement(Vector2Int.down));
+                    }
+                    else if (pos.z == playerPos.z)
+                    {
+                        if (pos.x > playerPos.x) StartCoroutine(Movement(Vector2Int.right));
+                        else if (pos.x < playerPos.x) StartCoroutine(Movement(Vector2Int.left));
+                    }
+                }
+            }
+        }
+    }
+    private void WASD_Arrows()
+    {
+        if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
+        else if (Input.GetKeyDown(KeyCode.UpArrow)) StartCoroutine(Movement(Vector2Int.up));
+
+        if (Input.GetKeyDown(KeyCode.S)) StartCoroutine(Movement(Vector2Int.down));
+        else if (Input.GetKeyDown(KeyCode.DownArrow)) StartCoroutine(Movement(Vector2Int.down));
+
+        if (Input.GetKeyDown(KeyCode.D)) StartCoroutine(Movement(Vector2Int.right));
+        else if (Input.GetKeyDown(KeyCode.RightArrow)) StartCoroutine(Movement(Vector2Int.right));
+
+        if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(Movement(Vector2Int.left));
+        else if (Input.GetKeyDown(KeyCode.LeftArrow)) StartCoroutine(Movement(Vector2Int.left));
+    }
+    private void WASDToMove()
+    {
         if (moveNumber > 0 && gridManager.AIActions == null)
         {
-            if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
-            else if (Input.GetKeyDown(KeyCode.UpArrow)) StartCoroutine(Movement(Vector2Int.up));
-
-            if (Input.GetKeyDown(KeyCode.S)) StartCoroutine(Movement(Vector2Int.down));
-            else if (Input.GetKeyDown(KeyCode.DownArrow)) StartCoroutine(Movement(Vector2Int.down));
-
-            if (Input.GetKeyDown(KeyCode.D)) StartCoroutine(Movement(Vector2Int.right));
-            else if (Input.GetKeyDown(KeyCode.RightArrow)) StartCoroutine(Movement(Vector2Int.right));
-
-            if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(Movement(Vector2Int.left));
-            else if (Input.GetKeyDown(KeyCode.LeftArrow)) StartCoroutine(Movement(Vector2Int.left));
+            WASD_Arrows();
         }
         else if (moveNumber > 0 && gridManager.AIActions != null
             && gridManager.AIActions.canMove == false)
         {
-            if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
-            else if (Input.GetKeyDown(KeyCode.UpArrow)) StartCoroutine(Movement(Vector2Int.up));
-
-            if (Input.GetKeyDown(KeyCode.S)) StartCoroutine(Movement(Vector2Int.down));
-            else if (Input.GetKeyDown(KeyCode.DownArrow)) StartCoroutine(Movement(Vector2Int.down));
-
-            if (Input.GetKeyDown(KeyCode.D)) StartCoroutine(Movement(Vector2Int.right));
-            else if (Input.GetKeyDown(KeyCode.RightArrow)) StartCoroutine(Movement(Vector2Int.right));
-
-            if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(Movement(Vector2Int.left));
-            else if (Input.GetKeyDown(KeyCode.LeftArrow)) StartCoroutine(Movement(Vector2Int.left));
+            WASD_Arrows();
         }
-        if (moveNumber == 0)
-            push = 1;
-
     }
-
-    void Update()
+    private void Reload()
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
             string currentScene = SceneManager.GetActiveScene().name;
             SceneManager.LoadScene(currentScene);
         }
-        ClickOnTheBoard();
-        PerformInput();
-        IfFall();
+    }
+
+
+    private void PerformInput()
+    {
+        if (canThrow)
+        {
+            ClickToThrow();
+            return;
+        }
+        
+        if (canPickUp)
+        {
+            ClickToPickUp();
+            return;
+        }
+        if (canMove)
+        {
+            ClickToMove();
+            WASDToMove();
+            if (moveNumber == 0)
+                push = 1;
+        }
+        Reload();
+    }
+
+    private void AICanMoveNow()
+    {
+        if (gridManager.AIActions != null)
+            Sequencer.sequencer.AIAfterAction();
+    }
+    
+    public void MovementReceiver(int receivedNumber)
+    {
+        moveNumber += receivedNumber;
+        canMove = true;
+
+        /*if (uiHandler != null)
+        {
+            uiHandler.UpdateMovementPointsText(number);
+        }*/
+        PlayerManager.playerManagerInstance.PlayerPreMove(moveNumber);
+        UIHandler.UIHandlerInstance.UpdateMovementPointsText(moveNumber);
+    }
+    public void ThrowReceiver(int receivedNumber)
+    {
+        canThrow = true;
+        throwNumber = receivedNumber;
+    }
+    public void PickUpReceiver(int receivedNumber)
+    {
+        pickUpNumber = receivedNumber;
+        canPickUp = true;
     }
 
     protected override IEnumerator Movement(Vector2Int direction)
     {
+        //animController.UpdateAnimations(true); 
+
         Vector3 checkPos = new Vector3(
             transform.position.x + direction.x,
             0,
@@ -192,94 +231,67 @@ public class Player : UnitController
 
             //animController.UpdateAnimations(false);
         }
+
         PlayerManager.playerManagerInstance.PlayerMoved(moveNumber);
-
-        if (isAIBefore == false)
+        AICanMoveNow();
+        if (moveNumber == 0)
         {
-            Sequencer.sequencer.AIAfterAction();
+            canMove = false;
+            push = 1;
         }
-        if (moveNumber == 0) canMove = false;
-
     }
-
-    public void MovementReceiver(int receivedNumber)
-    {
-        moveNumber += receivedNumber;
-        canMove = true;
-
-        /*if (uiHandler != null)
-        {
-            uiHandler.UpdateMovementPointsText(number);
-        }*/
-        PlayerManager.playerManagerInstance.PlayerPreMove(moveNumber);
-        UIHandler.UIHandlerInstance.UpdateMovementPointsText(moveNumber);
-    }
-
-
-
-
-    public void ThrowReceiver(int receivedNumber)
+    private void ThrowTo(TileScript tile)
     {
         if (hasItem)
         {
-            canThrow = true;
-            throwNumber = receivedNumber;
-        }
-        if (isAIBefore == false)
-        {
-            Sequencer.sequencer.AIAfterAction();
-        }
-    }
-
-
-    private void ThrowTo(TileScript tile)
-    {
-        if (throwNumber == gridManager.CalculateDistance(
+            if (throwNumber == gridManager.CalculateDistance(
                    tile.transform.position, transform.position))
-        {
-            if (tile.tileType == TileTypes.GoalTile)
-            {
-                canThrow = false;
-                PlayerManager.playerManagerInstance.PlayerWon();
-            }
-            else if (tile.tileType == TileTypes.EmptyTile)
-            {
-                ThrowKey(tile);
-                canThrow = false;
-
+                {
+                if (tile.tileType == TileTypes.GoalTile)
+                {
+                    canThrow = false;
+                    PlayerManager.playerManagerInstance.PlayerWon();
+                }
+                else if (tile.tileType == TileTypes.EmptyTile)
+                {
+                    Debug.Log("Click");
+                    ThrowKey(tile);
+                    canThrow = false;
+                    AICanMoveNow();
+                }
             }
         }
+        else
+        {
+            Debug.Log("Nothing to throw");
+            canThrow = false;
+        }
     }
+
 
     private void PickUpFrom(TileScript tile)
     {
-        int distance = gridManager.CalculateDistance(tile.transform.position, transform.position);
-        if (distance == pickUpNumber)
-        {
+       
             if (tile.tileType == TileTypes.KeyTile)
             {
                 PlayerManager.playerManagerInstance.PlayerPickedUp();
                 KeyItemCheck();
                 gridManager.ResetTileType(TileTypes.KeyTile);
+                canPickUp = false;
+                AICanMoveNow();
             }
-            if (tile.tileType == TileTypes.ItemTile)
+            else if (tile.tileType == TileTypes.ItemTile)
             {
-                Debug.Log("Click");
                 NumberItemCheck();
                 gridManager.ResetTileType(TileTypes.ItemTile);
+                canPickUp = false;
+                AICanMoveNow();
             }
-            canPickUp = false;
-        }
-    }
-
-    public void PickUpReceiver(int receivedNumber)
-    {
-        pickUpNumber = receivedNumber;
-        canPickUp = true;
-        if (isAIBefore == false)
-        {
-            Sequencer.sequencer.AIAfterAction();
-        }
+            else
+            {
+                Debug.Log("Nothing to pick up");
+            }
+        
     }
 }
 

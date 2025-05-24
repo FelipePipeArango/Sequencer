@@ -68,8 +68,23 @@ public class UnitController : MonoBehaviour
 
     }
 
-   
-
+    protected bool IsSomethingWithinPickUpRadiusOfPlayer(int radius)
+    {
+        if (radius == gridManager.CalculateDistance(
+            transform.position,
+            gridManager.keyItem.transform.position))
+        {
+            return true;
+        }
+        else if (radius == gridManager.CalculateDistance(
+            transform.position,
+            gridManager.numberPickUp.transform.position))
+        {
+            return true;
+        }
+        else
+            return false;
+    }
 
     protected void IfFall()
     {
@@ -119,8 +134,10 @@ public class UnitController : MonoBehaviour
 
     protected void ThrowKey(TileScript tile)
     {
+            Debug.Log("Key");
         if (hasItem != false)
         {
+            Debug.Log("Two");
             hasItem = false;
             
             gridManager.keyItem.transform.position =
@@ -132,6 +149,14 @@ public class UnitController : MonoBehaviour
                 TileTypes.KeyTile
                 );
         }
+    }
+    public bool HasAnything()
+    {
+        if (hasNumber)
+            return true;
+        else if (hasItem)
+            return true;
+        else return false;
     }
 
     protected void NumberItemCheck()

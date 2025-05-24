@@ -34,7 +34,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
     public bool hasArrow;
     public Image arrowImage;
-    [HideInInspector] public bool isAIBefore;
+    public bool isAIBefore;
     public Directions arrowDirection;
 
     [HideInInspector] public int slot;

@@ -103,6 +103,7 @@ public class GridManager : MonoBehaviour
         }
         return null;
     }
+    
     public int CalculateDistance(Vector3 position, Vector3 start)
     {
         Vector2Int currentPosition = new Vector2Int(

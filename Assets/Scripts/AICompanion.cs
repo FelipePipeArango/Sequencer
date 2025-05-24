@@ -14,6 +14,7 @@ public class AICompanion : UnitController
     [HideInInspector] public Directions direction;
     [HideInInspector] public AIActions action = AIActions.Stay;
     [HideInInspector] public bool isBefore = false;
+    [HideInInspector] public bool isIAActive = false;
     [HideInInspector] public bool canMove = false;
     [HideInInspector] public bool isMoving = false;
 
@@ -68,11 +69,12 @@ public class AICompanion : UnitController
             Sequencer.sequencer.PlayerAfterAction();
 
         canMove = false;
+        isIAActive = false;
 
         if(OnMove != null)
             OnMove(canMove);
     }
-
+    
     public void PushCompanion(Vector2Int direction)
     {
         MoveTo(direction, TileTypes.PawnTile);

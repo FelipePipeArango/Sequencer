@@ -113,6 +113,7 @@ public class Sequencer : MonoBehaviour
             lastDirection = direction;
             gridManager.AIActions.canMove = isBefore;
             gridManager.AIActions.isBefore = isBefore;
+            gridManager.AIActions.isIAActive = true;
         }
     }
 
@@ -175,7 +176,6 @@ public class Sequencer : MonoBehaviour
         {
             gridManager.AIActions.direction = lastDirection;
             gridManager.AIActions.canMove = true;
-            gridManager.AIActions.isBefore = false;
         }
     }
 
