@@ -25,16 +25,6 @@ public class Sequencer : MonoBehaviour
     public NumberItem lastNumber { get; private set; }
     public Directions lastDirection { get; set; }
 
-    private void OnEnable()
-    {
-        AICompanion.OnMove += HandleAIStateChanged;
-    }
-
-    private void OnDisable()
-    {
-        AICompanion.OnMove -= HandleAIStateChanged;
-    }
-
     public void Awake()
     {
         if (sequencer != null && sequencer != this)
@@ -117,7 +107,7 @@ public class Sequencer : MonoBehaviour
         }
     }
 
-    public void HandleAIStateChanged(bool isMoving)
+    public void HandleStateChange(bool isMoving)
     {
         if (isMoving)
         {
@@ -126,9 +116,19 @@ public class Sequencer : MonoBehaviour
         else
         {
             EnableNextCard();
+            EnableCard();
         }
     }
-
+    private void EnableCard()
+    {
+        foreach (var card in levelCards)
+        {
+            if (card.available || card.isUsed == false)
+            {
+                card.Enable();
+            }
+        }
+    }
     private void DisableAll()
     {
         foreach (var card in levelCards)
@@ -161,7 +161,9 @@ public class Sequencer : MonoBehaviour
     {
         foreach (var card in levelCards)
         {
-            if (card.nextInSequence && card != lastCard)
+            if (card.nextInSequence && 
+                card != lastCard && 
+                card.isUsed != true)
             {
                 card.Enable();
             }

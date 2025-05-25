@@ -38,6 +38,10 @@ public class AICompanion : UnitController
 
             if (direction == Directions.Left) StartCoroutine(Movement(Vector2Int.left));
         }
+        if(isIAActive == true && !canMove) 
+        {
+            Sequencer.sequencer.HandleStateChange(canMove);
+        }
         IfFall();
     }
 

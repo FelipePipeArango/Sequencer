@@ -139,7 +139,7 @@ public class Player : UnitController
             ClickToThrow();
             return;
         }
-        
+
         if (canPickUp)
         {
             ClickToPickUp();
@@ -160,7 +160,7 @@ public class Player : UnitController
         if (gridManager.AIActions != null)
             Sequencer.sequencer.AIAfterAction();
     }
-    
+
     public void MovementReceiver(int receivedNumber)
     {
         moveNumber += receivedNumber;
@@ -177,11 +177,13 @@ public class Player : UnitController
     {
         canThrow = true;
         throwNumber = receivedNumber;
+        Sequencer.sequencer.HandleStateChange(true);
     }
     public void PickUpReceiver(int receivedNumber)
     {
         pickUpNumber = receivedNumber;
         canPickUp = true;
+        Sequencer.sequencer.HandleStateChange(true);
     }
 
     protected override IEnumerator Movement(Vector2Int direction)
@@ -246,7 +248,7 @@ public class Player : UnitController
         {
             if (throwNumber == gridManager.CalculateDistance(
                    tile.transform.position, transform.position))
-                {
+            {
                 if (tile.tileType == TileTypes.GoalTile)
                 {
                     canThrow = false;
@@ -257,6 +259,7 @@ public class Player : UnitController
                     Debug.Log("Click");
                     ThrowKey(tile);
                     canThrow = false;
+                    Sequencer.sequencer.HandleStateChange(false);
                     AICanMoveNow();
                 }
             }
@@ -271,27 +274,29 @@ public class Player : UnitController
 
     private void PickUpFrom(TileScript tile)
     {
-       
-            if (tile.tileType == TileTypes.KeyTile)
-            {
-                PlayerManager.playerManagerInstance.PlayerPickedUp();
-                KeyItemCheck();
-                gridManager.ResetTileType(TileTypes.KeyTile);
-                canPickUp = false;
-                AICanMoveNow();
-            }
-            else if (tile.tileType == TileTypes.ItemTile)
-            {
-                NumberItemCheck();
-                gridManager.ResetTileType(TileTypes.ItemTile);
-                canPickUp = false;
-                AICanMoveNow();
-            }
-            else
-            {
-                Debug.Log("Nothing to pick up");
-            }
-        
+
+        if (tile.tileType == TileTypes.KeyTile)
+        {
+            PlayerManager.playerManagerInstance.PlayerPickedUp();
+            KeyItemCheck();
+            gridManager.ResetTileType(TileTypes.KeyTile);
+            canPickUp = false;
+            Sequencer.sequencer.HandleStateChange(false);
+            AICanMoveNow();
+        }
+        else if (tile.tileType == TileTypes.ItemTile)
+        {
+            NumberItemCheck();
+            gridManager.ResetTileType(TileTypes.ItemTile);
+            canPickUp = false;
+            Sequencer.sequencer.HandleStateChange(false);
+            AICanMoveNow();
+        }
+        else
+        {
+            Debug.Log("Nothing to pick up");
+        }
+
     }
 }
 

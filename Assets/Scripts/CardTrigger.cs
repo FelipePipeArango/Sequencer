@@ -20,6 +20,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
     [HideInInspector] public bool nextInSequence;
     [HideInInspector] public bool isInUse = false;
+    [HideInInspector] public bool isUsed = false;
     public bool available = true;
     public Actions cardAction;
 
@@ -136,9 +137,9 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             bool isTrulyUsable = (available && nextInSequence);
             if (!usedBGActive)
             {
-                float alpha = isTrulyUsable ? 1f : 0.5f;
                 cardBackground.material = null;
                 Color cbColor = cardBackground.color;
+                
                 cardBackground.color = new Color(cbColor.r, cbColor.g, cbColor.b, 1);
             }
         }
@@ -157,10 +158,12 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             bool isTrulyUsable = (available && nextInSequence);
             if (!usedBGActive)
             {
+                //Alpha makes the cards color unstable 
                 float alpha = isTrulyUsable ? 1f : 0.5f;
+                
                 cardBackground.material = null;
                 Color cbColor = cardBackground.color;
-                cardBackground.color = new Color(cbColor.r, cbColor.g, cbColor.b, 1);
+                cardBackground.color = new Color(cbColor.r, cbColor.g, cbColor.b, 1);/**/
             }
         }
     }
@@ -204,6 +207,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         {
             Debug.Log("Dropped " + hoveredNumberItem.value + " on " + cardAction + " action.");
         }
+        isUsed = true;
     }
 
     IEnumerator DissolveEffect()
@@ -287,13 +291,6 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         {
             available = true;
 
-            if (usedBackground != null)
-            {
-                usedBackground.enabled = false;
-                Color bgColor = usedBackground.color;
-                usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, 0f);
-            }
-
             if (cardBackground != null)
             {
                 cardBackground.material = null;
@@ -305,6 +302,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             if (slotImage != null) slotImage.gameObject.SetActive(true);
         }
     }
+
 
     public void DisableUsed(NumberItem number)
     {
