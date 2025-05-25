@@ -10,8 +10,11 @@ public class LevelGroupNode : MonoBehaviour
 {
     [FormerlySerializedAs("levelName")] [Header("Data")]
     public string levelGroupName;
+    [Header("Corresponds to the position of this group (1st, 2nd,etc)")]
+    public int levelGroupNumber;
 
-    public GameObject groupCanvas;
+    public GameObject containedLevels;
+    [HideInInspector] public int completedLevels;
     // public int difficulty; // use to select an image or color later
     // public Sprite thumbnailSprite;
     // public Sprite difficultySprite;
@@ -33,11 +36,27 @@ public class LevelGroupNode : MonoBehaviour
     void Start()
     {
         InitializeUI();
+        UnlockNextLevels();
+    }
+
+    void UnlockNextLevels()
+    {
+        for (int i = 0; i < subLevelNodes.Length; i++)
+        {
+            if (subLevelNodes[i].isCleared == false)
+            {
+                return;
+            }
+            else if (i == subLevelNodes.Length - 1)
+            {
+                Debug.Log("this sections is complete");
+            } 
+        }
     }
     
     void InitializeUI()
     {
-        subLevelNodes = groupCanvas.GetComponentsInChildren<LevelNode>();
+        subLevelNodes = containedLevels.GetComponentsInChildren<LevelNode>();
         foreach (var level in subLevelNodes)
         {
             level.parentGroup = this;
@@ -74,6 +93,11 @@ public class LevelGroupNode : MonoBehaviour
             lockOverlay.SetActive(false);
         }
     }
+
+    public void SetCurrentLevelGroup()
+    {
+        LevelSelectManager.Instance.currentLevelGroup = levelGroupNumber;
+    }
     
     public void CheckIfGroupCleared()
     {
@@ -92,6 +116,6 @@ public class LevelGroupNode : MonoBehaviour
                 nextGroup.Unlock();
             }
         }
-        LevelSelectManager.Instance.ReturnToMainMenu();
+        //LevelSelectManager.Instance.ReturnToMainMenu();
     }
 }
