@@ -47,7 +47,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         {
             usedBackground.enabled = false;
             Color bgColor = usedBackground.color;
-            usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, 0f);
+            usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, 1f);
         }
 
       
@@ -56,7 +56,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             bool isTrulyUsable = (available && nextInSequence);
             float initialAlpha = isTrulyUsable ? 1f : 0.5f;
             Color cbColor = cardBackground.color;
-            cardBackground.color = new Color(cbColor.r, cbColor.g, cbColor.b, initialAlpha);
+            cardBackground.color = new Color(cbColor.r, cbColor.g, cbColor.b, 1);
         }
     }
 
@@ -79,16 +79,8 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         {
             if (usedBackground != null)
             {
-                usedBackground.enabled = true;
-                Color bgColor = usedBackground.color;
-                usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, 1f);
                 usedBackground.transform.SetAsFirstSibling();
             }
-
-            cardBackground.color = new Color(cardBackground.color.r,
-                cardBackground.color.g,
-                cardBackground.color.b,
-                0f);
         }
     }
 
@@ -134,14 +126,6 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         if (cardBackground != null)
         {
             bool usedBGActive = (usedBackground != null && usedBackground.enabled);
-            bool isTrulyUsable = (available && nextInSequence);
-            if (!usedBGActive)
-            {
-                cardBackground.material = null;
-                Color cbColor = cardBackground.color;
-                
-                cardBackground.color = new Color(cbColor.r, cbColor.g, cbColor.b, 1);
-            }
         }
     }
 
@@ -156,15 +140,6 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         {
             bool usedBGActive = (usedBackground != null && usedBackground.enabled);
             bool isTrulyUsable = (available && nextInSequence);
-            if (!usedBGActive)
-            {
-                //Alpha makes the cards color unstable 
-                float alpha = isTrulyUsable ? 1f : 0.5f;
-                
-                cardBackground.material = null;
-                Color cbColor = cardBackground.color;
-                cardBackground.color = new Color(cbColor.r, cbColor.g, cbColor.b, 1);/**/
-            }
         }
     }
 
@@ -192,15 +167,12 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         available = false;
         if (usedBackground != null)
         {
-            usedBackground.enabled = true;
-            Color bgColor = usedBackground.color;
-            usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, 1f);
             usedBackground.transform.SetAsFirstSibling();
         }
         if (usedText != null) usedText.gameObject.SetActive(false);
 
 
-        //Explain
+        
         StartDissolve();
 
         if (hoveredNumberItem != null)
@@ -233,12 +205,12 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             );
             yield return null;
         }
-        // Once fully dissolved, set alpha = 0
+        // Once fully dissolved, set alpha = 1
         cardBackground.color = new Color(
             cardBackground.color.r,
             cardBackground.color.g,
             cardBackground.color.b,
-            0f
+            1.0f
         );
     }
 

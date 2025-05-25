@@ -56,38 +56,16 @@ public class Sequencer : MonoBehaviour
             notNextCardCover = levelCards[i].notNextCover;
 
             if (i == recievedValue - 1)
-            {
-                        // This is the next card
+            {  // This is the next card
                 levelCards[i].nextInSequence = true;
-                /*cardBackground.color = new Color(
-                    cardBackground.color.r,
-                    cardBackground.color.g,
-                    cardBackground.color.b,
-                    1f);*/
                 notNextCardCover.gameObject.SetActive(false);
             }
             else
-            {
-                        // Not the next card
+            {   // Not the next card
                 levelCards[i].nextInSequence = false;
 
-                if (!levelCards[i].available)
+                if (levelCards[i].available)
                 {
-                        // USED => keep alpha = 1
-                    cardBackground.color = new Color(
-                        cardBackground.color.r,
-                        cardBackground.color.g,
-                        cardBackground.color.b,
-                        1f);
-                }
-                else
-                {
-                        // NOT used, NOT next => alpha = 0.5
-                    /*cardBackground.color = new Color(
-                        cardBackground.color.r,
-                        cardBackground.color.g,
-                        cardBackground.color.b,
-                        0.5f);*/
                     notNextCardCover.gameObject.SetActive(true);
                 }
             }
