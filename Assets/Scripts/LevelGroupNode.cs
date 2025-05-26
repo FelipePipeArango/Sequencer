@@ -96,7 +96,7 @@ public class LevelGroupNode : MonoBehaviour
 
     public void SetCurrentLevelGroup()
     {
-        LevelSelectManager.Instance.currentLevelGroup = levelGroupNumber;
+        LevelSelectManager.Instance.currentLevelGroup = levelGroupNumber - 1;
     }
     
     public void CheckIfGroupCleared()

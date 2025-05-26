@@ -46,13 +46,14 @@ public class LevelSelectManager : MonoBehaviour
 
     public void FillValues() //back in the LevelSelection scene, each group asks for its progress
     {
-        for (int i = 0; i < LevelGroups.Length; i++)
+        /*for (int i = 0; i < LevelGroups.Length; i++)
         {
             if (currentLevelGroup == i)
             {
                 LevelGroups[i].completedLevels = levelGroupTracker[i]; //and it updates the corresponding one
             } 
-        }
+        }*/
+        LevelGroups[currentLevelGroup].completedLevels = levelGroupTracker[currentLevelGroup];
     }
 
     void LevelCompleted (gameStates completed)
