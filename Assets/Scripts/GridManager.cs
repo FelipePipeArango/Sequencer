@@ -29,11 +29,6 @@ public class GridManager : MonoBehaviour
     [HideInInspector] public Player playerActions;
     [HideInInspector] public AICompanion AIActions;
 
-    [Header("OBJECT POINTERS")]
-    [SerializeField] float goalPointerHeight;
-    [SerializeField] float keyItemPointerHeight;
-    [SerializeField] float tileHeight;
-
 
     void Awake()
     {
@@ -206,7 +201,7 @@ public class GridManager : MonoBehaviour
                 tile.isHighLight = true;
                 if (tile.tileType == TileTypes.KeyTile || tile.tileType == TileTypes.ItemTile)
                 {
-                    tile.pointer.transform.position = new Vector3 (tile.pointer.transform.position.x, keyItemPointerHeight, tile.pointer.transform.position.z);
+                    tile.pointer.transform.position = new Vector3 (tile.pointer.transform.position.x, 2.1f, tile.pointer.transform.position.z);
 
                     tile.pointer.gameObject.SetActive(true);
                 }
@@ -231,12 +226,12 @@ public class GridManager : MonoBehaviour
                 tile.isHighLight = true;
                 if (tile.tileType == TileTypes.EmptyTile)
                 {
-                    tile.pointer.transform.position = new Vector3(tile.pointer.transform.position.x, tileHeight, tile.pointer.transform.position.z);
+                    tile.pointer.transform.position = new Vector3(tile.pointer.transform.position.x, 0, tile.pointer.transform.position.z);
                     tile.pointer.gameObject.SetActive(true);
                 }
                 else if (tile.tileType == TileTypes.GoalTile)
                 {
-                    tile.pointer.transform.position = new Vector3(tile.pointer.transform.position.x, goalPointerHeight, tile.pointer.transform.position.z);
+                    tile.pointer.transform.position = new Vector3(tile.pointer.transform.position.x, 2.7f, tile.pointer.transform.position.z);
                     tile.pointer.gameObject.SetActive(true);
                 }
             }
