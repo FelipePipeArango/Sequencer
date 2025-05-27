@@ -82,7 +82,7 @@ public class GridManager : MonoBehaviour
                 MoveDistanceHighLight(value, playerActions.transform.position);
                 break;
 
-            case GameActions.Actions.PickUp:
+            case GameActions.Actions.Pick_Up:
                 PickUpHighLight(value);
                 break;
 
