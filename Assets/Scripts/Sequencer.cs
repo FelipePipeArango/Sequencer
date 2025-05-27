@@ -84,7 +84,7 @@ public class Sequencer : MonoBehaviour
             gridManager.AIActions.isIAActive = true;
         }
     }
-
+    //hdalksjdh
     public void HandleStateChange(bool isMoving)
     {
         if (isMoving)
@@ -106,6 +106,7 @@ public class Sequencer : MonoBehaviour
                 card.Enable();
             }
         }
+        NextCard(lastNumber.value);
     }
     private void DisableAll()
     {

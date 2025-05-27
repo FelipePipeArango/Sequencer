@@ -55,18 +55,28 @@ public class Player : UnitController
         {
             Debug.Log("Nothing to pick up");
             canPickUp = false;
+            Sequencer.sequencer.HandleStateChange(false);
         }
     }
     private void ClickToThrow()
     {
-        gridManager.ThrowHighLight(throwNumber);
-        if (Input.GetMouseButtonDown(0))
+        if (hasItem)
         {
-            if (gridManager.ClickedTile() != null)
+            gridManager.ThrowHighLight(throwNumber);
+            if (Input.GetMouseButtonDown(0))
             {
-                ThrowTo(gridManager.ClickedTile());
-                gridManager.TurnOffHighlight();
+                if (gridManager.ClickedTile() != null)
+                {
+                    ThrowTo(gridManager.ClickedTile());
+                    gridManager.TurnOffHighlight();
+                }
             }
+        }
+        else
+        {
+            Debug.Log("Nothing to throw");
+            canThrow = false;
+            Sequencer.sequencer.HandleStateChange(false);
         }
     }
     private void ClickToMove()
@@ -244,8 +254,7 @@ public class Player : UnitController
     }
     private void ThrowTo(TileScript tile)
     {
-        if (hasItem)
-        {
+        
             if (throwNumber == gridManager.CalculateDistance(
                    tile.transform.position, transform.position))
             {
@@ -259,16 +268,11 @@ public class Player : UnitController
                     Debug.Log("Click");
                     ThrowKey(tile);
                     canThrow = false;
-                    Sequencer.sequencer.HandleStateChange(false);
                     AICanMoveNow();
                 }
             }
-        }
-        else
-        {
-            Debug.Log("Nothing to throw");
-            canThrow = false;
-        }
+        
+       
     }
 
 
@@ -281,7 +285,7 @@ public class Player : UnitController
             KeyItemCheck();
             gridManager.ResetTileType(TileTypes.KeyTile);
             canPickUp = false;
-            Sequencer.sequencer.HandleStateChange(false);
+            
             AICanMoveNow();
         }
         else if (tile.tileType == TileTypes.ItemTile)

@@ -105,7 +105,6 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        
         GameObject hoveredObject = eventData.pointerDrag;
         if (hoveredObject != null && available == true && nextInSequence == true)
         {
@@ -122,7 +121,6 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             }
         }
 
-    
         if (cardBackground != null)
         {
             bool usedBGActive = (usedBackground != null && usedBackground.enabled);
