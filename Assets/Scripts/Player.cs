@@ -51,9 +51,9 @@ public class Player : UnitController
             gridManager.PickUpHighLight(pickUpNumber);
             if (Input.GetMouseButtonDown(0))
             {
-                if (gridManager.ClickedTile() != null)
+                if (gridManager.ClickedTile(0.8f) != null)
                 {
-                    PickUpFrom(gridManager.ClickedTile());
+                    PickUpFrom(gridManager.ClickedTile(0.8f));
                     gridManager.TurnOffHighlight();
                 }
             }
@@ -73,9 +73,9 @@ public class Player : UnitController
             gridManager.ThrowHighLight(throwNumber);
             if (Input.GetMouseButtonDown(0))
             {
-                if (gridManager.ClickedTile() != null)
+                if (gridManager.ClickedTile(0.6f) != null)
                 {
-                    ThrowTo(gridManager.ClickedTile());
+                    ThrowTo(gridManager.ClickedTile(0.6f));
                     gridManager.TurnOffHighlight();
                 }
             }
@@ -91,11 +91,11 @@ public class Player : UnitController
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if (gridManager.ClickedTile() != null)
+            if (gridManager.ClickedTile(0.6f) != null)
             {
                 if (moveNumber != 0)
                 {
-                    TileScript tile = gridManager.ClickedTile();
+                    TileScript tile = gridManager.ClickedTile(0.6f);
 
                     Vector3 pos = tile.transform.position;
                     Vector3 playerPos = transform.position;

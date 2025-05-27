@@ -70,7 +70,7 @@ public class GridManager : MonoBehaviour
         UpdateTileType(goal.transform.position, TileTypes.GoalTile);
     }
 
-    public TileScript ClickedTile()
+    public TileScript ClickedTile(float offsetZ)
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -83,7 +83,7 @@ public class GridManager : MonoBehaviour
                 gridManager.tileMap.transform.localScale.z
                 );
             int x = Mathf.FloorToInt(localPos.x / gridCellSize.x + 0.5f);
-            int z = Mathf.FloorToInt(localPos.z / gridCellSize.y - 0.6f);
+            int z = Mathf.FloorToInt(localPos.z / gridCellSize.y - offsetZ);
 
             Vector2Int pos = new Vector2Int(
                 x + gridManager.size.x,
@@ -145,7 +145,7 @@ public class GridManager : MonoBehaviour
             foreach (TileScript tile in tiles)
             {
                 tile.isHighLight = false;
-                if (tile.pointer.activeSelf)
+                 if (tile.pointer.activeSelf)
                     tile.pointer.SetActive(false);
                 tile.ResetColor();
             }
