@@ -1,8 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using static GameActions;
@@ -22,18 +17,9 @@ public class Sequencer : MonoBehaviour
     [SerializeField] GameObject cardsInLevel;
 
     public CardTrigger lastCard { get; private set; }
+    public bool state { get; private set; }
     public NumberItem lastNumber { get; private set; }
     public Directions lastDirection { get; set; }
-
-    private void OnEnable()
-    {
-        AICompanion.OnMove += HandleAIStateChanged;
-    }
-
-    private void OnDisable()
-    {
-        AICompanion.OnMove -= HandleAIStateChanged;
-    }
 
     public void Awake()
     {
@@ -66,38 +52,16 @@ public class Sequencer : MonoBehaviour
             notNextCardCover = levelCards[i].notNextCover;
 
             if (i == recievedValue - 1)
-            {
-                        // This is the next card
+            {  // This is the next card
                 levelCards[i].nextInSequence = true;
-                /*cardBackground.color = new Color(
-                    cardBackground.color.r,
-                    cardBackground.color.g,
-                    cardBackground.color.b,
-                    1f);*/
                 notNextCardCover.gameObject.SetActive(false);
             }
             else
-            {
-                        // Not the next card
+            {   // Not the next card
                 levelCards[i].nextInSequence = false;
 
-                if (!levelCards[i].available)
+                if (levelCards[i].available)
                 {
-                        // USED => keep alpha = 1
-                    cardBackground.color = new Color(
-                        cardBackground.color.r,
-                        cardBackground.color.g,
-                        cardBackground.color.b,
-                        1f);
-                }
-                else
-                {
-                        // NOT used, NOT next => alpha = 0.5
-                    /*cardBackground.color = new Color(
-                        cardBackground.color.r,
-                        cardBackground.color.g,
-                        cardBackground.color.b,
-                        0.5f);*/
                     notNextCardCover.gameObject.SetActive(true);
                 }
             }
@@ -113,46 +77,46 @@ public class Sequencer : MonoBehaviour
             lastDirection = direction;
             gridManager.AIActions.canMove = isBefore;
             gridManager.AIActions.isBefore = isBefore;
+            gridManager.AIActions.isIAActive = true;
         }
     }
+    //hdalksjdh
 
-    public void HandleAIStateChanged(bool isMoving)
+    public void HandleStateChange(bool isMoving)
     {
         if (isMoving)
         {
-            DisableAll();
+            LockAll();
         }
         else
         {
             EnableNextCard();
+            EnableCard();
         }
+        state = isMoving;
     }
-
-    private void DisableAll()
+    private void EnableCard()
     {
         foreach (var card in levelCards)
         {
-            card.Disable();
-
-            cardBackground = card.gameObject.GetComponentInChildren<Image>();
-            if (!card.available)
+            if (card.available || card.isUsed == false)
             {
-                // If it's used => alpha = 1
-                cardBackground.color = new Color(
-                    cardBackground.color.r,
-                    cardBackground.color.g,
-                    cardBackground.color.b,
-                    1f);
+                card.Enable();
             }
-            else
+        }
+        NextCard(lastNumber.value);
+    }
+    private void LockAll()
+    {
+        foreach (var card in levelCards)
+        {
+            if (card.isUsed == false)
             {
-                // If it's not used => alpha = 0.5
-                cardBackground.color = new Color(
-                    cardBackground.color.r,
-                    cardBackground.color.g,
-                    cardBackground.color.b,
-                    0.5f);
+                cardBackground = card.gameObject.GetComponentInChildren<Image>();
+                notNextCardCover = card.notNextCover;
+                notNextCardCover.gameObject.SetActive(true);
             }
+            card.Lockdown();
         }
     }
 
@@ -160,7 +124,9 @@ public class Sequencer : MonoBehaviour
     {
         foreach (var card in levelCards)
         {
-            if (card.nextInSequence && card != lastCard)
+            if (card.nextInSequence && 
+                card != lastCard && 
+                card.isUsed != true)
             {
                 card.Enable();
             }
@@ -175,7 +141,6 @@ public class Sequencer : MonoBehaviour
         {
             gridManager.AIActions.direction = lastDirection;
             gridManager.AIActions.canMove = true;
-            gridManager.AIActions.isBefore = false;
         }
     }
 
@@ -196,7 +161,7 @@ public class Sequencer : MonoBehaviour
                     else
                         levelCards[i].ExecuteAction(recievedNumber);
 
-                    levelCards[i].DisableUsed(recievedNumber);
+                    levelCards[i].Disable(recievedNumber);
                     NextCard(recievedNumber.value);
                     break;
                 }
@@ -209,14 +174,14 @@ public class Sequencer : MonoBehaviour
                         else
                             levelCards[i].ExecuteAction(recievedNumber);
 
-                        levelCards[i].DisableUsed(recievedNumber);
+                        levelCards[i].Disable(recievedNumber);
                         NextCard(recievedNumber.value);
                         break;
                     }
                     else
                     {
                         // If isAIBefore == true
-                        levelCards[i].DisableUsed(recievedNumber);
+                        levelCards[i].Disable(recievedNumber);
                         NextCard(recievedNumber.value);
                         break;
                     }

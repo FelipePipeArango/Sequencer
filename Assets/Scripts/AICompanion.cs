@@ -1,9 +1,5 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using static GameActions;
 using static GameTiles;
 using static GameDirections;
@@ -14,6 +10,7 @@ public class AICompanion : UnitController
     [HideInInspector] public Directions direction;
     [HideInInspector] public AIActions action = AIActions.Stay;
     [HideInInspector] public bool isBefore = false;
+    [HideInInspector] public bool isIAActive = false;
     [HideInInspector] public bool canMove = false;
     [HideInInspector] public bool isMoving = false;
 
@@ -36,6 +33,10 @@ public class AICompanion : UnitController
             if (direction == Directions.Right) StartCoroutine(Movement(Vector2Int.right));
 
             if (direction == Directions.Left) StartCoroutine(Movement(Vector2Int.left));
+        }
+        if(isIAActive == true && !canMove) 
+        {
+            Sequencer.sequencer.HandleStateChange(canMove);
         }
         IfFall();
     }
@@ -68,11 +69,12 @@ public class AICompanion : UnitController
             Sequencer.sequencer.PlayerAfterAction();
 
         canMove = false;
+        isIAActive = false;
 
         if(OnMove != null)
             OnMove(canMove);
     }
-
+    
     public void PushCompanion(Vector2Int direction)
     {
         MoveTo(direction, TileTypes.PawnTile);
