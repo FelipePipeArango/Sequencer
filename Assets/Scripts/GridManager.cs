@@ -1,9 +1,6 @@
-
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Color = UnityEngine.Color;
 using static GameTiles;
-using System.Collections;
 
 public class GridManager : MonoBehaviour
 {
@@ -11,8 +8,9 @@ public class GridManager : MonoBehaviour
 
     [Header("BOARD")]
     [SerializeField] Color highlightColor;
-    [SerializeField] Vector2Int size;
+    [SerializeField] public Vector2Int size;
 
+    [HideInInspector] public GameObject tileMap;
     private GameObject[] allTiles;
     public TileScript[,] grid;
     TileScript[] tiles;
@@ -24,10 +22,15 @@ public class GridManager : MonoBehaviour
 
     [Header("OPTIONAL OBJECTS IN A LEVEL")]
     public GameObject AICompanion;
-    public GameObject pickUpNumber;
+    public GameObject numberPickUp;
     public GameObject numberHUD; //Should at some point go to card manager
     [HideInInspector] public Player playerActions;
     [HideInInspector] public AICompanion AIActions;
+
+    [Header("OBJECT POINTERS")]
+    [SerializeField] float goalPointerHeight;
+    [SerializeField] float keyItemPointerHeight;
+    [SerializeField] float tileHeight;
 
 
     void Awake()
@@ -46,19 +49,57 @@ public class GridManager : MonoBehaviour
             AIActions = AICompanion.GetComponent<AICompanion>();  
         
         grid = new TileScript[size.x, size.y];
+        
+        tileMap = new GameObject();
+        tileMap.transform.position = new Vector3(size.x, 1, size.y);
+
         StoreGrid();
     }
 
     private void Start()
     {
         UpdateTileType(keyItem.transform.position, TileTypes.KeyTile);
-        if (pickUpNumber != null) 
+        if (numberPickUp != null) 
         { 
-            UpdateTileType(pickUpNumber.transform.position, TileTypes.ItemTile);
+            UpdateTileType(numberPickUp.transform.position, TileTypes.ItemTile);
         }
         UpdateTileType(goal.transform.position, TileTypes.GoalTile);
     }
 
+    public TileScript ClickedTile(float offsetZ)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            Vector3 hitPoint = hit.point;
+            Vector3 localPos = gridManager.tileMap.transform.InverseTransformPoint(hitPoint);
+            Vector2 gridCellSize = new Vector2(
+                gridManager.tileMap.transform.localScale.x,
+                gridManager.tileMap.transform.localScale.z
+                );
+            int x = Mathf.FloorToInt(localPos.x / gridCellSize.x + 0.5f);
+            int z = Mathf.FloorToInt(localPos.z / gridCellSize.y - offsetZ);
+
+            Vector2Int pos = new Vector2Int(
+                x + gridManager.size.x,
+                z + gridManager.size.y + 1
+                );
+            Debug.Log( pos.ToString() );
+            if (size.x > pos.x && pos.x >= 0
+                && size.y > pos.y && pos.y >= 0)
+            {
+                if (grid[pos.x, pos.y] != null)
+                    return grid[pos.x, pos.y];
+                else
+                    return null;
+            }
+            else
+                return null;
+        }
+        return null;
+    }
+    
     public int CalculateDistance(Vector3 position, Vector3 start)
     {
         Vector2Int currentPosition = new Vector2Int(
@@ -82,7 +123,7 @@ public class GridManager : MonoBehaviour
                 MoveDistanceHighLight(value, playerActions.transform.position);
                 break;
 
-            case GameActions.Actions.Pick_Up:
+            case GameActions.Actions.PickUp:
                 PickUpHighLight(value);
                 break;
 
@@ -90,11 +131,6 @@ public class GridManager : MonoBehaviour
                 ThrowHighLight(value);
                 break;
 
-        }
-
-        foreach (var tile in tiles)
-        {
-            if (tile.isHighLight) tile.SetColor(highlightColor);
         }
     }
    
@@ -105,7 +141,7 @@ public class GridManager : MonoBehaviour
             foreach (TileScript tile in tiles)
             {
                 tile.isHighLight = false;
-                if(tile.pointer.activeSelf)
+                 if (tile.pointer.activeSelf)
                     tile.pointer.SetActive(false);
                 tile.ResetColor();
             }
@@ -188,7 +224,7 @@ public class GridManager : MonoBehaviour
         CheckIfGround(amount, down);
     }
 
-    private void PickUpHighLight(int amount)
+    public void PickUpHighLight(int amount)
     {
         int distance;
         foreach (var tile in tiles)
@@ -198,12 +234,13 @@ public class GridManager : MonoBehaviour
                 playerActions.transform.position);
             if (distance == amount)
             {
-                tile.isHighLight = true;
-                if (tile.tileType == TileTypes.KeyTile || tile.tileType == TileTypes.ItemTile)
+                if (tile.tileType == TileTypes.KeyTile)
                 {
-                    tile.pointer.transform.position = new Vector3 (tile.pointer.transform.position.x, 2.1f, tile.pointer.transform.position.z);
-
-                    tile.pointer.gameObject.SetActive(true);
+                    HighlightTile(tile);
+                }
+                if (tile.tileType == TileTypes.ItemTile)
+                {
+                    HighlightTile(tile);                 
                 }
                 if (tile.tileType == TileTypes.EmptyTile)
                 {
@@ -212,8 +249,21 @@ public class GridManager : MonoBehaviour
             }
         }
     }
+    private void HighlightTile(TileScript tile)
+    {
+        tile.pointer.transform.position = new Vector3(
+                        tile.pointer.transform.position.x,
+                        keyItemPointerHeight,
+                        tile.pointer.transform.position.z);
 
-    private void ThrowHighLight(int amount)
+        tile.pointer.gameObject.SetActive(true);
+
+        tile.isHighLight = true;
+
+        tile.SetColor(highlightColor);
+    }
+
+    public void ThrowHighLight(int amount)
     {
         int distance;
         foreach (var tile in tiles)
@@ -223,16 +273,13 @@ public class GridManager : MonoBehaviour
                 playerActions.transform.position);
             if (distance == amount)
             {
-                tile.isHighLight = true;
                 if (tile.tileType == TileTypes.EmptyTile)
                 {
-                    tile.pointer.transform.position = new Vector3(tile.pointer.transform.position.x, 0, tile.pointer.transform.position.z);
-                    tile.pointer.gameObject.SetActive(true);
+                    HighlightTile(tile);
                 }
                 else if (tile.tileType == TileTypes.GoalTile)
                 {
-                    tile.pointer.transform.position = new Vector3(tile.pointer.transform.position.x, 2.7f, tile.pointer.transform.position.z);
-                    tile.pointer.gameObject.SetActive(true);
+                    HighlightTile(tile);
                 }
             }
         }
@@ -262,5 +309,4 @@ public class GridManager : MonoBehaviour
             }
         }
     }
-
 }
