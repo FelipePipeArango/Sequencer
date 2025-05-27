@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class LevelGroupNode : MonoBehaviour
 {
     [FormerlySerializedAs("levelName")] [Header("Data")]
-    public string levelGroupName;
+    string levelGroupName;
     [Header("Corresponds to the position of this group (1st, 2nd,etc)")]
     public int levelGroupNumber;
 
@@ -32,14 +32,15 @@ public class LevelGroupNode : MonoBehaviour
     public Image levelThumbnail;
     public Button levelButton;
     public GameObject lockOverlay; // lock visual — a translucent panel on top
-    
+
     void Start()
     {
+        levelGroupName = this.name;
         InitializeUI();
-        UnlockNextLevels();
+        UnlockInternalLevels();
+        CheckGroupCompleted();
     }
-
-    void UnlockNextLevels()
+    void CheckGroupCompleted() //This has yet to be tested
     {
         for (int i = 0; i < subLevelNodes.Length; i++)
         {
@@ -56,10 +57,13 @@ public class LevelGroupNode : MonoBehaviour
     
     void InitializeUI()
     {
+        int i = 0;
         subLevelNodes = containedLevels.GetComponentsInChildren<LevelNode>();
         foreach (var level in subLevelNodes)
         {
             level.parentGroup = this;
+            level.levelName = this.name + ": file_" + i;
+            i++;
         }
         levelTitleText.text = levelGroupName;
         levelButton.interactable = isUnlocked;
@@ -70,20 +74,16 @@ public class LevelGroupNode : MonoBehaviour
         // levelButton.onClick.AddListener(OnLevelSelect);
     }
 
-    // void OnLevelSelect()
-    // {
-    //     if (!isUnlocked) return;
-    //
-    //     isCleared = true;
-    //     Debug.Log($"{levelGroupName} cleared!");
-    //
-    //     // Unlock next nodes
-    //     foreach (LevelNode node in nextNodes)
-    //     {
-    //         node.Unlock();
-    //     }
-    // }
-    
+    public void UnlockInternalLevels()
+    {
+        //if the previous sublevel is complete, unlock the next
+        for (int i = 0; i < subLevelNodes.Length; i++)
+        {
+            if(subLevelNodes[i].isCleared) 
+            { subLevelNodes[i + 1].isUnlocked = true;}
+        }
+    }
+
     public void Unlock()
     {
         if (!isUnlocked)
@@ -98,7 +98,24 @@ public class LevelGroupNode : MonoBehaviour
     {
         LevelSelectManager.Instance.currentLevelGroup = levelGroupNumber - 1;
     }
-    
+
+    public void OpenSubGroup() //Called by a button
+    {
+        containedLevels.transform.SetParent(transform.root);
+
+        RectTransform rectTransform = containedLevels.GetComponent<RectTransform>();
+
+        // Set anchor to middle
+        rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+        rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+
+        // Reset position and pivot
+        rectTransform.anchoredPosition = Vector2.zero;
+        rectTransform.pivot = new Vector2(0.5f, 0.5f);
+
+        containedLevels.SetActive(true);
+    }
+
     public void CheckIfGroupCleared()
     {
         foreach (var level in subLevelNodes)

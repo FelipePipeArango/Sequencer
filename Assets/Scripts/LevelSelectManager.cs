@@ -69,13 +69,6 @@ public class LevelSelectManager : MonoBehaviour
             }
         }
     }
-    
-    public void OpenSubGroup(GameObject subLevelMenu)
-    {
-        //mainLevelMenu.SetActive(false);
-        subLevelMenu.SetActive(true);
-        //currentLevelMenu = subLevelMenu;
-    }
 
     public void ReturnToMainMenu()
     {

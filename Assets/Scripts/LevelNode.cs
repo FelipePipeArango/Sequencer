@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class LevelNode : MonoBehaviour
 {
     [Header("Data")]
-    public string levelName;
+    [HideInInspector] public string levelName;
     // public int difficulty; // use to select an image or color later
     // public Sprite thumbnailSprite;
     // public Sprite difficultySprite;
@@ -41,12 +41,13 @@ public class LevelNode : MonoBehaviour
         // Commented for testing. Needs to be uncommented once we have the images
         // difficultyImage.sprite = difficultySprite; 
         // levelThumbnail.sprite = thumbnailSprite; 
-        levelButton.onClick.AddListener(OnLevelSelect);
+        //levelButton.onClick.AddListener(OnLevelSelect);
         
     }
 
-    void OnLevelSelect()
+    public void OnLevelSelect()
     {
+        Debug.Log("oe");
         if (!isUnlocked) return;
 
         isCleared = true;
@@ -56,7 +57,7 @@ public class LevelNode : MonoBehaviour
         {
             foreach (LevelNode node in nextNodes)
             {
-                node.Unlock();
+                //node.Unlock();
             }
         }
         
