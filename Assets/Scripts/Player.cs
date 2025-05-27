@@ -36,12 +36,18 @@ public class Player : UnitController
         PerformInput();
         IfFall();
     }
-
+    private void SetStateChange(bool state)
+    {
+        if (state != Sequencer.sequencer.state)
+            Sequencer.sequencer.HandleStateChange(state);
+        else
+            return;
+    }
     private void ClickToPickUp()
     {
         if (IsSomethingWithinPickUpRadiusOfPlayer(pickUpNumber))
         {
-            Sequencer.sequencer.HandleStateChange(true);
+            SetStateChange(true);
             gridManager.PickUpHighLight(pickUpNumber);
             if (Input.GetMouseButtonDown(0))
             {
@@ -56,14 +62,14 @@ public class Player : UnitController
         {
             Debug.Log("Nothing to pick up");
             canPickUp = false;
-            Sequencer.sequencer.HandleStateChange(false);
+            SetStateChange(false);
         }
     }
     private void ClickToThrow()
     {
         if (hasItem)
         {
-            Sequencer.sequencer.HandleStateChange(true);
+            SetStateChange(true);
             gridManager.ThrowHighLight(throwNumber);
             if (Input.GetMouseButtonDown(0))
             {
@@ -78,7 +84,7 @@ public class Player : UnitController
         {
             Debug.Log("Nothing to throw");
             canThrow = false;
-            Sequencer.sequencer.HandleStateChange(false);
+            SetStateChange(false);
         }
     }
     private void ClickToMove()
@@ -151,13 +157,12 @@ public class Player : UnitController
             ClickToThrow();
             return;
         }
-
-        if (canPickUp)
+        else if (canPickUp)
         {
             ClickToPickUp();
             return;
         }
-        if (canMove)
+        else if (canMove)
         {
             ClickToMove();
             WASDToMove();
@@ -188,14 +193,12 @@ public class Player : UnitController
     public void ThrowReceiver(int receivedNumber)
     {
         canThrow = true;
-        throwNumber = receivedNumber;
-        
+        throwNumber = receivedNumber; 
     }
     public void PickUpReceiver(int receivedNumber)
     {
         pickUpNumber = receivedNumber;
         canPickUp = true;
-        //Sequencer.sequencer.HandleStateChange(true);
     }
 
     protected override IEnumerator Movement(Vector2Int direction)
@@ -269,7 +272,7 @@ public class Player : UnitController
                 Debug.Log("Click");
                 ThrowKey(tile);
                 canThrow = false;
-                Sequencer.sequencer.HandleStateChange(false);
+                SetStateChange(false);
                 AICanMoveNow();
             }
         }
@@ -285,7 +288,7 @@ public class Player : UnitController
             KeyItemCheck();
             gridManager.ResetTileType(TileTypes.KeyTile);
             canPickUp = false;
-            Sequencer.sequencer.HandleStateChange(false);
+            SetStateChange(false);
             AICanMoveNow();
         }
         else if (tile.tileType == TileTypes.ItemTile)
@@ -293,7 +296,7 @@ public class Player : UnitController
             NumberItemCheck();
             gridManager.ResetTileType(TileTypes.ItemTile);
             canPickUp = false;
-            Sequencer.sequencer.HandleStateChange(false);
+            SetStateChange(false);
             AICanMoveNow();
         }
         else

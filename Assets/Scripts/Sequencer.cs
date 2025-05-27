@@ -22,6 +22,7 @@ public class Sequencer : MonoBehaviour
     [SerializeField] GameObject cardsInLevel;
 
     public CardTrigger lastCard { get; private set; }
+    public bool state { get; private set; }
     public NumberItem lastNumber { get; private set; }
     public Directions lastDirection { get; set; }
 
@@ -85,6 +86,7 @@ public class Sequencer : MonoBehaviour
         }
     }
     //hdalksjdh
+
     public void HandleStateChange(bool isMoving)
     {
         if (isMoving)
@@ -96,6 +98,7 @@ public class Sequencer : MonoBehaviour
             EnableNextCard();
             EnableCard();
         }
+        state = isMoving;
     }
     private void EnableCard()
     {
