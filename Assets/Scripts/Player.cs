@@ -41,6 +41,7 @@ public class Player : UnitController
     {
         if (IsSomethingWithinPickUpRadiusOfPlayer(pickUpNumber))
         {
+            Sequencer.sequencer.HandleStateChange(true);
             gridManager.PickUpHighLight(pickUpNumber);
             if (Input.GetMouseButtonDown(0))
             {
@@ -62,6 +63,7 @@ public class Player : UnitController
     {
         if (hasItem)
         {
+            Sequencer.sequencer.HandleStateChange(true);
             gridManager.ThrowHighLight(throwNumber);
             if (Input.GetMouseButtonDown(0))
             {
@@ -187,13 +189,13 @@ public class Player : UnitController
     {
         canThrow = true;
         throwNumber = receivedNumber;
-        Sequencer.sequencer.HandleStateChange(true);
+        
     }
     public void PickUpReceiver(int receivedNumber)
     {
         pickUpNumber = receivedNumber;
         canPickUp = true;
-        Sequencer.sequencer.HandleStateChange(true);
+        //Sequencer.sequencer.HandleStateChange(true);
     }
 
     protected override IEnumerator Movement(Vector2Int direction)
@@ -254,25 +256,23 @@ public class Player : UnitController
     }
     private void ThrowTo(TileScript tile)
     {
-        
-            if (throwNumber == gridManager.CalculateDistance(
-                   tile.transform.position, transform.position))
+        if (throwNumber == gridManager.CalculateDistance(
+               tile.transform.position, transform.position))
+        {
+            if (tile.tileType == TileTypes.GoalTile)
             {
-                if (tile.tileType == TileTypes.GoalTile)
-                {
-                    canThrow = false;
-                    PlayerManager.playerManagerInstance.PlayerWon();
-                }
-                else if (tile.tileType == TileTypes.EmptyTile)
-                {
-                    Debug.Log("Click");
-                    ThrowKey(tile);
-                    canThrow = false;
-                    AICanMoveNow();
-                }
+                canThrow = false;
+                PlayerManager.playerManagerInstance.PlayerWon();
             }
-        
-       
+            else if (tile.tileType == TileTypes.EmptyTile)
+            {
+                Debug.Log("Click");
+                ThrowKey(tile);
+                canThrow = false;
+                Sequencer.sequencer.HandleStateChange(false);
+                AICanMoveNow();
+            }
+        }
     }
 
 
@@ -285,7 +285,7 @@ public class Player : UnitController
             KeyItemCheck();
             gridManager.ResetTileType(TileTypes.KeyTile);
             canPickUp = false;
-            
+            Sequencer.sequencer.HandleStateChange(false);
             AICanMoveNow();
         }
         else if (tile.tileType == TileTypes.ItemTile)

@@ -298,7 +298,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             }
 
             //Explain
-            StartDissolve();
+            //StartDissolve();
         }
     }
 
