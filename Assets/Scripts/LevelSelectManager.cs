@@ -54,6 +54,12 @@ public class LevelSelectManager : MonoBehaviour
             } 
         }*/
         LevelGroups[currentLevelGroup].completedLevels = levelGroupTracker[currentLevelGroup]; //and it updates the corresponding one
+
+        if(LevelGroups[currentLevelGroup].completedLevels == LevelGroups[currentLevelGroup].subLevelNodes.Length) //if the value of completed levels = to the value of levels inside a group
+        {
+            //then that group is complete
+            LevelGroups[currentLevelGroup].isCleared = true;
+        }
     }
 
     void LevelCompleted (gameStates completed)
@@ -65,10 +71,8 @@ public class LevelSelectManager : MonoBehaviour
                 if (i == currentLevelGroup) //and in its correspondent group
                 {
                     levelGroupTracker[i] += 1; //the value of completed levels increases
-                } 
+                }
             }
         }
-        //if the value of completed levels = to the value of levels inside a group
-        //then that group is complete
     }
 }

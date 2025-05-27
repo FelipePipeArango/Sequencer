@@ -74,7 +74,7 @@ public class LevelGroupNode : MonoBehaviour
         // levelButton.onClick.AddListener(OnLevelSelect);
     }
 
-    public void UnlockInternalLevels()
+    public void UnlockInternalLevels() //erase once it is connected to actual levels
     {
         //if the previous sublevel is complete, unlock the next
         for (int i = 0; i < subLevelNodes.Length; i++) //this check every level
@@ -90,7 +90,7 @@ public class LevelGroupNode : MonoBehaviour
         }
     }
 
-    public void Unlock (LevelNode level)
+    public void Unlock (LevelNode level) // erase once it is connected to actual levels
     {
         level.isUnlocked = true;
         level.levelButton.interactable = true;
