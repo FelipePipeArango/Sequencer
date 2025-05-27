@@ -91,7 +91,7 @@ public class Sequencer : MonoBehaviour
     {
         if (isMoving)
         {
-            DisableAll();
+            LockAll();
         }
         else
         {
@@ -111,31 +111,17 @@ public class Sequencer : MonoBehaviour
         }
         NextCard(lastNumber.value);
     }
-    private void DisableAll()
+    private void LockAll()
     {
         foreach (var card in levelCards)
         {
-            card.Disable();
-
-            cardBackground = card.gameObject.GetComponentInChildren<Image>();
-            if (!card.available)
+            if (card.isUsed == false)
             {
-                // If it's used => alpha = 1
-                cardBackground.color = new Color(
-                    cardBackground.color.r,
-                    cardBackground.color.g,
-                    cardBackground.color.b,
-                    1f);
+                cardBackground = card.gameObject.GetComponentInChildren<Image>();
+                notNextCardCover = card.notNextCover;
+                notNextCardCover.gameObject.SetActive(true);
             }
-            else
-            {
-                // If it's not used => alpha = 0.5
-                cardBackground.color = new Color(
-                    cardBackground.color.r,
-                    cardBackground.color.g,
-                    cardBackground.color.b,
-                    0.5f);
-            }
+            card.Lockdown();
         }
     }
 
@@ -180,7 +166,7 @@ public class Sequencer : MonoBehaviour
                     else
                         levelCards[i].ExecuteAction(recievedNumber);
 
-                    levelCards[i].DisableUsed(recievedNumber);
+                    levelCards[i].Disable(recievedNumber);
                     NextCard(recievedNumber.value);
                     break;
                 }
@@ -193,14 +179,14 @@ public class Sequencer : MonoBehaviour
                         else
                             levelCards[i].ExecuteAction(recievedNumber);
 
-                        levelCards[i].DisableUsed(recievedNumber);
+                        levelCards[i].Disable(recievedNumber);
                         NextCard(recievedNumber.value);
                         break;
                     }
                     else
                     {
                         // If isAIBefore == true
-                        levelCards[i].DisableUsed(recievedNumber);
+                        levelCards[i].Disable(recievedNumber);
                         NextCard(recievedNumber.value);
                         break;
                     }

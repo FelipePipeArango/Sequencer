@@ -274,7 +274,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     }
 
 
-    public void DisableUsed(NumberItem number)
+    public void Disable(NumberItem number)
     {
         if (available)
         {
@@ -297,25 +297,16 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
                 usedBackground.transform.SetAsFirstSibling();
             }
 
-            //Explain
-            //StartDissolve();
+            StartDissolve();
         }
     }
 
-    public void Disable()
+    public void Lockdown()
     {
         if (usedText != null) usedText.gameObject.SetActive(true);
         if (slotImage != null) slotImage.gameObject.SetActive(false);
 
         available = false;
-        if (usedBackground != null)
-        {
-            usedBackground.enabled = true;
-            Color bgColor = usedBackground.color;
-            usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, 1f);
-            usedBackground.transform.SetAsFirstSibling();
-        }
-        StartDissolve();
     }
 
     public void SetSlotNumber(int number)

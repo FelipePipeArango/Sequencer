@@ -276,6 +276,10 @@ public class Player : UnitController
                 AICanMoveNow();
             }
         }
+        else
+        {
+            Debug.Log("too close to throw");
+        }
     }
 
 
