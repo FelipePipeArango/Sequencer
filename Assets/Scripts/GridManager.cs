@@ -1,10 +1,6 @@
-
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Color = UnityEngine.Color;
 using static GameTiles;
-using System.Collections;
-using static UnityEditor.PlayerSettings;
 
 public class GridManager : MonoBehaviour
 {

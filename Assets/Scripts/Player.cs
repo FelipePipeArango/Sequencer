@@ -3,10 +3,6 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 using static GameTiles;
 using static GridManager;
-using System.Net.Security;
-using static UnityEditor.PlayerSettings;
-using Unity.VisualScripting;
-using UnityEditorInternal.Profiling.Memory.Experimental;
 
 
 public class Player : UnitController

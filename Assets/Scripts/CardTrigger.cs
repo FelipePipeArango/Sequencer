@@ -79,8 +79,12 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         {
             if (usedBackground != null)
             {
+                usedBackground.enabled = true;
+                Color bgColor = usedBackground.color;
+                usedBackground.color = new Color(bgColor.r, bgColor.g, bgColor.b, 1f);
                 usedBackground.transform.SetAsFirstSibling();
             }
+                StartDissolve();
         }
     }
 
