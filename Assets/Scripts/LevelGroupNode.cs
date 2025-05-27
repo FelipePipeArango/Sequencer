@@ -77,10 +77,16 @@ public class LevelGroupNode : MonoBehaviour
     public void UnlockInternalLevels()
     {
         //if the previous sublevel is complete, unlock the next
-        for (int i = 0; i < subLevelNodes.Length; i++)
+        for (int i = 0; i < subLevelNodes.Length; i++) //this check every level
         {
-            if(subLevelNodes[i].isCleared) 
-            { Unlock(subLevelNodes[i + 1]); Debug.Log("eo"); }
+            if (i == subLevelNodes.Length - 1) // except the last in the array
+            {
+                isCleared = true; //in which case this group is clear
+                return;
+            }
+
+            if(subLevelNodes[i].isCleared ) //since the last does not have a next level to unlock
+            { Unlock(subLevelNodes[i + 1]);}
         }
     }
 
@@ -91,9 +97,9 @@ public class LevelGroupNode : MonoBehaviour
         level.lockOverlay.SetActive(false);
     }
 
-    public void SetCurrentLevelGroup()
+    public void SetCurrentLevelGroup() //Since the player can click and change the level group, this is intended to set it
     {
-        LevelSelectManager.Instance.currentLevelGroup = levelGroupNumber - 1;
+        LevelSelectManager.Instance.currentLevelGroup = levelGroupNumber - 1; //This changes the currentGroup being tracked
     }
 
     public void OpenSubGroup() //Called by a button
