@@ -640,9 +640,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LevelSelectManager, Assembly-CSharp
-        m_MethodName: ReturnToMainMenu
+      - m_Target: {fileID: 3725464102602083085}
+        m_TargetAssemblyTypeName: LevelGroupNode, Assembly-CSharp
+        m_MethodName: GoBack
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1625,6 +1625,34 @@ PrefabInstance:
     - target: {fileID: 4746155959562907557, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5254044494172843604, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5254044494172843604, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5254044494172843604, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 3725464102602083085}
+    - target: {fileID: 5254044494172843604, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5254044494172843604, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: UnlockInternalLevels
+      objectReference: {fileID: 0}
+    - target: {fileID: 5254044494172843604, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: LevelGroupNode, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5254044494172843604, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 7843411624973437439, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
       propertyPath: m_Name

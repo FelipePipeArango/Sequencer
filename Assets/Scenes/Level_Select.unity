@@ -338,7 +338,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3809002441074567609, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
       propertyPath: isUnlocked
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4746155959562907557, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
       propertyPath: m_Pivot.x
@@ -4947,7 +4947,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3809002441074567609, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
       propertyPath: isUnlocked
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4746155959562907557, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
       propertyPath: m_Pivot.x
@@ -6351,7 +6351,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3809002441074567609, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
       propertyPath: isUnlocked
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4746155959562907557, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
       propertyPath: m_Pivot.x
@@ -6526,6 +6526,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2088348409}
   m_CullTransparentMesh: 1
+--- !u!114 &2111312329 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3725464102602083085, guid: ab9fe14df0fff9746b756352d8905f37, type: 3}
+  m_PrefabInstance: {fileID: 1004032480870604960}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f94e8f54b1ad5d488c3ab05b991c56a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2141241045 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3725464102602083085, guid: ab9fe14df0fff9746b756352d8905f37, type: 3}
@@ -6608,7 +6619,11 @@ PrefabInstance:
     - target: {fileID: 3907986857862340157, guid: ab9fe14df0fff9746b756352d8905f37, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1594248142}
+      objectReference: {fileID: 2111312329}
+    - target: {fileID: 3907986857862340157, guid: ab9fe14df0fff9746b756352d8905f37, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: GoBack
+      objectReference: {fileID: 0}
     - target: {fileID: 4489446576869104905, guid: ab9fe14df0fff9746b756352d8905f37, type: 3}
       propertyPath: m_IsActive
       value: 1

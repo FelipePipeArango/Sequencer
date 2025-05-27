@@ -80,18 +80,15 @@ public class LevelGroupNode : MonoBehaviour
         for (int i = 0; i < subLevelNodes.Length; i++)
         {
             if(subLevelNodes[i].isCleared) 
-            { subLevelNodes[i + 1].isUnlocked = true;}
+            { Unlock(subLevelNodes[i + 1]); Debug.Log("eo"); }
         }
     }
 
-    public void Unlock()
+    public void Unlock (LevelNode level)
     {
-        if (!isUnlocked)
-        {
-            isUnlocked = true;
-            levelButton.interactable = true;
-            lockOverlay.SetActive(false);
-        }
+        level.isUnlocked = true;
+        level.levelButton.interactable = true;
+        level.lockOverlay.SetActive(false);
     }
 
     public void SetCurrentLevelGroup()
@@ -130,9 +127,14 @@ public class LevelGroupNode : MonoBehaviour
         {
             foreach (var nextGroup in nextNodes)
             {
-                nextGroup.Unlock();
+                //nextGroup.Unlock();
             }
         }
-        //LevelSelectManager.Instance.ReturnToMainMenu();
+    }
+
+    public void GoBack()
+    {
+        containedLevels.transform.SetParent(this.gameObject.transform);
+        containedLevels.SetActive(false);
     }
 }

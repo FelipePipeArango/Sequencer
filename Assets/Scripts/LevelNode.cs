@@ -47,13 +47,12 @@ public class LevelNode : MonoBehaviour
 
     public void OnLevelSelect()
     {
-        Debug.Log("oe");
         if (!isUnlocked) return;
 
         isCleared = true;
-
+        parentGroup.UnlockInternalLevels(); //this should be removed once it is connected to levels proper
         // Unlock next nodes
-        if(nextNodes.Count > 0)
+        /*if(nextNodes.Count > 0)
         {
             foreach (LevelNode node in nextNodes)
             {
@@ -64,7 +63,7 @@ public class LevelNode : MonoBehaviour
         if (parentGroup != null)
         {
             parentGroup.CheckIfGroupCleared();
-        }
+        }*/
     }
     
     public void Unlock()

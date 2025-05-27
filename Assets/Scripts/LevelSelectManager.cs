@@ -53,14 +53,14 @@ public class LevelSelectManager : MonoBehaviour
                 LevelGroups[i].completedLevels = levelGroupTracker[i]; //and it updates the corresponding one
             } 
         }*/
-        LevelGroups[currentLevelGroup].completedLevels = levelGroupTracker[currentLevelGroup];
+        LevelGroups[currentLevelGroup].completedLevels = levelGroupTracker[currentLevelGroup]; //and it updates the corresponding one
     }
 
     void LevelCompleted (gameStates completed)
     {
         if (completed == gameStates.Completed) //each time a level is completed
         {
-            for (int i = 0; i < levelGroupTracker.Length; i++) //it searches the tracker
+            for (int i = 0; i < levelGroupTracker.Length; i++) //it searches for all the levelGroups
             {
                 if (i == currentLevelGroup) //and in its correspondent group
                 {
@@ -68,14 +68,7 @@ public class LevelSelectManager : MonoBehaviour
                 } 
             }
         }
+        //if the value of completed levels = to the value of levels inside a group
+        //then that group is complete
     }
-
-    public void ReturnToMainMenu()
-    {
-        /*if (currentLevelMenu != null)
-            currentLevelMenu.SetActive(false);*/
-        mainLevelMenu.SetActive(true);
-        //currentLevelMenu = mainLevelMenu;
-    }
-
 }
