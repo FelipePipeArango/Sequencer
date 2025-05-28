@@ -8,9 +8,8 @@ public class LevelSelectManager : MonoBehaviour
     public static LevelSelectManager Instance;
    
     public GameObject mainLevelMenu;
-    private int[] levelGroupTracker;
+    public int[] levelGroupTracker;
     public LevelGroupNode[] LevelGroups;
-    public GameObject[] subLevelMenus;
 
     [HideInInspector] public int currentLevelGroup;
 
@@ -21,7 +20,6 @@ public class LevelSelectManager : MonoBehaviour
 
     private void OnDisable()
     {
-
         GameStateManager.stateEvent -= LevelCompleted;
     }
 
@@ -32,37 +30,29 @@ public class LevelSelectManager : MonoBehaviour
         {
             Instance = this;
         }
-    }
-    void Start()
-    {
         LevelGroups = mainLevelMenu.GetComponentsInChildren<LevelGroupNode>();
-
-        mainLevelMenu.SetActive(true);
-        /*foreach (var levelMenu in subLevelMenus)
-        {
-            levelMenu.SetActive(false);
-        }*/
+        //levelGroupTracker = new int[LevelGroups.Length];
     }
 
     public void FillValues() //back in the LevelSelection scene, each group asks for its progress
     {
-        /*for (int i = 0; i < LevelGroups.Length; i++)
-        {
-            if (currentLevelGroup == i)
-            {
-                LevelGroups[i].completedLevels = levelGroupTracker[i]; //and it updates the corresponding one
-            } 
-        }*/
         LevelGroups[currentLevelGroup].completedLevels = levelGroupTracker[currentLevelGroup]; //and it updates the corresponding one
 
-        if(LevelGroups[currentLevelGroup].completedLevels == LevelGroups[currentLevelGroup].subLevelNodes.Length) //if the value of completed levels = to the value of levels inside a group
+        if (LevelGroups[currentLevelGroup].CheckGroupCompleted()) //if the level group is clear
         {
-            //then that group is complete
-            LevelGroups[currentLevelGroup].isCleared = true;
+            UnlockNextGroups();
         }
     }
 
-    void LevelCompleted (gameStates completed)
+    void UnlockNextGroups()
+    {
+        foreach (var levelGroup in LevelGroups[currentLevelGroup].nextNodes) // each group that is next to the current one
+        {
+            levelGroup.isUnlocked = true; //unlock it
+        }
+    }
+
+    void LevelCompleted (gameStates completed) //This wonLt identy if the player repeats a level!
     {
         if (completed == gameStates.Completed) //each time a level is completed
         {

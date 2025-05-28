@@ -14,7 +14,7 @@ public class LevelNode : MonoBehaviour
     // public Sprite difficultySprite;
 
     [Header("State")]
-    public bool isUnlocked = false;
+    public bool isUnlocked;
     public bool isCleared = false;
     
     [Header("Next Nodes")]

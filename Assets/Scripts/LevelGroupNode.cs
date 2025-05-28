@@ -8,7 +8,7 @@ using UnityEngine.UI;
 [System.Serializable]
 public class LevelGroupNode : MonoBehaviour
 {
-    [FormerlySerializedAs("levelName")] [Header("Data")]
+    [FormerlySerializedAs("levelName")][Header("Data")]
     string levelGroupName;
     [Header("Corresponds to the position of this group (1st, 2nd,etc)")]
     public int levelGroupNumber;
@@ -21,9 +21,10 @@ public class LevelGroupNode : MonoBehaviour
 
     [Header("State")]
     public bool isUnlocked = false;
-    public bool isCleared = false;
+    public bool groupClear = false;
 
-    [Header("Nodes Lists")] public LevelNode[] subLevelNodes; 
+    [Header("Nodes Lists")]
+    [HideInInspector] public LevelNode[] subLevelNodes; 
     public List<LevelGroupNode> nextNodes;
     
     [Header("Visuals")]
@@ -33,26 +34,17 @@ public class LevelGroupNode : MonoBehaviour
     public Button levelButton;
     public GameObject lockOverlay; // lock visual — a translucent panel on top
 
+    private void Awake()
+    {
+        InitializeUI();
+    }
+
     void Start()
     {
+        LevelSelectManager.Instance.FillValues();
         levelGroupName = this.name;
-        InitializeUI();
         UnlockInternalLevels();
         CheckGroupCompleted();
-    }
-    void CheckGroupCompleted() //This has yet to be tested
-    {
-        for (int i = 0; i < subLevelNodes.Length; i++)
-        {
-            if (subLevelNodes[i].isCleared == false)
-            {
-                return;
-            }
-            else if (i == subLevelNodes.Length - 1)
-            {
-                Debug.Log("this sections is complete");
-            } 
-        }
     }
     
     void InitializeUI()
@@ -74,27 +66,36 @@ public class LevelGroupNode : MonoBehaviour
         // levelButton.onClick.AddListener(OnLevelSelect);
     }
 
-    public void UnlockInternalLevels() //erase once it is connected to actual levels
+    public void UnlockInternalLevels()
     {
-        //if the previous sublevel is complete, unlock the next
-        for (int i = 0; i < subLevelNodes.Length; i++) //this check every level
+        if (completedLevels == 0)
         {
-            if (i == subLevelNodes.Length - 1) // except the last in the array
+            Unlock(subLevelNodes[0]);
+        }
+        else
+        {
+            for (int i = 1; i <= completedLevels; i++)
             {
-                isCleared = true; //in which case this group is clear
-                return;
-            }
-
-            if(subLevelNodes[i].isCleared ) //since the last does not have a next level to unlock
-            { Unlock(subLevelNodes[i + 1]);}
+                Unlock(subLevelNodes[i - 1]);
+            } 
         }
     }
-
-    public void Unlock (LevelNode level) // erase once it is connected to actual levels
+    public void Unlock(LevelNode level)
     {
         level.isUnlocked = true;
         level.levelButton.interactable = true;
         level.lockOverlay.SetActive(false);
+    }
+
+    public bool CheckGroupCompleted()
+    {
+        foreach (var level in subLevelNodes)
+        {
+            if (!level.isCleared)
+                return false;
+        }
+        groupClear = true;
+        return true;
     }
 
     public void SetCurrentLevelGroup() //Since the player can click and change the level group, this is intended to set it
@@ -117,28 +118,16 @@ public class LevelGroupNode : MonoBehaviour
         rectTransform.pivot = new Vector2(0.5f, 0.5f);
 
         containedLevels.SetActive(true);
-    }
-
-    public void CheckIfGroupCleared()
-    {
-        foreach (var level in subLevelNodes)
+        if (levelGroupNumber != 0)
         {
-            if (!level.isCleared)
-                return;
+            SetCurrentLevelGroup();
         }
-
-        isCleared = true;
-
-        if (nextNodes.Count > 0)
+        else
         {
-            foreach (var nextGroup in nextNodes)
-            {
-                //nextGroup.Unlock();
-            }
+            Debug.LogWarning("This level has no number");
         }
     }
-
-    public void GoBack()
+    public void GoBack() //Called by a button
     {
         containedLevels.transform.SetParent(this.gameObject.transform);
         containedLevels.SetActive(false);
