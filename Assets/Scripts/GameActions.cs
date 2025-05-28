@@ -7,7 +7,7 @@ public class GameActions : ScriptableObject
     public enum Actions
     {
         Move,
-        PickUp, 
+        Pick_Up, 
         Throw, 
         Enable
     }

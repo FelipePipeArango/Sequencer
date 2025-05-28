@@ -1,18 +1,23 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
-using static GameActions;
 using static GameTiles;
 using static GridManager;
+
 
 public class Player : UnitController
 {
     [HideInInspector] public bool canMove = false;
+    [HideInInspector] public bool canThrow = false;
+    [HideInInspector] public bool canPickUp = false;
+
     [HideInInspector] public bool isAIBefore = false;
     [HideInInspector] public int push;
+    [HideInInspector] public int throwNumber;
+    [HideInInspector] public int pickUpNumber;
 
     //[SerializeField] Player_AnimController animController;
-   
+
     //public UIHandler uiHandler;
 
 
@@ -24,51 +29,172 @@ public class Player : UnitController
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q)) //Why is this on the player?
+        PerformInput();
+        IfFall();
+    }
+    private void SetStateChange(bool state)
+    {
+        if (state != Sequencer.sequencer.state)
+            Sequencer.sequencer.HandleStateChange(state);
+        else
+            return;
+    }
+    private void ClickToPickUp()
+    {
+        if (IsSomethingWithinPickUpRadiusOfPlayer(pickUpNumber))
+        {
+            SetStateChange(true);
+            gridManager.PickUpHighLight(pickUpNumber);
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (gridManager.ClickedTile(0.8f) != null)
+                {
+                    PickUpFrom(gridManager.ClickedTile(0.8f));
+                    gridManager.TurnOffHighlight();
+                }
+            }
+        }
+        else
+        {
+            Debug.Log("Nothing to pick up");
+            canPickUp = false;
+            SetStateChange(false);
+        }
+    }
+    private void ClickToThrow()
+    {
+        if (hasItem)
+        {
+            SetStateChange(true);
+            gridManager.ThrowHighLight(throwNumber);
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (gridManager.ClickedTile(0.6f) != null)
+                {
+                    ThrowTo(gridManager.ClickedTile(0.6f));
+                    gridManager.TurnOffHighlight();
+                }
+            }
+        }
+        else
+        {
+            Debug.Log("Nothing to throw");
+            canThrow = false;
+            SetStateChange(false);
+        }
+    }
+    private void ClickToMove()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (gridManager.ClickedTile(0.6f) != null)
+            {
+                if (moveNumber != 0)
+                {
+                    TileScript tile = gridManager.ClickedTile(0.6f);
+
+                    Vector3 pos = tile.transform.position;
+                    Vector3 playerPos = transform.position;
+
+                    if (pos.x == playerPos.x)
+                    {
+                        if (pos.z > playerPos.z) StartCoroutine(Movement(Vector2Int.up));
+                        else if (pos.z < playerPos.z) StartCoroutine(Movement(Vector2Int.down));
+                    }
+                    else if (pos.z == playerPos.z)
+                    {
+                        if (pos.x > playerPos.x) StartCoroutine(Movement(Vector2Int.right));
+                        else if (pos.x < playerPos.x) StartCoroutine(Movement(Vector2Int.left));
+                    }
+                }
+            }
+        }
+    }
+    private void WASD_Arrows()
+    {
+        if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
+        else if (Input.GetKeyDown(KeyCode.UpArrow)) StartCoroutine(Movement(Vector2Int.up));
+
+        if (Input.GetKeyDown(KeyCode.S)) StartCoroutine(Movement(Vector2Int.down));
+        else if (Input.GetKeyDown(KeyCode.DownArrow)) StartCoroutine(Movement(Vector2Int.down));
+
+        if (Input.GetKeyDown(KeyCode.D)) StartCoroutine(Movement(Vector2Int.right));
+        else if (Input.GetKeyDown(KeyCode.RightArrow)) StartCoroutine(Movement(Vector2Int.right));
+
+        if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(Movement(Vector2Int.left));
+        else if (Input.GetKeyDown(KeyCode.LeftArrow)) StartCoroutine(Movement(Vector2Int.left));
+    }
+    private void WASDToMove()
+    {
+        if (moveNumber > 0 && gridManager.AIActions == null)
+        {
+            WASD_Arrows();
+        }
+        else if (moveNumber > 0 && gridManager.AIActions != null
+            && gridManager.AIActions.canMove == false)
+        {
+            WASD_Arrows();
+        }
+    }
+    private void Reload()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
         {
             string currentScene = SceneManager.GetActiveScene().name;
             SceneManager.LoadScene(currentScene);
         }
-
-        PerformInput();
-
-        IfFall();
     }
 
-    void PerformInput()
+
+    private void PerformInput()
     {
-        if (number > 0 && gridManager.AIActions == null)
+        if (canThrow)
         {
-            if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
-            else if (Input.GetKeyDown(KeyCode.UpArrow)) StartCoroutine(Movement(Vector2Int.up));
-
-            if (Input.GetKeyDown(KeyCode.S)) StartCoroutine(Movement(Vector2Int.down));
-            else if (Input.GetKeyDown(KeyCode.DownArrow)) StartCoroutine(Movement(Vector2Int.down));
-
-            if (Input.GetKeyDown(KeyCode.D)) StartCoroutine(Movement(Vector2Int.right));
-            else if (Input.GetKeyDown(KeyCode.RightArrow)) StartCoroutine(Movement(Vector2Int.right));
-
-            if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(Movement(Vector2Int.left));
-            else if (Input.GetKeyDown(KeyCode.LeftArrow)) StartCoroutine(Movement(Vector2Int.left));
+            ClickToThrow();
+            return;
         }
-        else if (number > 0 && gridManager.AIActions != null
-            && gridManager.AIActions.canMove == false)
+        else if (canPickUp)
         {
-            if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
-            else if (Input.GetKeyDown(KeyCode.UpArrow)) StartCoroutine(Movement(Vector2Int.up));
-
-            if (Input.GetKeyDown(KeyCode.S)) StartCoroutine(Movement(Vector2Int.down));
-            else if (Input.GetKeyDown(KeyCode.DownArrow)) StartCoroutine(Movement(Vector2Int.down));
-
-            if (Input.GetKeyDown(KeyCode.D)) StartCoroutine(Movement(Vector2Int.right));
-            else if (Input.GetKeyDown(KeyCode.RightArrow)) StartCoroutine(Movement(Vector2Int.right));
-
-            if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(Movement(Vector2Int.left));
-            else if (Input.GetKeyDown(KeyCode.LeftArrow)) StartCoroutine(Movement(Vector2Int.left));
+            ClickToPickUp();
+            return;
         }
-        if (number == 0)
-            push = 1;
+        else if (canMove)
+        {
+            ClickToMove();
+            WASDToMove();
+            if (moveNumber == 0)
+                push = 1;
+        }
+        Reload();
+    }
 
+    private void AICanMoveNow()
+    {
+        if (gridManager.AIActions != null)
+            Sequencer.sequencer.AIAfterAction();
+    }
+
+    public void MovementReceiver(int receivedNumber)
+    {
+        moveNumber += receivedNumber;
+        canMove = true;
+
+        /*if (uiHandler != null)
+        {
+            uiHandler.UpdateMovementPointsText(number);
+        }*/
+        PlayerManager.playerManagerInstance.PlayerPreMove(moveNumber);
+        UIHandler.UIHandlerInstance.UpdateMovementPointsText(moveNumber);
+    }
+    public void ThrowReceiver(int receivedNumber)
+    {
+        canThrow = true;
+        throwNumber = receivedNumber; 
+    }
+    public void PickUpReceiver(int receivedNumber)
+    {
+        pickUpNumber = receivedNumber;
+        canPickUp = true;
     }
 
     protected override IEnumerator Movement(Vector2Int direction)
@@ -83,7 +209,8 @@ public class Player : UnitController
         if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.None)
         {
             transform.position += new Vector3(direction.x, 0, direction.y);
-            number = 0;
+            moveNumber = 0;
+            canMove = false;
             isBoardBelow = false;
 
             /*if (uiHandler != null)
@@ -95,7 +222,7 @@ public class Player : UnitController
             {
                 gridManager.AIActions.PushCompanion(direction);
                 MoveTo(direction, TileTypes.PlayerTile);
-                number--;
+                moveNumber--;
 
                 /*if (uiHandler != null)
                     uiHandler.UpdateMovementPointsText(number);*/
@@ -108,7 +235,7 @@ public class Player : UnitController
         else
         {
             MoveTo(direction, TileTypes.PlayerTile);
-            number--;
+            moveNumber--;
 
             /*if (uiHandler != null)
                 uiHandler.UpdateMovementPointsText(number);*/
@@ -117,69 +244,66 @@ public class Player : UnitController
 
             //animController.UpdateAnimations(false);
         }
-        PlayerManager.playerManagerInstance.PlayerMoved(number);
 
-        if (isAIBefore == false)
+        PlayerManager.playerManagerInstance.PlayerMoved(moveNumber);
+        AICanMoveNow();
+        if (moveNumber == 0)
         {
-            Sequencer.sequencer.AIAfterAction();
+            canMove = false;
+            push = 1;
         }
     }
-
-    public void MovementReceiver(int receivedNumber)
+    private void ThrowTo(TileScript tile)
     {
-        number += receivedNumber;
-
-        /*if (uiHandler != null)
+        if (throwNumber == gridManager.CalculateDistance(
+               tile.transform.position, transform.position))
         {
-            uiHandler.UpdateMovementPointsText(number);
-        }*/
-        PlayerManager.playerManagerInstance.PlayerPreMove(number);
-        UIHandler.UIHandlerInstance.UpdateMovementPointsText(number);
-    }
-
-    public void ThrowReceiver(int receivedNumber)
-    {
-        if (hasItem)
-        {
-            hasItem = false;
-            if (receivedNumber >= gridManager.CalculateDistance(
-                    gridManager.goal.transform.position, transform.position))
+            if (tile.tileType == TileTypes.GoalTile)
             {
+                canThrow = false;
                 PlayerManager.playerManagerInstance.PlayerWon();
             }
+            else if (tile.tileType == TileTypes.EmptyTile)
+            {
+                Debug.Log("Click");
+                ThrowKey(tile);
+                canThrow = false;
+                SetStateChange(false);
+                AICanMoveNow();
+            }
         }
-        if (isAIBefore == false)
+        else
         {
-            Sequencer.sequencer.AIAfterAction();
+            Debug.Log("too close to throw");
         }
     }
 
-    public void PickUpReceiver(int receivedNumber)
+
+    private void PickUpFrom(TileScript tile)
     {
-        if (receivedNumber == gridManager.CalculateDistance(
-                gridManager.keyItem.transform.position, transform.position))
+
+        if (tile.tileType == TileTypes.KeyTile)
         {
             PlayerManager.playerManagerInstance.PlayerPickedUp();
             KeyItemCheck();
             gridManager.ResetTileType(TileTypes.KeyTile);
+            canPickUp = false;
+            SetStateChange(false);
+            AICanMoveNow();
         }
-        if (gridManager.pickUpNumber != null)
+        else if (tile.tileType == TileTypes.ItemTile)
         {
-            if (receivedNumber == gridManager.CalculateDistance(
-                    gridManager.pickUpNumber.transform.position, transform.position))
-            {
-                if (gridManager.pickUpNumber != null ||
-                    gridManager.numberHUD != null)
-                {
-                    NumberItemCheck();
-                    gridManager.ResetTileType(TileTypes.ItemTile);
-                }
-            }
+            NumberItemCheck();
+            gridManager.ResetTileType(TileTypes.ItemTile);
+            canPickUp = false;
+            SetStateChange(false);
+            AICanMoveNow();
         }
-        if (isAIBefore == false)
+        else
         {
-            Sequencer.sequencer.AIAfterAction();
+            Debug.Log("Nothing to pick up");
         }
+
     }
 }
 
