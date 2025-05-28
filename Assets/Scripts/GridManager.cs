@@ -123,7 +123,7 @@ public class GridManager : MonoBehaviour
                 MoveDistanceHighLight(value, playerActions.transform.position);
                 break;
 
-            case GameActions.Actions.PickUp:
+            case GameActions.Actions.Pick_Up:
                 PickUpHighLight(value);
                 break;
 
@@ -253,7 +253,7 @@ public class GridManager : MonoBehaviour
     {
         tile.pointer.transform.position = new Vector3(
                         tile.pointer.transform.position.x,
-                        keyItemPointerHeight,
+                        2.4f,
                         tile.pointer.transform.position.z);
 
         tile.pointer.gameObject.SetActive(true);
