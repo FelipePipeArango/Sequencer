@@ -11,6 +11,7 @@ using static GameDirections;
 public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private TextMeshProUGUI usedText;
+    [SerializeField] private TextMeshProUGUI cardActionText;
     [SerializeField] private Image slotImage;
     [SerializeField] private Image cardBackground;
     [SerializeField] private Image usedBackground;
@@ -62,7 +63,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
     void Start()
     {
-
+        cardActionText.text = cardAction.ToString();
         if (slotText != null)
         {
             slotText.text = slot.ToString();
@@ -119,7 +120,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             if (hoveredNumberItem != null)
             {
                 if (cardAction == Actions.Move) gridManager.TurnOnHighlight(Actions.Move, hoveredNumberItem.value);
-                else if (cardAction == Actions.PickUp) gridManager.TurnOnHighlight(Actions.PickUp, hoveredNumberItem.value);
+                else if (cardAction == Actions.Pick_Up) gridManager.TurnOnHighlight(Actions.Pick_Up, hoveredNumberItem.value);
                 else if (cardAction == Actions.Throw) gridManager.TurnOnHighlight(Actions.Throw, hoveredNumberItem.value);
                 isInUse = true;
             }
@@ -229,7 +230,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     public void Initialize()
     {
         if (cardAction == Actions.Move) executeAction = ExecuteMoveAction;
-        else if (cardAction == Actions.PickUp) executeAction = ExecutePickUpAction;
+        else if (cardAction == Actions.Pick_Up) executeAction = ExecutePickUpAction;
         else if (cardAction == Actions.Throw) executeAction = ExecuteThrowAction;
         else executeAction = DefaultAction;
     }
