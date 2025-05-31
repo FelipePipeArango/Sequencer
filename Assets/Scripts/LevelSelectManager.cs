@@ -54,7 +54,7 @@ public class LevelSelectManager : MonoBehaviour
             levelGroupTracker = new int[LevelGroups.Length];
             if (unlockedGroups.Count <= 0)
             {
-                unlockedGroups.Add(LevelGroups[0].levelGroupNumber);
+                unlockedGroups.Add(LevelGroups[0].levelGroupNumber - 1);
             }
             FillValues();
         }
@@ -76,11 +76,6 @@ public class LevelSelectManager : MonoBehaviour
         {
             UnlockNextGroups(); //Also unlock the ones connected
         }
-
-        foreach (var group in unlockedGroups)
-        {
-            LevelGroups[group].UpdateLevelGroupUI();
-        }
     }
 
     void UnlockNextGroups()
@@ -88,7 +83,13 @@ public class LevelSelectManager : MonoBehaviour
         foreach (var levelGroup in LevelGroups[currentLevelGroup].nextNodes) // each group that is next to the current one
         {
             levelGroup.isUnlocked = true; //unlock it
+            Debug.Log(levelGroup.isUnlocked);
             unlockedGroups.Add(levelGroup.levelGroupNumber); //And add it to the list of unlocked groups
+        }
+
+        foreach (var group in unlockedGroups)
+        {
+            LevelGroups[group].UpdateLevelGroupUI();
         }
     }
 

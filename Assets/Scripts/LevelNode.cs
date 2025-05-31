@@ -17,9 +17,6 @@ public class LevelNode : MonoBehaviour
     public bool isUnlocked;
     public bool isCleared = false;
     
-    [Header("Next Nodes")]
-    public List<LevelNode> nextNodes;
-    
     [Header("Visuals")]
     public TextMeshProUGUI levelTitleText;
     public Image difficultyImage; 

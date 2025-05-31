@@ -51,7 +51,7 @@ public class LevelGroupNode : MonoBehaviour
 
     public void UpdateLevelGroupUI()
     {
-        Debug.Log(levelGroupNumber);
+        Debug.Log(isUnlocked);
         if (isUnlocked)
         {
             levelGroupName = this.name;

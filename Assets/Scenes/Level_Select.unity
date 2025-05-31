@@ -2148,6 +2148,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LevelGroups: []
+  unlockedGroups: 
   trackLevelCompletion: 0
   currentLevelGroup: 0
 --- !u!4 &1594248143
@@ -2737,10 +2738,6 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2111312329}
-    - target: {fileID: 3907986857862340157, guid: ab9fe14df0fff9746b756352d8905f37, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: GoBack
-      objectReference: {fileID: 0}
     - target: {fileID: 4489446576869104905, guid: ab9fe14df0fff9746b756352d8905f37, type: 3}
       propertyPath: m_IsActive
       value: 1
