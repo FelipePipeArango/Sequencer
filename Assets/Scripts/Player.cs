@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using UnityEngine.SceneManagement;
 using static GameTiles;
 using static GridManager;
 
@@ -15,11 +14,6 @@ public class Player : UnitController
     [HideInInspector] public int push;
     [HideInInspector] public int throwNumber;
     [HideInInspector] public int pickUpNumber;
-
-    //[SerializeField] Player_AnimController animController;
-
-    //public UIHandler uiHandler;
-
 
     private void Start()
     {
@@ -136,15 +130,6 @@ public class Player : UnitController
             WASD_Arrows();
         }
     }
-    private void Reload()
-    {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            string currentScene = SceneManager.GetActiveScene().name;
-            SceneManager.LoadScene(currentScene);
-        }
-    }
-
 
     private void PerformInput()
     {
@@ -165,7 +150,6 @@ public class Player : UnitController
             if (moveNumber == 0)
                 push = 1;
         }
-        Reload();
     }
 
     private void AICanMoveNow()
@@ -179,10 +163,6 @@ public class Player : UnitController
         moveNumber += receivedNumber;
         canMove = true;
 
-        /*if (uiHandler != null)
-        {
-            uiHandler.UpdateMovementPointsText(number);
-        }*/
         PlayerManager.playerManagerInstance.PlayerPreMove(moveNumber);
         UIHandler.UIHandlerInstance.UpdateMovementPointsText(moveNumber);
     }
@@ -199,8 +179,6 @@ public class Player : UnitController
 
     protected override IEnumerator Movement(Vector2Int direction)
     {
-        //animController.UpdateAnimations(true); 
-
         Vector3 checkPos = new Vector3(
             transform.position.x + direction.x,
             0,
@@ -213,8 +191,6 @@ public class Player : UnitController
             canMove = false;
             isBoardBelow = false;
 
-            /*if (uiHandler != null)
-                uiHandler.UpdateMovementPointsText(number);*/
         }
         else if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.PawnTile)
         {
@@ -224,11 +200,8 @@ public class Player : UnitController
                 MoveTo(direction, TileTypes.PlayerTile);
                 moveNumber--;
 
-                /*if (uiHandler != null)
-                    uiHandler.UpdateMovementPointsText(number);*/
-
                 yield return new WaitForSeconds(0.0f);
-                //animController.UpdateAnimations(false); 
+
                 push = 0;
             }
         }
@@ -237,12 +210,7 @@ public class Player : UnitController
             MoveTo(direction, TileTypes.PlayerTile);
             moveNumber--;
 
-            /*if (uiHandler != null)
-                uiHandler.UpdateMovementPointsText(number);*/
-
             yield return new WaitForSeconds(0.0f);
-
-            //animController.UpdateAnimations(false);
         }
 
         PlayerManager.playerManagerInstance.PlayerMoved(moveNumber);

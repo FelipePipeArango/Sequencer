@@ -1,17 +1,30 @@
 using Unity.VisualScripting;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
+using static GameStates;
 
 public class GameButtons : MonoBehaviour
 {
+    public string activeScene;
+
     enum availableBuilds
     {
         WebCredits,
         PcCredits
     }
-
     [SerializeField] availableBuilds targetBuild;
 
+    private void FixedUpdate()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Addressables.LoadSceneAsync(SceneHolder.sceneHolderInstance.GetCurrentScene());
+        }
+    }
     public void PlayGameButton()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
@@ -32,25 +45,18 @@ public class GameButtons : MonoBehaviour
             SceneManager.LoadScene(availableBuilds.WebCredits.ToString());
         }
     }
-    public void BackButton()
+    public void MainMenuButton()
     {
         SceneManager.LoadScene("MainMenu");
     }
    
     public void ContinueButton()
     {
-        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        int nextSceneIndex = currentSceneIndex + 1;
-
-        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
-        {
-            SceneManager.LoadScene(nextSceneIndex);
-        }
+        GameStateManager.gameStateManagerInstance.CommunicateStateChange(gameStates.Completed);
     }
     public void ResetButton()
     {
-        string currentScene = SceneManager.GetActiveScene().name;
-        SceneManager.LoadScene(currentScene); 
+        Addressables.LoadSceneAsync(SceneHolder.sceneHolderInstance.GetCurrentScene());
     }
 
     public void SettingsButton(GameObject settings)

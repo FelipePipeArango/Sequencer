@@ -14,7 +14,7 @@ public class LevelGroupNode : MonoBehaviour
     public int levelGroupNumber;
 
     public GameObject containedLevels;
-    [HideInInspector] public int completedLevels;
+    int completedLevels;
     // public int difficulty; // use to select an image or color later
     // public Sprite thumbnailSprite;
     // public Sprite difficultySprite;
@@ -34,26 +34,24 @@ public class LevelGroupNode : MonoBehaviour
     public Button levelButton;
     public GameObject lockOverlay; // lock visual — a translucent panel on top
 
-    private void Awake()
+    public void UpdateProgress(int amountLevelsCompleted)
     {
+        completedLevels = amountLevelsCompleted;
+        for (int i = 0; i < amountLevelsCompleted; i++)
+        {
+            subLevelNodes[i].isCleared = true;
+        }
         InitializeUI();
+        UnlockInternalLevels();
     }
 
-    void Start()
-    {
-        LevelSelectManager.Instance.FillValues();
-        levelGroupName = this.name;
-        UnlockInternalLevels();
-        CheckGroupCompleted();
-    }
-    
     void InitializeUI()
     {
-        int i = 0;
+        levelGroupName = this.name;
         subLevelNodes = containedLevels.GetComponentsInChildren<LevelNode>();
+        int i = 0;
         foreach (var level in subLevelNodes)
         {
-            level.parentGroup = this;
             level.levelName = this.name + ": file_" + i;
             i++;
         }
@@ -68,17 +66,16 @@ public class LevelGroupNode : MonoBehaviour
 
     public void UnlockInternalLevels()
     {
-        if (completedLevels == 0)
+        foreach (var level in subLevelNodes)
         {
-            Unlock(subLevelNodes[0]);
-        }
-        else
-        {
-            for (int i = 1; i <= completedLevels; i++)
+            if (completedLevels >= 0)
             {
-                Unlock(subLevelNodes[i - 1]);
-            } 
+                Unlock(level);
+                completedLevels--;
+            }
         }
+
+        CheckGroupCompleted();
     }
     public void Unlock(LevelNode level)
     {
@@ -100,7 +97,7 @@ public class LevelGroupNode : MonoBehaviour
 
     public void SetCurrentLevelGroup() //Since the player can click and change the level group, this is intended to set it
     {
-        LevelSelectManager.Instance.currentLevelGroup = levelGroupNumber - 1; //This changes the currentGroup being tracked
+        LevelSelectManager.levelSelectManagerInstance.currentLevelGroup = levelGroupNumber - 1; //This changes the currentGroup being tracked
     }
 
     public void OpenSubGroup() //Called by a button

@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 [System.Serializable]
@@ -26,8 +28,7 @@ public class LevelNode : MonoBehaviour
     public Image levelThumbnail;
     public Button levelButton;
     public GameObject lockOverlay; // lock visual — a translucent panel on top
-    
-    public LevelGroupNode parentGroup;
+
     void Start()
     {
         InitializeUI();
@@ -49,21 +50,9 @@ public class LevelNode : MonoBehaviour
     {
         if (!isUnlocked) return;
 
-        isCleared = true;
-        parentGroup.UnlockInternalLevels(); //this should be removed once it is connected to levels proper
-        // Unlock next nodes
-        /*if(nextNodes.Count > 0)
-        {
-            foreach (LevelNode node in nextNodes)
-            {
-                //node.Unlock();
-            }
-        }
-        
-        if (parentGroup != null)
-        {
-            parentGroup.CheckIfGroupCleared();
-        }*/
+        if (!isCleared) LevelSelectManager.levelSelectManagerInstance.trackLevelCompletion = true;
+
+        //scene loading is called by the button
     }
     
     public void Unlock()
