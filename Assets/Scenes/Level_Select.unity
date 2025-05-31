@@ -151,6 +151,10 @@ PrefabInstance:
       value: c75e79abfd009894da5a62de209bfcc8
       objectReference: {fileID: 0}
     - target: {fileID: 3809002441074567609, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
+      propertyPath: isCleared
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3809002441074567609, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
       propertyPath: levelName
       value: Test 1
       objectReference: {fileID: 0}
@@ -160,7 +164,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3809002441074567609, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
       propertyPath: isUnlocked
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4746155959562907557, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
       propertyPath: m_Pivot.x
@@ -756,7 +760,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2095601591476241449, guid: ab9fe14df0fff9746b756352d8905f37, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3725464102602083085, guid: ab9fe14df0fff9746b756352d8905f37, type: 3}
       propertyPath: isUnlocked
@@ -1052,7 +1056,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2095601591476241449, guid: ab9fe14df0fff9746b756352d8905f37, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3725464102602083085, guid: ab9fe14df0fff9746b756352d8905f37, type: 3}
       propertyPath: isUnlocked
@@ -1069,7 +1073,7 @@ PrefabInstance:
     - target: {fileID: 3725464102602083085, guid: ab9fe14df0fff9746b756352d8905f37, type: 3}
       propertyPath: lockOverlay
       value: 
-      objectReference: {fileID: 1118274336}
+      objectReference: {fileID: 0}
     - target: {fileID: 3725464102602083085, guid: ab9fe14df0fff9746b756352d8905f37, type: 3}
       propertyPath: levelGroupName
       value: Hard
@@ -1479,11 +1483,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1118205980}
   m_CullTransparentMesh: 1
---- !u!1 &1118274336 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 737015922099854290, guid: ab9fe14df0fff9746b756352d8905f37, type: 3}
-  m_PrefabInstance: {fileID: 952866253}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1136221229 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5906599803704930746, guid: ab9fe14df0fff9746b756352d8905f37, type: 3}
@@ -1895,7 +1894,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2095601591476241449, guid: ab9fe14df0fff9746b756352d8905f37, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3725464102602083085, guid: ab9fe14df0fff9746b756352d8905f37, type: 3}
       propertyPath: isUnlocked
@@ -2148,7 +2147,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4753a7587c2627243ae68537965028ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelGroupTracker: 0000000000000000000000000000000000000000
   LevelGroups: []
   trackLevelCompletion: 0
   currentLevelGroup: 0
@@ -2180,6 +2178,10 @@ PrefabInstance:
       value: 24ac3dd73e67fc34d8113176c2268444
       objectReference: {fileID: 0}
     - target: {fileID: 3809002441074567609, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
+      propertyPath: isCleared
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3809002441074567609, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
       propertyPath: levelName
       value: Test 1
       objectReference: {fileID: 0}
@@ -2189,7 +2191,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3809002441074567609, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
       propertyPath: isUnlocked
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4746155959562907557, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
       propertyPath: m_Pivot.x
@@ -2520,6 +2522,10 @@ PrefabInstance:
       value: 4f4a92bd5adade74ca4f503550859776
       objectReference: {fileID: 0}
     - target: {fileID: 3809002441074567609, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
+      propertyPath: isCleared
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3809002441074567609, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
       propertyPath: levelName
       value: Test 1
       objectReference: {fileID: 0}
@@ -2529,7 +2535,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3809002441074567609, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
       propertyPath: isUnlocked
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4746155959562907557, guid: 6c7b6f4b1c20d0f4a9fe93b27356b5d5, type: 3}
       propertyPath: m_Pivot.x
@@ -2666,6 +2672,10 @@ PrefabInstance:
     - target: {fileID: 1653652484226804709, guid: ab9fe14df0fff9746b756352d8905f37, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 366
+      objectReference: {fileID: 0}
+    - target: {fileID: 2095601591476241449, guid: ab9fe14df0fff9746b756352d8905f37, type: 3}
+      propertyPath: isCleared
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2095601591476241449, guid: ab9fe14df0fff9746b756352d8905f37, type: 3}
       propertyPath: m_Enabled

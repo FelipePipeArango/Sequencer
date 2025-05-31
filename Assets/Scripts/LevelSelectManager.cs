@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using static GameStates;
 
 public class LevelSelectManager : MonoBehaviour
@@ -9,8 +8,9 @@ public class LevelSelectManager : MonoBehaviour
     public static LevelSelectManager levelSelectManagerInstance;
    
     GameObject mainLevelMenu;
-    public int[] levelGroupTracker;
+    int[] levelGroupTracker;
     public LevelGroupNode[] LevelGroups;
+    public List<int> unlockedGroups = new List<int>();
 
     [HideInInspector] public bool trackLevelCompletion;
 
@@ -39,6 +39,9 @@ public class LevelSelectManager : MonoBehaviour
             levelSelectManagerInstance = this;
             DontDestroyOnLoad(gameObject);
         }
+    }
+    private void Start()
+    {
         GetReferences("Level_Selector"); //This will change once the main menu loads the LevelSelector
     }
 
@@ -48,21 +51,35 @@ public class LevelSelectManager : MonoBehaviour
         if (mainLevelMenu != null)
         {
             LevelGroups = mainLevelMenu.GetComponentsInChildren<LevelGroupNode>();
+            levelGroupTracker = new int[LevelGroups.Length];
+            if (unlockedGroups.Count <= 0)
+            {
+                unlockedGroups.Add(LevelGroups[0].levelGroupNumber);
+            }
             FillValues();
-            //levelGroupTracker = new int[LevelGroups.Length]; //ESTO ES CORRECTO, comentado para probar 
         }
     }
 
-    public void FillValues() //back in the LevelSelection scene, each group asks for its progress
+    public void FillValues() //back in the LevelSelection scene,
     {
-        foreach (var item in LevelGroups)
+        foreach (var group in unlockedGroups) //every unlocked group
         {
-            LevelGroups[currentLevelGroup].UpdateProgress(levelGroupTracker[currentLevelGroup]); //and it updates the corresponding one
-        } 
+            LevelGroups[group].RefillProgress(levelGroupTracker[group]); //has it's progress refilled
+        }
 
-        if (LevelGroups[currentLevelGroup].CheckGroupCompleted()) //if the level group is clear
+        CheckCompletedLevelGroups();
+    }
+
+    void CheckCompletedLevelGroups()
+    {
+        if (LevelGroups[currentLevelGroup].IsGroupCompleted()) //if the level group is clear
         {
-            UnlockNextGroups();
+            UnlockNextGroups(); //Also unlock the ones connected
+        }
+
+        foreach (var group in unlockedGroups)
+        {
+            LevelGroups[group].UpdateLevelGroupUI();
         }
     }
 
@@ -71,6 +88,7 @@ public class LevelSelectManager : MonoBehaviour
         foreach (var levelGroup in LevelGroups[currentLevelGroup].nextNodes) // each group that is next to the current one
         {
             levelGroup.isUnlocked = true; //unlock it
+            unlockedGroups.Add(levelGroup.levelGroupNumber); //And add it to the list of unlocked groups
         }
     }
 

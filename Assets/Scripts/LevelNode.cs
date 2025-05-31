@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 [System.Serializable]
@@ -27,7 +25,6 @@ public class LevelNode : MonoBehaviour
     public Image difficultyImage; 
     public Image levelThumbnail;
     public Button levelButton;
-    public GameObject lockOverlay; // lock visual — a translucent panel on top
 
     void Start()
     {
@@ -38,12 +35,10 @@ public class LevelNode : MonoBehaviour
     {
         levelTitleText.text = levelName;
         levelButton.interactable = isUnlocked;
-        lockOverlay.SetActive(!isUnlocked);
         // Commented for testing. Needs to be uncommented once we have the images
         // difficultyImage.sprite = difficultySprite; 
         // levelThumbnail.sprite = thumbnailSprite; 
         //levelButton.onClick.AddListener(OnLevelSelect);
-        
     }
 
     public void OnLevelSelect()
@@ -53,17 +48,5 @@ public class LevelNode : MonoBehaviour
         if (!isCleared) LevelSelectManager.levelSelectManagerInstance.trackLevelCompletion = true;
 
         //scene loading is called by the button
-    }
-    
-    public void Unlock()
-    {
-        isUnlocked = true;
-        RefreshUI();
-    }
-    
-    void RefreshUI()
-    {
-        levelButton.interactable = isUnlocked;
-        lockOverlay.SetActive(!isUnlocked);
     }
 }

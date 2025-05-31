@@ -20,8 +20,8 @@ public class LevelGroupNode : MonoBehaviour
     // public Sprite difficultySprite;
 
     [Header("State")]
-    public bool isUnlocked = false;
-    public bool groupClear = false;
+    public bool isUnlocked;
+    public bool isGroupClear = false;
 
     [Header("Nodes Lists")]
     [HideInInspector] public LevelNode[] subLevelNodes; 
@@ -34,30 +34,36 @@ public class LevelGroupNode : MonoBehaviour
     public Button levelButton;
     public GameObject lockOverlay; // lock visual — a translucent panel on top
 
-    public void UpdateProgress(int amountLevelsCompleted)
+    private void Awake()
+    {
+        subLevelNodes = containedLevels.GetComponentsInChildren<LevelNode>();
+    }
+
+    public void RefillProgress(int amountLevelsCompleted)
     {
         completedLevels = amountLevelsCompleted;
         for (int i = 0; i < amountLevelsCompleted; i++)
         {
             subLevelNodes[i].isCleared = true;
         }
-        InitializeUI();
         UnlockInternalLevels();
     }
 
-    void InitializeUI()
+    public void UpdateLevelGroupUI()
     {
-        levelGroupName = this.name;
-        subLevelNodes = containedLevels.GetComponentsInChildren<LevelNode>();
-        int i = 0;
-        foreach (var level in subLevelNodes)
+        Debug.Log(levelGroupNumber);
+        if (isUnlocked)
         {
-            level.levelName = this.name + ": file_" + i;
-            i++;
+            levelGroupName = this.name;
+            int i = 0;
+            foreach (var level in subLevelNodes)
+            {
+                level.levelName = this.name + ": file_" + i;
+                i++;
+            }
+            levelTitleText.text = levelGroupName;
+            levelButton.interactable = isUnlocked; 
         }
-        levelTitleText.text = levelGroupName;
-        levelButton.interactable = isUnlocked;
-        lockOverlay.SetActive(!isUnlocked);
         // Commented for testing. Needs to be uncommented once we have the images
         // difficultyImage.sprite = difficultySprite; 
         // levelThumbnail.sprite = thumbnailSprite; 
@@ -74,33 +80,26 @@ public class LevelGroupNode : MonoBehaviour
                 completedLevels--;
             }
         }
-
-        CheckGroupCompleted();
     }
     public void Unlock(LevelNode level)
     {
         level.isUnlocked = true;
         level.levelButton.interactable = true;
-        level.lockOverlay.SetActive(false);
     }
 
-    public bool CheckGroupCompleted()
+    public bool IsGroupCompleted()
     {
         foreach (var level in subLevelNodes)
         {
             if (!level.isCleared)
                 return false;
         }
-        groupClear = true;
+
+        isGroupClear = true;
         return true;
     }
 
-    public void SetCurrentLevelGroup() //Since the player can click and change the level group, this is intended to set it
-    {
-        LevelSelectManager.levelSelectManagerInstance.currentLevelGroup = levelGroupNumber - 1; //This changes the currentGroup being tracked
-    }
-
-    public void OpenSubGroup() //Called by a button
+    public void OpenSubGroupButton() //Called by a button
     {
         containedLevels.transform.SetParent(transform.root);
 
@@ -124,7 +123,12 @@ public class LevelGroupNode : MonoBehaviour
             Debug.LogWarning("This level has no number");
         }
     }
-    public void GoBack() //Called by a button
+    public void SetCurrentLevelGroup() //Since the player can click and change the level group, this is intended to set it
+    {
+        LevelSelectManager.levelSelectManagerInstance.currentLevelGroup = levelGroupNumber - 1; //This changes the currentGroup being tracked
+    }
+
+    public void GoBackButton() //Called by a button
     {
         containedLevels.transform.SetParent(this.gameObject.transform);
         containedLevels.SetActive(false);
