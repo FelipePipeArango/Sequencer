@@ -8,31 +8,28 @@ using UnityEngine.UI;
 [System.Serializable]
 public class LevelGroupNode : MonoBehaviour
 {
-    [FormerlySerializedAs("levelName")][Header("Data")]
     string levelGroupName;
-    [Header("Corresponds to the position of this group (1st, 2nd,etc)")]
-    public int levelGroupNumber;
+    
+    [HideInInspector] public int levelGroupNumber;
 
+    [Header("DON'T MODIFY")]
     public GameObject containedLevels;
     int completedLevels;
-    // public int difficulty; // use to select an image or color later
-    // public Sprite thumbnailSprite;
-    // public Sprite difficultySprite;
 
     [Header("State")]
     public bool isUnlocked;
-    public bool isGroupClear = false;
+    [HideInInspector] public bool isGroupClear = false;
 
-    [Header("Nodes Lists")]
-    [HideInInspector] public LevelNode[] subLevelNodes; 
+    [HideInInspector] public LevelNode[] subLevelNodes;
+
+    [Header("Groups connected to this")]
     public List<LevelGroupNode> nextNodes;
     
-    [Header("Visuals")]
+    [Header("Visuals - don't modify")]
     public TextMeshProUGUI levelTitleText;
     public Image difficultyImage; 
     public Image levelThumbnail;
     public Button levelButton;
-    public GameObject lockOverlay; // lock visual — a translucent panel on top
 
     private void Awake()
     {
@@ -63,13 +60,9 @@ public class LevelGroupNode : MonoBehaviour
             levelTitleText.text = levelGroupName;
             levelButton.interactable = isUnlocked; 
         }
-        // Commented for testing. Needs to be uncommented once we have the images
-        // difficultyImage.sprite = difficultySprite; 
-        // levelThumbnail.sprite = thumbnailSprite; 
-        // levelButton.onClick.AddListener(OnLevelSelect);
     }
 
-    public void UnlockInternalLevels()
+    void UnlockInternalLevels()
     {
         foreach (var level in subLevelNodes)
         {
@@ -80,7 +73,7 @@ public class LevelGroupNode : MonoBehaviour
             }
         }
     }
-    public void Unlock(LevelNode level)
+    void Unlock(LevelNode level)
     {
         level.isUnlocked = true;
         level.levelButton.interactable = true;
@@ -113,18 +106,11 @@ public class LevelGroupNode : MonoBehaviour
         rectTransform.pivot = new Vector2(0.5f, 0.5f);
 
         containedLevels.SetActive(true);
-        if (levelGroupNumber != 0)
-        {
-            SetCurrentLevelGroup();
-        }
-        else
-        {
-            Debug.LogWarning("This level has no number");
-        }
+        SetCurrentLevelGroup();
     }
-    public void SetCurrentLevelGroup() //Since the player can click and change the level group, this is intended to set it
+    void SetCurrentLevelGroup() //Since the player can click and change the level group, this is intended to set it
     {
-        LevelSelectManager.levelSelectManagerInstance.currentLevelGroup = levelGroupNumber - 1; //This changes the currentGroup being tracked
+        LevelSelectManager.levelSelectManagerInstance.currentLevelGroup = levelGroupNumber; //This changes the currentGroup being tracked
     }
 
     public void GoBackButton() //Called by a button

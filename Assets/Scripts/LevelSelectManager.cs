@@ -6,11 +6,12 @@ using static GameStates;
 public class LevelSelectManager : MonoBehaviour
 {
     public static LevelSelectManager levelSelectManagerInstance;
-   
+
+    int dontReset;
     GameObject mainLevelMenu;
     int[] levelGroupTracker;
-    public LevelGroupNode[] LevelGroups;
-    public List<int> unlockedGroups = new List<int>();
+    LevelGroupNode[] LevelGroups;
+    HashSet<int> unlockedGroups = new HashSet<int>();
 
     [HideInInspector] public bool trackLevelCompletion;
 
@@ -51,10 +52,17 @@ public class LevelSelectManager : MonoBehaviour
         if (mainLevelMenu != null)
         {
             LevelGroups = mainLevelMenu.GetComponentsInChildren<LevelGroupNode>();
-            levelGroupTracker = new int[LevelGroups.Length];
+
+            if (dontReset == 0) levelGroupTracker = new int[LevelGroups.Length]; dontReset++;
+
+            for (int i = 0; i < LevelGroups.Length; i++)
+            {
+                LevelGroups[i].levelGroupNumber = i;
+            }
+
             if (unlockedGroups.Count <= 0)
             {
-                unlockedGroups.Add(LevelGroups[0].levelGroupNumber - 1);
+                unlockedGroups.Add(LevelGroups[0].levelGroupNumber);
             }
 
             FillValues();
@@ -78,9 +86,10 @@ public class LevelSelectManager : MonoBehaviour
             UnlockNextGroups(); //Also unlock the ones connected
         }
 
-        foreach (var group in unlockedGroups)
+        foreach (var group in unlockedGroups) //once it returns to the levelScene
         {
-            LevelGroups[group].UpdateLevelGroupUI();
+            LevelGroups[group].isUnlocked = true; //it re-unlocks previously saved levels
+            LevelGroups[group].UpdateLevelGroupUI(); //and updates their visuals
         }
     }
 
@@ -88,9 +97,11 @@ public class LevelSelectManager : MonoBehaviour
     {
         foreach (var levelGroup in LevelGroups[currentLevelGroup].nextNodes) // each group that is next to the current one
         {
-            levelGroup.isUnlocked = true; //unlock it
-            unlockedGroups.Add(levelGroup.levelGroupNumber - 1); //And add it to the list of unlocked groups
-            levelGroup.subLevelNodes[0].isUnlocked = true;
+            if (!unlockedGroups.Contains(levelGroup.levelGroupNumber))
+            {
+                unlockedGroups.Add(levelGroup.levelGroupNumber); //And add it to the list of unlocked groups 
+            }
+            levelGroup.subLevelNodes[0].isUnlocked = true; //makes sure the first level of each group is unlocked
         }
     }
 
@@ -104,7 +115,7 @@ public class LevelSelectManager : MonoBehaviour
                 {
                     if (i == currentLevelGroup) //and in its correspondent group
                     {
-                        levelGroupTracker[i] += 1; //the value of completed levels increases
+                        levelGroupTracker[i]++; //the value of completed levels increases
                     }
                 }
                 trackLevelCompletion = false;
