@@ -16,6 +16,12 @@ public class Player : UnitController
     [HideInInspector] public int throwNumber;
     [HideInInspector] public int pickUpNumber;
 
+    public bool hasUSB = false;
+    public GameObject usbWarningImage;
+    public GameObject noThrowTargetWarningImage;
+
+
+
     //[SerializeField] Player_AnimController animController;
 
     //public UIHandler uiHandler;
@@ -63,6 +69,19 @@ public class Player : UnitController
     }
     private void ClickToThrow()
     {
+        if (!hasUSB)
+        {
+            Debug.Log("Cannot throw: USB not acquired.");
+            if (usbWarningImage != null)
+            {
+                usbWarningImage.SetActive(true);
+                StartCoroutine(HideUSBWarning(2f));
+            }
+            canThrow = false;
+            SetStateChange(false);
+            return;
+        }
+
         if (hasItem)
         {
             SetStateChange(true);
@@ -83,6 +102,8 @@ public class Player : UnitController
             SetStateChange(false);
         }
     }
+
+
     private void ClickToMove()
     {
         if (Input.GetMouseButtonDown(0))
@@ -255,38 +276,48 @@ public class Player : UnitController
     }
     private void ThrowTo(TileScript tile)
     {
-        if (throwNumber == gridManager.CalculateDistance(
-               tile.transform.position, transform.position))
+        int distance = gridManager.CalculateDistance(tile.transform.position, transform.position);
+
+        if (distance != throwNumber)
         {
-            if (tile.tileType == TileTypes.GoalTile)
-            {
-                canThrow = false;
-                PlayerManager.playerManagerInstance.PlayerWon();
-            }
-            else if (tile.tileType == TileTypes.EmptyTile)
-            {
-                Debug.Log("Click");
-                ThrowKey(tile);
-                canThrow = false;
-                SetStateChange(false);
-                AICanMoveNow();
-            }
+            Debug.Log("Too close or too far to throw");
+            ShowNoThrowTargetWarning();
+            canThrow = false;
+            SetStateChange(false);
+            return;
+        }
+
+        if (tile.tileType == TileTypes.GoalTile)
+        {
+            canThrow = false;
+            PlayerManager.playerManagerInstance.PlayerWon();
+        }
+        else if (tile.tileType == TileTypes.EmptyTile)
+        {
+            ThrowKey(tile);
+            canThrow = false;
+            SetStateChange(false);
+            AICanMoveNow();
         }
         else
         {
-            Debug.Log("too close to throw");
+            Debug.Log("Tile not valid for throwing");
+            ShowNoThrowTargetWarning();
+            canThrow = false;
+            SetStateChange(false);
         }
     }
 
 
+
     private void PickUpFrom(TileScript tile)
     {
-
         if (tile.tileType == TileTypes.KeyTile)
         {
             PlayerManager.playerManagerInstance.PlayerPickedUp();
             KeyItemCheck();
             gridManager.ResetTileType(TileTypes.KeyTile);
+            hasUSB = true;
             canPickUp = false;
             SetStateChange(false);
             AICanMoveNow();
@@ -303,8 +334,34 @@ public class Player : UnitController
         {
             Debug.Log("Nothing to pick up");
         }
-
     }
+
+    private IEnumerator HideUSBWarning(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (usbWarningImage != null)
+            usbWarningImage.SetActive(false);
+    }
+
+    private void ShowNoThrowTargetWarning()
+    {
+        if (noThrowTargetWarningImage != null)
+        {
+            noThrowTargetWarningImage.SetActive(true);
+            StartCoroutine(HideNoThrowTargetWarning(2f));
+        }
+    }
+
+    private IEnumerator HideNoThrowTargetWarning(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (noThrowTargetWarningImage != null)
+            noThrowTargetWarningImage.SetActive(false);
+    }
+
+
+
+
 }
 
 
