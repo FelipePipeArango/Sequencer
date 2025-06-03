@@ -290,6 +290,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3110434797664299054, guid: d266327d5b1c3ec4789bc2c97237269e, type: 3}
   m_PrefabInstance: {fileID: 127107259}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &210858803 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9173739897870692701, guid: 8745b7532223bb242838254a3a820683, type: 3}
+  m_PrefabInstance: {fileID: 264712291}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &264712291
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -298,6 +303,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 127744675807792560, guid: 8745b7532223bb242838254a3a820683, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4048630676748487642, guid: 8745b7532223bb242838254a3a820683, type: 3}
       propertyPath: m_Camera
       value: 
@@ -390,6 +399,10 @@ PrefabInstance:
       propertyPath: characterMoveUI
       value: 
       objectReference: {fileID: 794028609}
+    - target: {fileID: 9173739897870692701, guid: 8745b7532223bb242838254a3a820683, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -942,6 +955,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 435306641}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &444556278 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 127744675807792560, guid: 8745b7532223bb242838254a3a820683, type: 3}
+  m_PrefabInstance: {fileID: 264712291}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &511399232
 GameObject:
   m_ObjectHideFlags: 0
@@ -1891,6 +1909,14 @@ PrefabInstance:
       propertyPath: goalSequence
       value: 
       objectReference: {fileID: 264712293}
+    - target: {fileID: 4002431421743731633, guid: 34b4640ccd3d49b45a66ef6c09448223, type: 3}
+      propertyPath: usbMissingMessage
+      value: 
+      objectReference: {fileID: 210858803}
+    - target: {fileID: 4002431421743731633, guid: 34b4640ccd3d49b45a66ef6c09448223, type: 3}
+      propertyPath: clickToConfirmMessage
+      value: 
+      objectReference: {fileID: 444556278}
     - target: {fileID: 4572314844190042900, guid: 34b4640ccd3d49b45a66ef6c09448223, type: 3}
       propertyPath: m_IsActive
       value: 1

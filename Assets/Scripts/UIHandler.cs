@@ -58,4 +58,11 @@ public class UIHandler : MonoBehaviour
         if (characterMoveUI)
             characterMoveUI.text = numberValue.ToString();
     }
+
+    public void HideKeyItemHUD()
+    {
+        if (keyItemHUD != null)
+            keyItemHUD.SetActive(false);
+    }
+
 }

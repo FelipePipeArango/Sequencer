@@ -17,8 +17,9 @@ public class Player : UnitController
     [HideInInspector] public int pickUpNumber;
 
     public bool hasUSB = false;
-    public GameObject usbWarningImage;
-    public GameObject noThrowTargetWarningImage;
+    public GameObject usbMissingMessage;
+    public GameObject clickToConfirmMessage;
+
 
 
 
@@ -47,16 +48,21 @@ public class Player : UnitController
     }
     private void ClickToPickUp()
     {
+       
         if (IsSomethingWithinPickUpRadiusOfPlayer(pickUpNumber))
         {
             SetStateChange(true);
             gridManager.PickUpHighLight(pickUpNumber);
+            ShowClickToConfirmMessage();
+
             if (Input.GetMouseButtonDown(0))
             {
-                if (gridManager.ClickedTile(0.8f) != null)
+                TileScript clicked = gridManager.ClickedTile(0.8f);
+                if (clicked != null)
                 {
-                    PickUpFrom(gridManager.ClickedTile(0.8f));
+                    PickUpFrom(clicked);
                     gridManager.TurnOffHighlight();
+                    HideClickToConfirmMessage();
                 }
             }
         }
@@ -67,16 +73,12 @@ public class Player : UnitController
             SetStateChange(false);
         }
     }
+
     private void ClickToThrow()
     {
         if (!hasUSB)
         {
-            Debug.Log("Cannot throw: USB not acquired.");
-            if (usbWarningImage != null)
-            {
-                usbWarningImage.SetActive(true);
-                StartCoroutine(HideUSBWarning(2f));
-            }
+            ShowUSBMissingMessage();
             canThrow = false;
             SetStateChange(false);
             return;
@@ -86,12 +88,16 @@ public class Player : UnitController
         {
             SetStateChange(true);
             gridManager.ThrowHighLight(throwNumber);
+            ShowClickToConfirmMessage();
+
             if (Input.GetMouseButtonDown(0))
             {
-                if (gridManager.ClickedTile(0.6f) != null)
+                TileScript clicked = gridManager.ClickedTile(0.6f);
+                if (clicked != null)
                 {
-                    ThrowTo(gridManager.ClickedTile(0.6f));
+                    ThrowTo(clicked);
                     gridManager.TurnOffHighlight();
+                    HideClickToConfirmMessage();
                 }
             }
         }
@@ -102,6 +108,7 @@ public class Player : UnitController
             SetStateChange(false);
         }
     }
+
 
 
     private void ClickToMove()
@@ -281,7 +288,6 @@ public class Player : UnitController
         if (distance != throwNumber)
         {
             Debug.Log("Too close or too far to throw");
-            ShowNoThrowTargetWarning();
             canThrow = false;
             SetStateChange(false);
             return;
@@ -289,24 +295,31 @@ public class Player : UnitController
 
         if (tile.tileType == TileTypes.GoalTile)
         {
+            hasUSB = false;
             canThrow = false;
+            UIHandler.UIHandlerInstance.HideKeyItemHUD(); // hide HUD
             PlayerManager.playerManagerInstance.PlayerWon();
         }
         else if (tile.tileType == TileTypes.EmptyTile)
         {
             ThrowKey(tile);
+            hasUSB = false;
             canThrow = false;
             SetStateChange(false);
+            UIHandler.UIHandlerInstance.HideKeyItemHUD(); // hide HUD
             AICanMoveNow();
         }
         else
         {
             Debug.Log("Tile not valid for throwing");
-            ShowNoThrowTargetWarning();
             canThrow = false;
             SetStateChange(false);
         }
     }
+
+
+
+
 
 
 
@@ -336,28 +349,34 @@ public class Player : UnitController
         }
     }
 
-    private IEnumerator HideUSBWarning(float delay)
+    private void ShowUSBMissingMessage()
     {
-        yield return new WaitForSeconds(delay);
-        if (usbWarningImage != null)
-            usbWarningImage.SetActive(false);
-    }
-
-    private void ShowNoThrowTargetWarning()
-    {
-        if (noThrowTargetWarningImage != null)
+        if (usbMissingMessage != null)
         {
-            noThrowTargetWarningImage.SetActive(true);
-            StartCoroutine(HideNoThrowTargetWarning(2f));
+            usbMissingMessage.SetActive(true);
+            StartCoroutine(HideMessage(usbMissingMessage, 2f));
         }
     }
 
-    private IEnumerator HideNoThrowTargetWarning(float delay)
+    private void ShowClickToConfirmMessage()
     {
-        yield return new WaitForSeconds(delay);
-        if (noThrowTargetWarningImage != null)
-            noThrowTargetWarningImage.SetActive(false);
+        if (clickToConfirmMessage != null)
+            clickToConfirmMessage.SetActive(true);
     }
+
+    private void HideClickToConfirmMessage()
+    {
+        if (clickToConfirmMessage != null)
+            clickToConfirmMessage.SetActive(false);
+    }
+
+    private IEnumerator HideMessage(GameObject messageObj, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        if (messageObj != null)
+            messageObj.SetActive(false);
+    }
+
 
 
 
