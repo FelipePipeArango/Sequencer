@@ -271,6 +271,7 @@ GameObject:
   - component: {fileID: 8934143376542765489}
   - component: {fileID: 4665214164175032149}
   - component: {fileID: 4072014553926667537}
+  - component: {fileID: 172511090554242162}
   m_Layer: 5
   m_Name: ConnectorParent
   m_TagString: Untagged
@@ -321,6 +322,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardHolder: {fileID: 5036883689859713858}
+--- !u!114 &172511090554242162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2384447092207354982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2538bc636b0b94c99e7249f5a9fb6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableFloat: 0
+  floatAmplitude: 10
+  floatSpeed: 2
+  enablePulse: 0
+  pulseAmplitude: 0.05
+  pulseSpeed: 2
+  enableIdleRotation: 0
+  rotationSpeed: 15
+  enableWiggle: 0
+  wiggleAmount: 10
+  wiggleSpeed: 3
+  enableColorShift: 0
+  colorA: {r: 1, g: 1, b: 1, a: 1}
+  colorB: {r: 0, g: 1, b: 1, a: 1}
+  colorLerpSpeed: 2
+  enableParallax: 1
+  parallaxStrength: 5
 --- !u!1 &2782691869977564895
 GameObject:
   m_ObjectHideFlags: 0
@@ -693,6 +723,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7347707305043302118}
   - component: {fileID: 2904523146190370138}
+  - component: {fileID: 5776207960922855539}
   m_Layer: 5
   m_Name: Move_Icon
   m_TagString: Untagged
@@ -768,6 +799,35 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &5776207960922855539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4396778009586990893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2538bc636b0b94c99e7249f5a9fb6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableFloat: 0
+  floatAmplitude: 10
+  floatSpeed: 2
+  enablePulse: 0
+  pulseAmplitude: 0.05
+  pulseSpeed: 2
+  enableIdleRotation: 0
+  rotationSpeed: 15
+  enableWiggle: 0
+  wiggleAmount: 10
+  wiggleSpeed: 3
+  enableColorShift: 0
+  colorA: {r: 1, g: 1, b: 1, a: 1}
+  colorB: {r: 0, g: 1, b: 1, a: 1}
+  colorLerpSpeed: 2
+  enableParallax: 1
+  parallaxStrength: 10
 --- !u!1 &4491872007347653106
 GameObject:
   m_ObjectHideFlags: 0
@@ -1227,6 +1287,7 @@ GameObject:
   - component: {fileID: 3458027887373724332}
   - component: {fileID: 7860224139406968923}
   - component: {fileID: 6945751201300618752}
+  - component: {fileID: 2198536993615365988}
   m_Layer: 5
   m_Name: CardsInLevel
   m_TagString: Untagged
@@ -1311,10 +1372,39 @@ MonoBehaviour:
   m_ChildAlignment: 7
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 100, y: 225.8}
+  m_CellSize: {x: 100, y: 275}
   m_Spacing: {x: 100, y: 0}
   m_Constraint: 2
   m_ConstraintCount: 1
+--- !u!114 &2198536993615365988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5036883689859713858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2538bc636b0b94c99e7249f5a9fb6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableFloat: 0
+  floatAmplitude: 10
+  floatSpeed: 2
+  enablePulse: 0
+  pulseAmplitude: 0.05
+  pulseSpeed: 2
+  enableIdleRotation: 0
+  rotationSpeed: 15
+  enableWiggle: 1
+  wiggleAmount: 1
+  wiggleSpeed: 2
+  enableColorShift: 1
+  colorA: {r: 1, g: 1, b: 1, a: 1}
+  colorB: {r: 0, g: 1, b: 1, a: 1}
+  colorLerpSpeed: 2
+  enableParallax: 1
+  parallaxStrength: 5
 --- !u!1 &5689879239888120043
 GameObject:
   m_ObjectHideFlags: 0
@@ -1325,6 +1415,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5134807540158900392}
   - component: {fileID: 7475833146850128719}
+  - component: {fileID: 8126244349011282427}
   m_Layer: 5
   m_Name: USB_Icon_Background
   m_TagString: Untagged
@@ -1399,6 +1490,35 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &8126244349011282427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5689879239888120043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2538bc636b0b94c99e7249f5a9fb6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableFloat: 0
+  floatAmplitude: 10
+  floatSpeed: 2
+  enablePulse: 0
+  pulseAmplitude: 0.05
+  pulseSpeed: 2
+  enableIdleRotation: 0
+  rotationSpeed: 15
+  enableWiggle: 0
+  wiggleAmount: 10
+  wiggleSpeed: 3
+  enableColorShift: 0
+  colorA: {r: 1, g: 1, b: 1, a: 1}
+  colorB: {r: 0, g: 1, b: 1, a: 1}
+  colorLerpSpeed: 2
+  enableParallax: 1
+  parallaxStrength: 5
 --- !u!1 &6578682262766546873
 GameObject:
   m_ObjectHideFlags: 0
@@ -1598,6 +1718,7 @@ GameObject:
   - component: {fileID: 711997511159952303}
   - component: {fileID: 315139740598216907}
   - component: {fileID: 2431037349581239237}
+  - component: {fileID: 1852185959474734994}
   m_Layer: 5
   m_Name: SettingsButton
   m_TagString: Untagged
@@ -1718,6 +1839,35 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1852185959474734994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7046180938885180481}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2538bc636b0b94c99e7249f5a9fb6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableFloat: 0
+  floatAmplitude: 10
+  floatSpeed: 2
+  enablePulse: 0
+  pulseAmplitude: 0.05
+  pulseSpeed: 2
+  enableIdleRotation: 0
+  rotationSpeed: 15
+  enableWiggle: 0
+  wiggleAmount: 10
+  wiggleSpeed: 3
+  enableColorShift: 0
+  colorA: {r: 1, g: 1, b: 1, a: 1}
+  colorB: {r: 0, g: 1, b: 1, a: 1}
+  colorLerpSpeed: 2
+  enableParallax: 1
+  parallaxStrength: 5
 --- !u!1 &7989665829394451555
 GameObject:
   m_ObjectHideFlags: 0
@@ -1728,6 +1878,7 @@ GameObject:
   m_Component:
   - component: {fileID: 268383668834521312}
   - component: {fileID: 3826327709901622035}
+  - component: {fileID: 5259717057888500806}
   m_Layer: 5
   m_Name: USB_Icon
   m_TagString: Untagged
@@ -1802,6 +1953,35 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &5259717057888500806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7989665829394451555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2538bc636b0b94c99e7249f5a9fb6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableFloat: 0
+  floatAmplitude: 10
+  floatSpeed: 2
+  enablePulse: 0
+  pulseAmplitude: 0.05
+  pulseSpeed: 2
+  enableIdleRotation: 0
+  rotationSpeed: 15
+  enableWiggle: 0
+  wiggleAmount: 10
+  wiggleSpeed: 3
+  enableColorShift: 0
+  colorA: {r: 1, g: 1, b: 1, a: 1}
+  colorB: {r: 0, g: 1, b: 1, a: 1}
+  colorLerpSpeed: 2
+  enableParallax: 1
+  parallaxStrength: 5
 --- !u!1 &8523223018909077857
 GameObject:
   m_ObjectHideFlags: 0
@@ -2042,6 +2222,7 @@ GameObject:
   - component: {fileID: 4928354201255950770}
   - component: {fileID: 855619594695106152}
   - component: {fileID: 5693291985282883221}
+  - component: {fileID: 4955331838616865515}
   m_Layer: 5
   m_Name: Reset_Icon
   m_TagString: Untagged
@@ -2162,6 +2343,35 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &4955331838616865515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9149634021042200483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2538bc636b0b94c99e7249f5a9fb6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableFloat: 0
+  floatAmplitude: 10
+  floatSpeed: 2
+  enablePulse: 0
+  pulseAmplitude: 0.05
+  pulseSpeed: 2
+  enableIdleRotation: 0
+  rotationSpeed: 15
+  enableWiggle: 0
+  wiggleAmount: 10
+  wiggleSpeed: 3
+  enableColorShift: 0
+  colorA: {r: 1, g: 1, b: 1, a: 1}
+  colorB: {r: 0, g: 1, b: 1, a: 1}
+  colorLerpSpeed: 2
+  enableParallax: 1
+  parallaxStrength: 5
 --- !u!1 &9173739897870692701
 GameObject:
   m_ObjectHideFlags: 0

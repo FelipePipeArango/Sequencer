@@ -227,6 +227,40 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 14651858}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &127181420 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5689879239888120043, guid: 8745b7532223bb242838254a3a820683, type: 3}
+  m_PrefabInstance: {fileID: 686936399}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &127181423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 127181420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2538bc636b0b94c99e7249f5a9fb6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableFloat: 0
+  floatAmplitude: 10
+  floatSpeed: 2
+  enablePulse: 0
+  pulseAmplitude: 0.05
+  pulseSpeed: 2
+  enableIdleRotation: 0
+  rotationSpeed: 15
+  enableWiggle: 0
+  wiggleAmount: 10
+  wiggleSpeed: 3
+  enableColorShift: 0
+  colorA: {r: 1, g: 1, b: 1, a: 1}
+  colorB: {r: 0, g: 1, b: 1, a: 1}
+  colorLerpSpeed: 2
+  enableParallax: 1
+  parallaxStrength: 10
 --- !u!1 &170878388
 GameObject:
   m_ObjectHideFlags: 0
@@ -292,6 +326,40 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1143910737}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &180870963 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4396778009586990893, guid: 8745b7532223bb242838254a3a820683, type: 3}
+  m_PrefabInstance: {fileID: 686936399}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &180870966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 180870963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2538bc636b0b94c99e7249f5a9fb6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableFloat: 0
+  floatAmplitude: 10
+  floatSpeed: 2
+  enablePulse: 0
+  pulseAmplitude: 0.05
+  pulseSpeed: 2
+  enableIdleRotation: 0
+  rotationSpeed: 15
+  enableWiggle: 0
+  wiggleAmount: 10
+  wiggleSpeed: 3
+  enableColorShift: 0
+  colorA: {r: 1, g: 1, b: 1, a: 1}
+  colorB: {r: 0, g: 1, b: 1, a: 1}
+  colorLerpSpeed: 2
+  enableParallax: 1
+  parallaxStrength: 5
 --- !u!1001 &243989220
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1180,6 +1248,10 @@ PrefabInstance:
       propertyPath: characterMoveUI
       value: 
       objectReference: {fileID: 4787711500042168577}
+    - target: {fileID: 6945751201300618752, guid: 8745b7532223bb242838254a3a820683, type: 3}
+      propertyPath: m_CellSize.y
+      value: 275
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -1207,7 +1279,25 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3785145965635061653, guid: 8745b7532223bb242838254a3a820683, type: 3}
       insertIndex: -1
       addedObject: {fileID: 967607557}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5036883689859713858, guid: 8745b7532223bb242838254a3a820683, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 686936406}
+    - targetCorrespondingSourceObject: {fileID: 7989665829394451555, guid: 8745b7532223bb242838254a3a820683, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1319445887}
+    - targetCorrespondingSourceObject: {fileID: 5689879239888120043, guid: 8745b7532223bb242838254a3a820683, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 127181423}
+    - targetCorrespondingSourceObject: {fileID: 4396778009586990893, guid: 8745b7532223bb242838254a3a820683, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 180870966}
+    - targetCorrespondingSourceObject: {fileID: 9149634021042200483, guid: 8745b7532223bb242838254a3a820683, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1237325602}
+    - targetCorrespondingSourceObject: {fileID: 7046180938885180481, guid: 8745b7532223bb242838254a3a820683, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1030726787}
   m_SourcePrefab: {fileID: 100100000, guid: 8745b7532223bb242838254a3a820683, type: 3}
 --- !u!114 &686936400 stripped
 MonoBehaviour:
@@ -1246,6 +1336,35 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3152968064458482792, guid: 8745b7532223bb242838254a3a820683, type: 3}
   m_PrefabInstance: {fileID: 686936399}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &686936406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 686936403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2538bc636b0b94c99e7249f5a9fb6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableFloat: 1
+  floatAmplitude: 4
+  floatSpeed: 4
+  enablePulse: 0
+  pulseAmplitude: 0.05
+  pulseSpeed: 2
+  enableIdleRotation: 0
+  rotationSpeed: 15
+  enableWiggle: 1
+  wiggleAmount: 1
+  wiggleSpeed: 2
+  enableColorShift: 1
+  colorA: {r: 1, g: 1, b: 1, a: 1}
+  colorB: {r: 0, g: 1, b: 1, a: 1}
+  colorLerpSpeed: 1
+  enableParallax: 1
+  parallaxStrength: 5
 --- !u!1001 &733678595
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1774,6 +1893,40 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3110434797664299054, guid: d266327d5b1c3ec4789bc2c97237269e, type: 3}
   m_PrefabInstance: {fileID: 1017567501}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1030726782 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7046180938885180481, guid: 8745b7532223bb242838254a3a820683, type: 3}
+  m_PrefabInstance: {fileID: 686936399}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1030726787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1030726782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2538bc636b0b94c99e7249f5a9fb6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableFloat: 0
+  floatAmplitude: 10
+  floatSpeed: 2
+  enablePulse: 0
+  pulseAmplitude: 0.05
+  pulseSpeed: 2
+  enableIdleRotation: 0
+  rotationSpeed: 15
+  enableWiggle: 0
+  wiggleAmount: 10
+  wiggleSpeed: 3
+  enableColorShift: 0
+  colorA: {r: 1, g: 1, b: 1, a: 1}
+  colorB: {r: 0, g: 1, b: 1, a: 1}
+  colorLerpSpeed: 2
+  enableParallax: 1
+  parallaxStrength: 5
 --- !u!1 &1136540008
 GameObject:
   m_ObjectHideFlags: 0
@@ -1932,6 +2085,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f835541e90b7cb4b8d04048323540dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1237325597 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9149634021042200483, guid: 8745b7532223bb242838254a3a820683, type: 3}
+  m_PrefabInstance: {fileID: 686936399}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1237325602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1237325597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2538bc636b0b94c99e7249f5a9fb6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableFloat: 0
+  floatAmplitude: 10
+  floatSpeed: 2
+  enablePulse: 0
+  pulseAmplitude: 0.05
+  pulseSpeed: 2
+  enableIdleRotation: 0
+  rotationSpeed: 15
+  enableWiggle: 0
+  wiggleAmount: 10
+  wiggleSpeed: 3
+  enableColorShift: 0
+  colorA: {r: 1, g: 1, b: 1, a: 1}
+  colorB: {r: 0, g: 1, b: 1, a: 1}
+  colorLerpSpeed: 2
+  enableParallax: 1
+  parallaxStrength: 5
 --- !u!1 &1291511328
 GameObject:
   m_ObjectHideFlags: 0
@@ -2066,6 +2253,40 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1291511328}
   m_CullTransparentMesh: 1
+--- !u!1 &1319445884 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7989665829394451555, guid: 8745b7532223bb242838254a3a820683, type: 3}
+  m_PrefabInstance: {fileID: 686936399}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1319445887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1319445884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2538bc636b0b94c99e7249f5a9fb6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableFloat: 0
+  floatAmplitude: 10
+  floatSpeed: 2
+  enablePulse: 0
+  pulseAmplitude: 0.05
+  pulseSpeed: 2
+  enableIdleRotation: 0
+  rotationSpeed: 15
+  enableWiggle: 0
+  wiggleAmount: 10
+  wiggleSpeed: 3
+  enableColorShift: 0
+  colorA: {r: 1, g: 1, b: 1, a: 1}
+  colorB: {r: 0, g: 1, b: 1, a: 1}
+  colorLerpSpeed: 2
+  enableParallax: 1
+  parallaxStrength: 5
 --- !u!1 &1360383388
 GameObject:
   m_ObjectHideFlags: 0
