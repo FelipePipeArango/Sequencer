@@ -19,6 +19,8 @@ public class Player : UnitController
     public bool hasUSB = false;
     public GameObject usbMissingMessage;
     public GameObject clickToConfirmMessage;
+    public GameObject noUSBInRangeMessage;
+
 
 
 
@@ -48,31 +50,33 @@ public class Player : UnitController
     }
     private void ClickToPickUp()
     {
-       
-        if (IsSomethingWithinPickUpRadiusOfPlayer(pickUpNumber))
-        {
-            SetStateChange(true);
-            gridManager.PickUpHighLight(pickUpNumber);
-            ShowClickToConfirmMessage();
+        SetStateChange(true);
 
-            if (Input.GetMouseButtonDown(0))
-            {
-                TileScript clicked = gridManager.ClickedTile(0.8f);
-                if (clicked != null)
-                {
-                    PickUpFrom(clicked);
-                    gridManager.TurnOffHighlight();
-                    HideClickToConfirmMessage();
-                }
-            }
-        }
-        else
+        gridManager.PickUpHighLight(pickUpNumber);
+
+        if (!gridManager.WasPickUpHighlightSuccessful())
         {
-            Debug.Log("Nothing to pick up");
+            ShowNoUSBInRangeMessage();        // NEW
+            gridManager.TurnOffHighlight();
             canPickUp = false;
             SetStateChange(false);
+            return;
+        }
+
+        ShowClickToConfirmMessage();
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            TileScript clicked = gridManager.ClickedTile(0.8f);
+            if (clicked != null)
+            {
+                PickUpFrom(clicked);
+                gridManager.TurnOffHighlight();
+                HideClickToConfirmMessage();
+            }
         }
     }
+
 
     private void ClickToThrow()
     {
@@ -376,6 +380,15 @@ public class Player : UnitController
         if (messageObj != null)
             messageObj.SetActive(false);
     }
+    private void ShowNoUSBInRangeMessage()
+    {
+        if (noUSBInRangeMessage != null)
+        {
+            noUSBInRangeMessage.SetActive(true);
+            StartCoroutine(HideMessage(noUSBInRangeMessage, 2f));
+        }
+    }
+
 
 
 

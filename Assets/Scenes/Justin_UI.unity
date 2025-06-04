@@ -920,6 +920,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3110434797664299054, guid: d266327d5b1c3ec4789bc2c97237269e, type: 3}
   m_PrefabInstance: {fileID: 377183405}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &404528161 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8522430731255270900, guid: 8745b7532223bb242838254a3a820683, type: 3}
+  m_PrefabInstance: {fileID: 686936399}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &437248223
 GameObject:
   m_ObjectHideFlags: 0
@@ -3063,6 +3068,10 @@ PrefabInstance:
       propertyPath: usbMissingMessage
       value: 
       objectReference: {fileID: 25962427}
+    - target: {fileID: 4002431421743731633, guid: 34b4640ccd3d49b45a66ef6c09448223, type: 3}
+      propertyPath: noUSBInRangeMessage
+      value: 
+      objectReference: {fileID: 404528161}
     - target: {fileID: 4002431421743731633, guid: 34b4640ccd3d49b45a66ef6c09448223, type: 3}
       propertyPath: clickToConfirmMessage
       value: 
