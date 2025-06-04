@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2164211591028757217}
   - component: {fileID: 1251779919027453346}
   - component: {fileID: 1900149687610012642}
+  - component: {fileID: 3852796149025789160}
   m_Layer: 5
   m_Name: ClickToConfirm
   m_TagString: Untagged
@@ -76,6 +77,35 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3852796149025789160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 127744675807792560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2538bc636b0b94c99e7249f5a9fb6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableFloat: 0
+  floatAmplitude: 10
+  floatSpeed: 2
+  enablePulse: 1
+  pulseAmplitude: 0.05
+  pulseSpeed: 10
+  enableIdleRotation: 0
+  rotationSpeed: 15
+  enableWiggle: 0
+  wiggleAmount: 10
+  wiggleSpeed: 3
+  enableColorShift: 0
+  colorA: {r: 1, g: 1, b: 1, a: 1}
+  colorB: {r: 0, g: 1, b: 1, a: 1}
+  colorLerpSpeed: 2
+  enableParallax: 1
+  parallaxStrength: 5
 --- !u!1 &372280831046958100
 GameObject:
   m_ObjectHideFlags: 0
@@ -2383,6 +2413,7 @@ GameObject:
   - component: {fileID: 5588037986257349954}
   - component: {fileID: 1752248647557907794}
   - component: {fileID: 6587124558628201712}
+  - component: {fileID: 1532548627829236748}
   m_Layer: 5
   m_Name: USBmissing
   m_TagString: Untagged
@@ -2448,6 +2479,35 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1532548627829236748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9173739897870692701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2538bc636b0b94c99e7249f5a9fb6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableFloat: 0
+  floatAmplitude: 10
+  floatSpeed: 2
+  enablePulse: 1
+  pulseAmplitude: 0.05
+  pulseSpeed: 15
+  enableIdleRotation: 0
+  rotationSpeed: 15
+  enableWiggle: 0
+  wiggleAmount: 10
+  wiggleSpeed: 3
+  enableColorShift: 0
+  colorA: {r: 1, g: 1, b: 1, a: 1}
+  colorB: {r: 0, g: 1, b: 1, a: 1}
+  colorLerpSpeed: 2
+  enableParallax: 1
+  parallaxStrength: 5
 --- !u!1001 &510624488754163190
 PrefabInstance:
   m_ObjectHideFlags: 0
