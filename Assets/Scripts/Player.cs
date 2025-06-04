@@ -28,7 +28,33 @@ public class Player : UnitController
     //[SerializeField] Player_AnimController animController;
 
     //public UIHandler uiHandler;
+    private void Awake()
+    {
+        if (usbMissingMessage == null)
+        {
+            usbMissingMessage = GameObject.FindGameObjectWithTag("USBMissing");
+            if (usbMissingMessage == null)
+                Debug.LogWarning("Player: could not find popup with tag 'USBMissing'");
+        }
 
+        if (clickToConfirmMessage == null)
+        {
+            clickToConfirmMessage = GameObject.FindGameObjectWithTag("ClickToConfirm");
+            if (clickToConfirmMessage == null)
+                Debug.LogWarning("Player: could not find popup with tag 'ClickToConfirm'");
+        }
+
+        if (noUSBInRangeMessage == null)
+        {
+            noUSBInRangeMessage = GameObject.FindGameObjectWithTag("USBNotInRange");
+            if (noUSBInRangeMessage == null)
+                Debug.LogWarning("Player: could not find popup with tag 'USBNotInRange'");
+        }
+
+        if (usbMissingMessage) usbMissingMessage.SetActive(false);
+        if (clickToConfirmMessage) clickToConfirmMessage.SetActive(false);
+        if (noUSBInRangeMessage) noUSBInRangeMessage.SetActive(false);
+    }
 
     private void Start()
     {
