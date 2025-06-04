@@ -16,45 +16,7 @@ public class Player : UnitController
     [HideInInspector] public int throwNumber;
     [HideInInspector] public int pickUpNumber;
 
-    public bool hasUSB = false;
-    public GameObject usbMissingMessage;
-    public GameObject clickToConfirmMessage;
-    public GameObject noUSBInRangeMessage;
-
-
-
-
-
-    //[SerializeField] Player_AnimController animController;
-
-    //public UIHandler uiHandler;
-    private void Awake()
-    {
-        if (usbMissingMessage == null)
-        {
-            usbMissingMessage = GameObject.FindGameObjectWithTag("USBMissing");
-            if (usbMissingMessage == null)
-                Debug.LogWarning("Player: could not find popup with tag 'USBMissing'");
-        }
-
-        if (clickToConfirmMessage == null)
-        {
-            clickToConfirmMessage = GameObject.FindGameObjectWithTag("ClickToConfirm");
-            if (clickToConfirmMessage == null)
-                Debug.LogWarning("Player: could not find popup with tag 'ClickToConfirm'");
-        }
-
-        if (noUSBInRangeMessage == null)
-        {
-            noUSBInRangeMessage = GameObject.FindGameObjectWithTag("USBNotInRange");
-            if (noUSBInRangeMessage == null)
-                Debug.LogWarning("Player: could not find popup with tag 'USBNotInRange'");
-        }
-
-        if (usbMissingMessage) usbMissingMessage.SetActive(false);
-        if (clickToConfirmMessage) clickToConfirmMessage.SetActive(false);
-        if (noUSBInRangeMessage) noUSBInRangeMessage.SetActive(false);
-    }
+    bool hasUSB = false;
 
     private void Start()
     {
@@ -82,14 +44,14 @@ public class Player : UnitController
 
         if (!gridManager.WasPickUpHighlightSuccessful())
         {
-            ShowNoUSBInRangeMessage();        // NEW
+            UIHandler.UIHandlerInstance.TriggerNoItemMessage(false);
             gridManager.TurnOffHighlight();
             canPickUp = false;
             SetStateChange(false);
             return;
         }
 
-        ShowClickToConfirmMessage();
+        UIHandler.UIHandlerInstance.TriggerConfirmClickMessage(false);
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -98,7 +60,7 @@ public class Player : UnitController
             {
                 PickUpFrom(clicked);
                 gridManager.TurnOffHighlight();
-                HideClickToConfirmMessage();
+                UIHandler.UIHandlerInstance.TriggerConfirmClickMessage(true);
             }
         }
     }
@@ -108,7 +70,8 @@ public class Player : UnitController
     {
         if (!hasUSB)
         {
-            ShowUSBMissingMessage();
+            UIHandler.UIHandlerInstance.TriggerNoItemMessage(true);
+            UIHandler.UIHandlerInstance.HideKeyItemHUD();
             canThrow = false;
             SetStateChange(false);
             return;
@@ -118,7 +81,7 @@ public class Player : UnitController
         {
             SetStateChange(true);
             gridManager.ThrowHighLight(throwNumber);
-            ShowClickToConfirmMessage();
+            UIHandler.UIHandlerInstance.TriggerConfirmClickMessage(false);
 
             if (Input.GetMouseButtonDown(0))
             {
@@ -127,7 +90,7 @@ public class Player : UnitController
                 {
                     ThrowTo(clicked);
                     gridManager.TurnOffHighlight();
-                    HideClickToConfirmMessage();
+                    UIHandler.UIHandlerInstance.TriggerConfirmClickMessage(true);
                 }
             }
         }
@@ -138,8 +101,6 @@ public class Player : UnitController
             SetStateChange(false);
         }
     }
-
-
 
     private void ClickToMove()
     {
@@ -237,10 +198,6 @@ public class Player : UnitController
         moveNumber += receivedNumber;
         canMove = true;
 
-        /*if (uiHandler != null)
-        {
-            uiHandler.UpdateMovementPointsText(number);
-        }*/
         PlayerManager.playerManagerInstance.PlayerPreMove(moveNumber);
         UIHandler.UIHandlerInstance.UpdateMovementPointsText(moveNumber);
     }
@@ -320,6 +277,7 @@ public class Player : UnitController
         if (tile.tileType == TileTypes.GoalTile)
         {
             hasUSB = false;
+            UIHandler.UIHandlerInstance.CheckForKeyItem(hasUSB);
             canThrow = false;
             UIHandler.UIHandlerInstance.HideKeyItemHUD(); // hide HUD
             PlayerManager.playerManagerInstance.PlayerWon();
@@ -328,6 +286,7 @@ public class Player : UnitController
         {
             ThrowKey(tile);
             hasUSB = false;
+            UIHandler.UIHandlerInstance.CheckForKeyItem(hasUSB);
             canThrow = false;
             SetStateChange(false);
             UIHandler.UIHandlerInstance.HideKeyItemHUD(); // hide HUD
@@ -341,12 +300,6 @@ public class Player : UnitController
         }
     }
 
-
-
-
-
-
-
     private void PickUpFrom(TileScript tile)
     {
         if (tile.tileType == TileTypes.KeyTile)
@@ -355,6 +308,7 @@ public class Player : UnitController
             KeyItemCheck();
             gridManager.ResetTileType(TileTypes.KeyTile);
             hasUSB = true;
+            UIHandler.UIHandlerInstance.CheckForKeyItem(hasUSB);
             canPickUp = false;
             SetStateChange(false);
             AICanMoveNow();
@@ -373,49 +327,13 @@ public class Player : UnitController
         }
     }
 
-    private void ShowUSBMissingMessage()
-    {
-        if (usbMissingMessage != null)
-        {
-            usbMissingMessage.SetActive(true);
-            StartCoroutine(HideMessage(usbMissingMessage, 2f));
-        }
-    }
-
-    private void ShowClickToConfirmMessage()
-    {
-        if (clickToConfirmMessage != null)
-            clickToConfirmMessage.SetActive(true);
-    }
-
-    private void HideClickToConfirmMessage()
-    {
-        if (clickToConfirmMessage != null)
-            clickToConfirmMessage.SetActive(false);
-    }
-
-    private IEnumerator HideMessage(GameObject messageObj, float duration)
-    {
-        yield return new WaitForSeconds(duration);
-        if (messageObj != null)
-            messageObj.SetActive(false);
-    }
-    private void ShowNoUSBInRangeMessage()
-    {
-        if (noUSBInRangeMessage != null)
-        {
-            noUSBInRangeMessage.SetActive(true);
-            StartCoroutine(HideMessage(noUSBInRangeMessage, 2f));
-        }
-    }
-
     private void AutoPickUpKey()
     {
         hasUSB = true;
         PlayerManager.playerManagerInstance.PlayerPickedUp();
         KeyItemCheck();
         gridManager.ResetTileType(TileTypes.KeyTile);
-        UIHandler.UIHandlerInstance.keyItemHUD.SetActive(true);
+        UIHandler.UIHandlerInstance.CheckForKeyItem(hasUSB);
     }
 
 

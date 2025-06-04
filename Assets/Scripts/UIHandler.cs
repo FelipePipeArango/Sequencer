@@ -7,8 +7,9 @@ public class UIHandler : MonoBehaviour
     public static UIHandler UIHandlerInstance;
 
     [SerializeField] public CompleteScreen goalSequence;
-    public TMP_Text characterMoveUI;
-    public GameObject keyItemHUD;
+    [SerializeField] UIMessages uiMessanger;
+    [SerializeField] TMP_Text characterMoveUI;
+    [SerializeField] GameObject keyItemHUD;
 
     private bool isHoveringOverInteractable = false;
 
@@ -28,19 +29,9 @@ public class UIHandler : MonoBehaviour
         UpdateMovementPointsText(0);
     }
 
-    void Update()
+    public void CheckForKeyItem(bool doesPlayerHaveUSB)
     {
-        CheckForKeyItem(); // Check every frame if key item exists
-    }
-
-    private void CheckForKeyItem()
-    {
-        GameObject[] items = GameObject.FindGameObjectsWithTag("Item");
-
-        if (items.Length == 0)
-        {
-            keyItemHUD.SetActive(true); // Show USB icon if no items remain
-        }
+        keyItemHUD.SetActive(doesPlayerHaveUSB);
     }
 
     public void OpenWinScreen()
@@ -63,6 +54,16 @@ public class UIHandler : MonoBehaviour
     {
         if (keyItemHUD != null)
             keyItemHUD.SetActive(false);
+    }
+
+    public void TriggerNoItemMessage(bool isThrowAction)
+    {
+        uiMessanger.RecieveNoItemMessage(isThrowAction);
+    }
+
+    public void TriggerConfirmClickMessage(bool completed)
+    {
+        uiMessanger.RecieveConfirmClickMessage(completed);
     }
 
 }
