@@ -257,60 +257,54 @@ public class Player : UnitController
 
     protected override IEnumerator Movement(Vector2Int direction)
     {
-        //animController.UpdateAnimations(true); 
-
+      
         Vector3 checkPos = new Vector3(
             transform.position.x + direction.x,
             0,
             transform.position.z + direction.y);
 
-        if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.None)
+        TileTypes nextTileType = gridManager.CheckWhatNextTileIs(checkPos);
+       
+        if (nextTileType == TileTypes.None)
         {
             transform.position += new Vector3(direction.x, 0, direction.y);
             moveNumber = 0;
             canMove = false;
             isBoardBelow = false;
-
-            /*if (uiHandler != null)
-                uiHandler.UpdateMovementPointsText(number);*/
         }
-        else if (gridManager.CheckWhatNextTileIs(checkPos) == TileTypes.PawnTile)
+        else if (nextTileType == TileTypes.PawnTile)            
         {
             if (push == 1)
             {
                 gridManager.AIActions.PushCompanion(direction);
                 MoveTo(direction, TileTypes.PlayerTile);
                 moveNumber--;
-
-                /*if (uiHandler != null)
-                    uiHandler.UpdateMovementPointsText(number);*/
-
-                yield return new WaitForSeconds(0.0f);
-                //animController.UpdateAnimations(false); 
                 push = 0;
             }
         }
-        else
+        else if (nextTileType == TileTypes.KeyTile)
         {
             MoveTo(direction, TileTypes.PlayerTile);
             moveNumber--;
-
-            /*if (uiHandler != null)
-                uiHandler.UpdateMovementPointsText(number);*/
-
-            yield return new WaitForSeconds(0.0f);
-
-            //animController.UpdateAnimations(false);
+            AutoPickUpKey();                                    
         }
+        else                                                  
+        {
+            MoveTo(direction, TileTypes.PlayerTile);
+            moveNumber--;
+        }
+        yield return new WaitForSeconds(0.0f);
 
         PlayerManager.playerManagerInstance.PlayerMoved(moveNumber);
         AICanMoveNow();
+
         if (moveNumber == 0)
         {
             canMove = false;
             push = 1;
         }
     }
+
     private void ThrowTo(TileScript tile)
     {
         int distance = gridManager.CalculateDistance(tile.transform.position, transform.position);
@@ -415,9 +409,14 @@ public class Player : UnitController
         }
     }
 
-
-
-
+    private void AutoPickUpKey()
+    {
+        hasUSB = true;
+        PlayerManager.playerManagerInstance.PlayerPickedUp();
+        KeyItemCheck();
+        gridManager.ResetTileType(TileTypes.KeyTile);
+        UIHandler.UIHandlerInstance.keyItemHUD.SetActive(true);
+    }
 
 
 }
