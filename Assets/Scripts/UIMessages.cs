@@ -25,7 +25,7 @@ public class UIMessages : MonoBehaviour
         if (usbMissingMessage != null)
         {
             usbMissingMessage.SetActive(true);
-            StartCoroutine(HideMessage(usbMissingMessage, 2f));
+            StartCoroutine(HideMessage(usbMissingMessage, 1f));
         }
     }
 
@@ -46,7 +46,7 @@ public class UIMessages : MonoBehaviour
         if (noUSBInRangeMessage != null)
         {
             noUSBInRangeMessage.SetActive(true);
-            StartCoroutine(HideMessage(noUSBInRangeMessage, 0.1f));
+            StartCoroutine(HideMessage(noUSBInRangeMessage, 1f));
         }
     }
 

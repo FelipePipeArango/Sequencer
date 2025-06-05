@@ -9,7 +9,7 @@ using static GameStates;
 
 public class GameButtons : MonoBehaviour
 {
-    public string activeScene;
+    [HideInInspector] public string activeScene;
 
     enum availableBuilds
     {
