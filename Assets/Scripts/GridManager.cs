@@ -28,13 +28,6 @@ public class GridManager : MonoBehaviour
     [HideInInspector] public Player playerActions;
     [HideInInspector] public AICompanion AIActions;
 
-    [Header("OBJECT POINTERS")]
-    [SerializeField] float goalPointerHeight;
-    [SerializeField] float keyItemPointerHeight;
-    [SerializeField] float tileHeight;
-    
-
-
     void Awake()
     {
         if (gridManager != null && gridManager != this)

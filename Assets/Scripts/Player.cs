@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using UnityEngine.SceneManagement;
 using static GameTiles;
 using static GridManager;
 
@@ -155,15 +154,6 @@ public class Player : UnitController
             WASD_Arrows();
         }
     }
-    private void Reload()
-    {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            string currentScene = SceneManager.GetActiveScene().name;
-            SceneManager.LoadScene(currentScene);
-        }
-    }
-
 
     private void PerformInput()
     {
@@ -184,7 +174,6 @@ public class Player : UnitController
             if (moveNumber == 0)
                 push = 1;
         }
-        Reload();
     }
 
     private void AICanMoveNow()
@@ -214,7 +203,6 @@ public class Player : UnitController
 
     protected override IEnumerator Movement(Vector2Int direction)
     {
-      
         Vector3 checkPos = new Vector3(
             transform.position.x + direction.x,
             0,
@@ -228,6 +216,7 @@ public class Player : UnitController
             moveNumber = 0;
             canMove = false;
             isBoardBelow = false;
+
         }
         else if (nextTileType == TileTypes.PawnTile)            
         {

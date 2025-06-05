@@ -43,13 +43,13 @@ public class CompleteScreen : MonoBehaviour
 
     void NextScene()
     {
-        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        /*int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         int nextSceneIndex = currentSceneIndex + 1;
 
         if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
         {
             SceneManager.LoadScene(nextSceneIndex);
-        }
+        }*/
     }
 
     public void PauseButton()
