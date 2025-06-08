@@ -53,17 +53,16 @@ public class AICompanion : UnitController
 
         if (OnMove != null)
             OnMove(canMove);
-        
+
         if (canMove)
         {
             while (gridManager.CheckWhatNextTileIs(checkPos) != TileTypes.None)
             {
+                yield return new WaitForSeconds(0.5f);
                 MoveTo(direction, TileTypes.PawnTile);
 
-                yield return new WaitForSeconds(0.5f);
                 checkPos += new Vector3(direction.x, 0, direction.y);
             }
-
         }
         if(isBefore == true)
             Sequencer.sequencer.PlayerAfterAction();

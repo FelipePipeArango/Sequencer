@@ -134,7 +134,7 @@ public class Sequencer : MonoBehaviour
         NextCard(lastNumber.value);
     }
 
-    public void AIAfterAction()
+    public void AICanMoveNow()
     {
         if (gridManager.AIActions != null
             && gridManager.AIActions.action != AIActions.Stay)
@@ -143,7 +143,6 @@ public class Sequencer : MonoBehaviour
             gridManager.AIActions.canMove = true;
         }
     }
-
     public void CommunicateAction(NumberItem recievedNumber, Actions usedAction)
     {
         for (int i = 0; i < levelCards.Length; i++)
@@ -156,8 +155,11 @@ public class Sequencer : MonoBehaviour
 
                 if (!levelCards[i].hasArrow)
                 {
-                    if (levelCards[i].cardAction == Actions.Enable)
+                    if (levelCards[i].cardAction == Actions.Enable) 
+                    { 
                         levelCards[recievedNumber.value - 1].Enable();
+                        levelCards[recievedNumber.value - 1].ExecuteAction(recievedNumber);
+                    }
                     else
                         levelCards[i].ExecuteAction(recievedNumber);
 
@@ -170,7 +172,10 @@ public class Sequencer : MonoBehaviour
                     if (!levelCards[i].isAIBefore)
                     {
                         if (levelCards[i].cardAction == Actions.Enable)
+                        {
                             levelCards[recievedNumber.value - 1].Enable();
+                            AICanMoveNow();
+                        }
                         else
                             levelCards[i].ExecuteAction(recievedNumber);
 
@@ -181,6 +186,11 @@ public class Sequencer : MonoBehaviour
                     else
                     {
                         // If isAIBefore == true
+                        if (levelCards[i].cardAction == Actions.Enable)
+                        {
+                            AICanMoveNow();
+                            levelCards[recievedNumber.value - 1].Enable();
+                        }
                         levelCards[i].Disable(recievedNumber);
                         NextCard(recievedNumber.value);
                         break;

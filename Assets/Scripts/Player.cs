@@ -10,6 +10,7 @@ public class Player : UnitController
     [HideInInspector] public bool canMove = false;
     [HideInInspector] public bool canThrow = false;
     [HideInInspector] public bool canPickUp = false;
+    [HideInInspector] public bool canEnable = false;
 
     [HideInInspector] public bool isAIBefore = false;
     [HideInInspector] public int push;
@@ -34,7 +35,7 @@ public class Player : UnitController
     }
     private void SetStateChange(bool state)
     {
-        if (state != Sequencer.sequencer.state)
+        if (state != Sequencer.sequencer.state)   
             Sequencer.sequencer.HandleStateChange(state);
         else
             return;
@@ -47,9 +48,9 @@ public class Player : UnitController
             gridManager.PickUpHighLight(pickUpNumber);
             if (Input.GetMouseButtonDown(0))
             {
-                if (gridManager.ClickedTile(0.8f) != null)
+                if (gridManager.ClickedTile(0.5f) != null)
                 {
-                    PickUpFrom(gridManager.ClickedTile(0.8f));
+                    PickUpFrom(gridManager.ClickedTile(0.5f));
                     gridManager.TurnOffHighlight();
                 }
             }
@@ -110,6 +111,11 @@ public class Player : UnitController
             }
         }
     }
+    private void CanEnable()
+    {
+        canEnable = false;
+        Sequencer.sequencer.AICanMoveNow();
+    }
     private void WASD_Arrows()
     {
         if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(Movement(Vector2Int.up));
@@ -153,12 +159,20 @@ public class Player : UnitController
             ClickToThrow();
             return;
         }
+        else if(canEnable)
+        {
+            CanEnable();
+            return;
+        }
         else if (canPickUp)
         {
             ClickToPickUp();
             return;
         }
-        else if (canMove)
+        else if (canMove && 
+                    (gridManager.AIActions == null ||
+                     gridManager.AIActions.canMove != true)
+                )
         {
             ClickToMove();
             WASDToMove();
@@ -168,10 +182,9 @@ public class Player : UnitController
         Reload();
     }
 
-    private void AICanMoveNow()
+    public void EnableReceiver()
     {
-        if (gridManager.AIActions != null)
-            Sequencer.sequencer.AIAfterAction();
+        canEnable = true;
     }
 
     public void MovementReceiver(int receivedNumber)
@@ -246,7 +259,7 @@ public class Player : UnitController
         }
 
         PlayerManager.playerManagerInstance.PlayerMoved(moveNumber);
-        AICanMoveNow();
+        Sequencer.sequencer.AICanMoveNow();
         if (moveNumber == 0)
         {
             canMove = false;
@@ -269,7 +282,7 @@ public class Player : UnitController
                 ThrowKey(tile);
                 canThrow = false;
                 SetStateChange(false);
-                AICanMoveNow();
+                Sequencer.sequencer.AICanMoveNow();
             }
         }
         else
@@ -289,7 +302,7 @@ public class Player : UnitController
             gridManager.ResetTileType(TileTypes.KeyTile);
             canPickUp = false;
             SetStateChange(false);
-            AICanMoveNow();
+            Sequencer.sequencer.AICanMoveNow();
         }
         else if (tile.tileType == TileTypes.ItemTile)
         {
@@ -297,7 +310,7 @@ public class Player : UnitController
             gridManager.ResetTileType(TileTypes.ItemTile);
             canPickUp = false;
             SetStateChange(false);
-            AICanMoveNow();
+            Sequencer.sequencer.AICanMoveNow();
         }
         else
         {

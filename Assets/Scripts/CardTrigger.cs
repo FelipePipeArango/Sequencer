@@ -232,6 +232,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         if (cardAction == Actions.Move) executeAction = ExecuteMoveAction;
         else if (cardAction == Actions.Pick_Up) executeAction = ExecutePickUpAction;
         else if (cardAction == Actions.Throw) executeAction = ExecuteThrowAction;
+        else if (cardAction == Actions.Enable) executeAction = ExecuteEnableAction;
         else executeAction = DefaultAction;
     }
 
@@ -253,6 +254,10 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     void ExecuteThrowAction(NumberItem numberItem)
     {
         gridManager.playerActions.ThrowReceiver(numberItem.value);
+    }
+    void ExecuteEnableAction(NumberItem numberItem)
+    {
+        gridManager.playerActions.EnableReceiver();
     }
 
     void DefaultAction(NumberItem numberItem)
