@@ -7,6 +7,8 @@ using static GridManager;
 
 public class Player : UnitController
 {
+    [SerializeField] public float pickUpOffset = 0.5f;
+
     [HideInInspector] public bool canMove = false;
     [HideInInspector] public bool canThrow = false;
     [HideInInspector] public bool canPickUp = false;
@@ -48,9 +50,9 @@ public class Player : UnitController
             gridManager.PickUpHighLight(pickUpNumber);
             if (Input.GetMouseButtonDown(0))
             {
-                if (gridManager.ClickedTile(0.5f) != null)
+                if (gridManager.ClickedTile(pickUpOffset) != null)
                 {
-                    PickUpFrom(gridManager.ClickedTile(0.5f));
+                    PickUpFrom(gridManager.ClickedTile(pickUpOffset));
                     gridManager.TurnOffHighlight();
                 }
             }
