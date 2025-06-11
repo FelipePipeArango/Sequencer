@@ -14,6 +14,7 @@ public class GridManager : MonoBehaviour
     private GameObject[] allTiles;
     public TileScript[,] grid;
     TileScript[] tiles;
+    private bool lastPickUpHighlightSucceeded = false;
 
     [Header("MANDATORY PIECES IN A LEVEL")]
     public GameObject player;
@@ -26,12 +27,6 @@ public class GridManager : MonoBehaviour
     public GameObject numberHUD; //Should at some point go to card manager
     [HideInInspector] public Player playerActions;
     [HideInInspector] public AICompanion AIActions;
-
-    [Header("OBJECT POINTERS")]
-    [SerializeField] float goalPointerHeight;
-    [SerializeField] float keyItemPointerHeight;
-    [SerializeField] float tileHeight;
-
 
     void Awake()
     {
@@ -227,28 +222,31 @@ public class GridManager : MonoBehaviour
     public void PickUpHighLight(int amount)
     {
         int distance;
+        bool found = false;
+
         foreach (var tile in tiles)
         {
             distance = CalculateDistance(
-                tile.transform.position, 
+                tile.transform.position,
                 playerActions.transform.position);
             if (distance == amount)
             {
-                if (tile.tileType == TileTypes.KeyTile)
+                if (tile.tileType == TileTypes.KeyTile ||
+                    tile.tileType == TileTypes.ItemTile)
                 {
                     HighlightTile(tile);
-                }
-                if (tile.tileType == TileTypes.ItemTile)
-                {
-                    HighlightTile(tile);                 
-                }
-                if (tile.tileType == TileTypes.EmptyTile)
-                {
-                    //No PickUp Available
+                    found = true;
                 }
             }
         }
+        lastPickUpHighlightSucceeded = found;
     }
+
+    public bool WasPickUpHighlightSuccessful()
+    {
+        return lastPickUpHighlightSucceeded;
+    }
+
     private void HighlightTile(TileScript tile)
     {
         tile.pointer.transform.position = new Vector3(

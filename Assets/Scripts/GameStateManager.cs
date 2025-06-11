@@ -3,7 +3,7 @@ using static GameStates;
 
 public class GameStateManager : MonoBehaviour
 {
-    public static GameStateManager StateManagerInstance;
+    public static GameStateManager gameStateManagerInstance;
 
     public delegate void StateChangeEvent(gameStates state);
     public static event StateChangeEvent stateEvent;
@@ -12,8 +12,8 @@ public class GameStateManager : MonoBehaviour
 
     private void Awake()
     {
-        if (StateManagerInstance == null)
-            StateManagerInstance = this;
+        if (gameStateManagerInstance == null)
+            gameStateManagerInstance = this;
         else
             Destroy(gameObject);
     }

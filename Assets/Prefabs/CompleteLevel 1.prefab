@@ -144,6 +144,7 @@ GameObject:
   - component: {fileID: 6975007935332020999}
   - component: {fileID: 228945277677439316}
   - component: {fileID: 6745482008176058970}
+  - component: {fileID: 6417789147904451252}
   m_Layer: 5
   m_Name: CompleteLevel 1
   m_TagString: Untagged
@@ -225,6 +226,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CardsInLevel: {fileID: 0}
   NumberSlot: {fileID: 0}
+  HUDIcons: {fileID: 0}
+--- !u!114 &6417789147904451252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3035722585940310870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ea3fb38ff2ea1848a42c0fb19383587, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scene:
+    m_AssetGUID: d6b30e336ec390348ba81609ba7c3bf6
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
 --- !u!1 &5791097632286020331
 GameObject:
   m_ObjectHideFlags: 0
@@ -352,6 +371,18 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 3035722585940310870}
+        m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
