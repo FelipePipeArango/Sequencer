@@ -1,8 +1,11 @@
+using System;
 using UnityEngine;
 using static GameTiles;
 
 public class TileScript : MonoBehaviour
 {
+    public static event Action<TileScript> OnTileArrowClicked;
+
     [HideInInspector] public TileTypes tileType { get; set; }
     public GameObject pointer;
 
@@ -30,5 +33,11 @@ public class TileScript : MonoBehaviour
     public void ResetColor()
     {
         SetColor(setColor);
+    }
+
+    public void TileSelectedButton()
+    {
+        OnTileArrowClicked?.Invoke(this);
+        Debug.Log("Selected");
     }
 }

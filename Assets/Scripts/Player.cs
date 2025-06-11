@@ -19,6 +19,17 @@ public class Player : UnitController
     [HideInInspector] public int pickUpNumber;
 
     bool hasUSB = false;
+    TileScript selectedTile;
+
+    private void OnEnable()
+    {
+        TileScript.OnTileArrowClicked += UpdateSelectedTile;
+    }
+
+    private void OnDisable()
+    {
+        TileScript.OnTileArrowClicked -= UpdateSelectedTile;
+    }
 
     private void Start()
     {
@@ -31,6 +42,12 @@ public class Player : UnitController
         PerformInput();
         IfFall();
     }
+
+    void UpdateSelectedTile(TileScript recievedTile)
+    {
+        selectedTile = recievedTile;
+    }
+
     private void SetStateChange(bool state)
     {
         if (state != Sequencer.sequencer.state)   
@@ -55,7 +72,15 @@ public class Player : UnitController
 
         UIHandler.UIHandlerInstance.TriggerConfirmClickMessage(false);
 
-        if (Input.GetMouseButtonDown(0))
+        if (selectedTile != null)
+        {
+            PickUpFrom(selectedTile);
+            gridManager.TurnOffHighlight();
+            UIHandler.UIHandlerInstance.TriggerConfirmClickMessage(true);
+            selectedTile = null;
+        }
+
+        /*if (Input.GetMouseButtonDown(0))
         {
             TileScript clicked = gridManager.ClickedTile(0.8f);
             if (clicked != null)
@@ -64,7 +89,7 @@ public class Player : UnitController
                 gridManager.TurnOffHighlight();
                 UIHandler.UIHandlerInstance.TriggerConfirmClickMessage(true);
             }
-        }
+        }*/
     }
 
 
@@ -85,16 +110,24 @@ public class Player : UnitController
             gridManager.ThrowHighLight(throwNumber);
             UIHandler.UIHandlerInstance.TriggerConfirmClickMessage(false);
 
-            if (Input.GetMouseButtonDown(0))
+            if (selectedTile != null)
             {
-                TileScript clicked = gridManager.ClickedTile(0.6f);
-                if (clicked != null)
+                ThrowTo(selectedTile);
+                gridManager.TurnOffHighlight();
+                UIHandler.UIHandlerInstance.TriggerConfirmClickMessage(true);
+                selectedTile = null;
+            }
+
+            /*if (Input.GetMouseButtonDown(0))
+            {
+                //TileScript clicked = gridManager.ClickedTile(0.6f);
+                if (selectedTile != null)
                 {
-                    ThrowTo(clicked);
+                    ThrowTo(selectedTile);
                     gridManager.TurnOffHighlight();
                     UIHandler.UIHandlerInstance.TriggerConfirmClickMessage(true);
                 }
-            }
+            }*/
         }
         else
         {
@@ -269,37 +302,26 @@ public class Player : UnitController
     {
         int distance = gridManager.CalculateDistance(tile.transform.position, transform.position);
 
-        if (distance != throwNumber)
+        if (distance == throwNumber)
         {
-            Debug.Log("Too close or too far to throw");
-            canThrow = false;
-            SetStateChange(false);
-            return;
-        }
-
-        if (tile.tileType == TileTypes.GoalTile)
-        {
-            hasUSB = false;
-            UIHandler.UIHandlerInstance.CheckForKeyItem(hasUSB);
-            canThrow = false;
-            UIHandler.UIHandlerInstance.HideKeyItemHUD(); // hide HUD
-            PlayerManager.playerManagerInstance.PlayerWon();
-        }
-        else if (tile.tileType == TileTypes.EmptyTile)
-        {
-            ThrowKey(tile);
-            hasUSB = false;
-            UIHandler.UIHandlerInstance.CheckForKeyItem(hasUSB);
-            canThrow = false;
-            SetStateChange(false);
-            UIHandler.UIHandlerInstance.HideKeyItemHUD(); // hide HUD
-            Sequencer.sequencer.AICanMoveNow();
-        }
-        else
-        {
-            Debug.Log("Tile not valid for throwing");
-            canThrow = false;
-            SetStateChange(false);
+            if (tile.tileType == TileTypes.GoalTile)
+            {
+                hasUSB = false;
+                UIHandler.UIHandlerInstance.CheckForKeyItem(hasUSB);
+                canThrow = false;
+                UIHandler.UIHandlerInstance.HideKeyItemHUD(); // hide HUD
+                PlayerManager.playerManagerInstance.PlayerWon();
+            }
+            else if (tile.tileType == TileTypes.EmptyTile)
+            {
+                ThrowKey(tile);
+                hasUSB = false;
+                UIHandler.UIHandlerInstance.CheckForKeyItem(hasUSB);
+                canThrow = false;
+                SetStateChange(false);
+                UIHandler.UIHandlerInstance.HideKeyItemHUD(); // hide HUD
+                Sequencer.sequencer.AICanMoveNow();
+            } 
         }
     }
 

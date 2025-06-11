@@ -80,7 +80,6 @@ public class Sequencer : MonoBehaviour
             gridManager.AIActions.isIAActive = true;
         }
     }
-    //hdalksjdh
 
     public void HandleStateChange(bool isMoving)
     {
@@ -158,7 +157,6 @@ public class Sequencer : MonoBehaviour
                     if (levelCards[i].cardAction == Actions.Enable) 
                     { 
                         levelCards[recievedNumber.value - 1].Enable();
-                        levelCards[recievedNumber.value - 1].ExecuteAction(recievedNumber);
                     }
                     else
                         levelCards[i].ExecuteAction(recievedNumber);
