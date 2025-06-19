@@ -1,6 +1,7 @@
 using UnityEngine;
-using Color = UnityEngine.Color;
 using static GameTiles;
+using static UnityEngine.Rendering.DebugUI;
+using Color = UnityEngine.Color;
 
 public class GridManager : MonoBehaviour
 {
@@ -116,6 +117,7 @@ public class GridManager : MonoBehaviour
         {
             case GameActions.Actions.Move:
                 MoveDistanceHighLight(value, playerActions.transform.position);
+                Debug.Log("second: " + value);
                 break;
 
             case GameActions.Actions.Pick_Up:
@@ -205,6 +207,7 @@ public class GridManager : MonoBehaviour
     {
         if (amount == 0)
         {
+            Debug.Log("third: " + amount);
             return;
         }
 
