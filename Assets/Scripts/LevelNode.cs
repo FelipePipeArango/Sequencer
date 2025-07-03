@@ -1,11 +1,14 @@
 using System.Collections;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static Difficulties;
 
 [System.Serializable]
 public class LevelNode : MonoBehaviour
 {
+    Color nodeColor;
     [HideInInspector] public string levelName;
 
     [HideInInspector] public bool isUnlocked;
@@ -13,7 +16,7 @@ public class LevelNode : MonoBehaviour
 
     [Header("Visuals - don't modify")]
     public TextMeshProUGUI levelTitleText;
-    public Image difficultyImage; 
+    public GameObject completeText; 
     public Image levelThumbnail;
     public Button levelButton;
 
@@ -26,6 +29,8 @@ public class LevelNode : MonoBehaviour
     {
         levelTitleText.text = levelName;
         levelButton.interactable = isUnlocked;
+
+        if (isCleared) completeText.SetActive(true);
     }
 
     public void OnLevelSelect()

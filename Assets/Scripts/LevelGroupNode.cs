@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using static Difficulties;
 
 [System.Serializable]
 public class LevelGroupNode : MonoBehaviour
@@ -20,6 +22,13 @@ public class LevelGroupNode : MonoBehaviour
     public bool isUnlocked;
     [HideInInspector] public bool isGroupClear = false;
 
+    [Header("Visual Color")]
+    [SerializeField] Color groupColor;
+
+    [Header("Difficulty of the node")]
+    [SerializeField] difficultyLevel nodeDifficulty;
+    [SerializeField] Difficulties difficultyDB;
+
     [HideInInspector] public LevelNode[] subLevelNodes;
 
     [Header("Groups connected to this")]
@@ -27,13 +36,20 @@ public class LevelGroupNode : MonoBehaviour
     
     [Header("Visuals - don't modify")]
     public TextMeshProUGUI levelTitleText;
-    public Image difficultyImage; 
+    public Image hoverImage; 
     public Image levelThumbnail;
     public Button levelButton;
+    [SerializeField] Image difficultyImage;
+
 
     private void Awake()
     {
+        Color nodeColor;
         subLevelNodes = containedLevels.GetComponentsInChildren<LevelNode>();
+        levelThumbnail.color = groupColor;
+        hoverImage.color = groupColor;
+        nodeColor = difficultyDB.AssignColorDifficulty(nodeDifficulty);
+        difficultyImage.color = nodeColor;
     }
 
     public void RefillProgress(int amountLevelsCompleted)
@@ -48,8 +64,10 @@ public class LevelGroupNode : MonoBehaviour
 
     public void UpdateLevelGroupUI()
     {
+        Debug.Log("first");
         if (isUnlocked)
         {
+            Debug.Log("second");
             levelGroupName = this.name;
             int i = 0;
             foreach (var level in subLevelNodes)
