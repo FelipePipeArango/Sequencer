@@ -119,7 +119,11 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
             if (hoveredNumberItem != null)
             {
-                if (cardAction == Actions.Move) gridManager.TurnOnHighlight(Actions.Move, hoveredNumberItem.value);
+                if (cardAction == Actions.Move)
+                {
+                    gridManager.TurnOnHighlight(Actions.Move, hoveredNumberItem.value);
+                    Debug.Log("" + hoveredNumberItem.value);
+                }
                 else if (cardAction == Actions.Pick_Up) gridManager.TurnOnHighlight(Actions.Pick_Up, hoveredNumberItem.value);
                 else if (cardAction == Actions.Throw) gridManager.TurnOnHighlight(Actions.Throw, hoveredNumberItem.value);
                 isInUse = true;
