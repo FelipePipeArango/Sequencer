@@ -50,8 +50,7 @@ public class UnitController : MonoBehaviour
             case TileTypes.ItemTile:
                 {
                     MoveToTile(direction, spawnTileType);
-
-                    NumberItemCheck();
+                    NumberItemCheck(checkPos);
                 }
                 break;
             case TileTypes.EmptyTile:
@@ -65,7 +64,7 @@ public class UnitController : MonoBehaviour
 
     }
 
-    protected bool IsSomethingWithinPickUpRadiusOfPlayer(int radius)
+    /*protected bool IsSomethingWithinPickUpRadiusOfPlayer(int radius)
     {
         if (radius == gridManager.CalculateDistance(
             transform.position,
@@ -81,7 +80,7 @@ public class UnitController : MonoBehaviour
         }
         else
             return false;
-    }
+    }*/
 
     protected void IfFall()
     {
@@ -156,11 +155,13 @@ public class UnitController : MonoBehaviour
         else return false;
     }
 
-    protected void NumberItemCheck()
+    protected void NumberItemCheck(Vector3 pos)
     {
         if(gridManager.numberPickUp != null)
-            gridManager.numberPickUp.SetActive(false);
-        gridManager.numberHUD.SetActive(true);
+        {
+            gridManager.DetermineItem(pos).PickedUp();
+        }
+
         hasNumber = true;
     }
 }

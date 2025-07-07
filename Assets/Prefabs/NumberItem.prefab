@@ -331,6 +331,7 @@ GameObject:
   - component: {fileID: 5979691997627394624}
   - component: {fileID: 3396101053969899950}
   - component: {fileID: 5180425433985363534}
+  - component: {fileID: 1265647324105023471}
   m_Layer: 0
   m_Name: NumberItem
   m_TagString: NumberItem
@@ -427,3 +428,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1265647324105023471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5002639537613505352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a2139e0128df9644859153ee57159f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_TextMeshPro: {fileID: 5805962489780699573}
+  assignedNumberValue: 2
+  assignedNumberHUD: {fileID: 0}

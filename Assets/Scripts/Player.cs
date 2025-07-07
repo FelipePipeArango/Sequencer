@@ -340,7 +340,7 @@ public class Player : UnitController
         }
         else if (tile.tileType == TileTypes.ItemTile)
         {
-            NumberItemCheck();
+            NumberItemCheck(tile.transform.position);
             gridManager.ResetTileType(TileTypes.ItemTile);
             canPickUp = false;
             SetStateChange(false);

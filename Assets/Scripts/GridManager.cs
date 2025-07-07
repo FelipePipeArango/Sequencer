@@ -24,8 +24,7 @@ public class GridManager : MonoBehaviour
 
     [Header("OPTIONAL OBJECTS IN A LEVEL")]
     public GameObject AICompanion;
-    public GameObject numberPickUp;
-    public GameObject numberHUD; //Should at some point go to card manager
+    public PickUpNumber[] numberPickUp;
     [HideInInspector] public Player playerActions;
     [HideInInspector] public AICompanion AIActions;
 
@@ -56,8 +55,11 @@ public class GridManager : MonoBehaviour
     {
         UpdateTileType(keyItem.transform.position, TileTypes.KeyTile);
         if (numberPickUp != null) 
-        { 
-            UpdateTileType(numberPickUp.transform.position, TileTypes.ItemTile);
+        {
+            for (int i = 0; i < numberPickUp.Length; i++)
+            {
+                UpdateTileType(numberPickUp[i].transform.position, TileTypes.ItemTile); 
+            }
         }
         UpdateTileType(goal.transform.position, TileTypes.GoalTile);
     }
@@ -161,6 +163,19 @@ public class GridManager : MonoBehaviour
             }
         }
         return TileTypes.None;
+    }
+
+    public PickUpNumber DetermineItem(Vector3 pos)
+    {
+        foreach (PickUpNumber pickUpNumber in numberPickUp)
+        {
+            if(pickUpNumber.transform.position.x == pos.x && pickUpNumber.transform.position.z == pos.z)
+            {
+                return pickUpNumber;
+            }
+        }
+
+        return null;
     }
 
     private void StoreGrid()
