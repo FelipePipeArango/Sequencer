@@ -5,7 +5,7 @@ using UnityEngine;
 public class SceneHolder : MonoBehaviour
 {
     public static SceneHolder sceneHolderInstance;
-    string currenteScene;
+    [SerializeField] string currenteScene;
     private void OnEnable()
     {
         SceneLoader.OnSceneLoad += HoldCurrentScene;
