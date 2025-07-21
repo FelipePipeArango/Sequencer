@@ -79,17 +79,6 @@ public class Player : UnitController
             UIHandler.UIHandlerInstance.TriggerConfirmClickMessage(true);
             selectedTile = null;
         }
-
-        /*if (Input.GetMouseButtonDown(0))
-        {
-            TileScript clicked = gridManager.ClickedTile(0.8f);
-            if (clicked != null)
-            {
-                PickUpFrom(clicked);
-                gridManager.TurnOffHighlight();
-                UIHandler.UIHandlerInstance.TriggerConfirmClickMessage(true);
-            }
-        }*/
     }
 
 
@@ -99,6 +88,14 @@ public class Player : UnitController
         {
             UIHandler.UIHandlerInstance.TriggerNoItemMessage(true);
             UIHandler.UIHandlerInstance.HideKeyItemHUD();
+            canThrow = false;
+            SetStateChange(false);
+            return;
+        }
+
+        if (!gridManager.WasThrowHighlightSuccessful())
+        {
+            UIHandler.UIHandlerInstance.TriggerNoValidCell();
             canThrow = false;
             SetStateChange(false);
             return;
@@ -117,17 +114,6 @@ public class Player : UnitController
                 UIHandler.UIHandlerInstance.TriggerConfirmClickMessage(true);
                 selectedTile = null;
             }
-
-            /*if (Input.GetMouseButtonDown(0))
-            {
-                //TileScript clicked = gridManager.ClickedTile(0.6f);
-                if (selectedTile != null)
-                {
-                    ThrowTo(selectedTile);
-                    gridManager.TurnOffHighlight();
-                    UIHandler.UIHandlerInstance.TriggerConfirmClickMessage(true);
-                }
-            }*/
         }
         else
         {
@@ -321,7 +307,11 @@ public class Player : UnitController
                 SetStateChange(false);
                 UIHandler.UIHandlerInstance.HideKeyItemHUD(); // hide HUD
                 Sequencer.sequencer.AICanMoveNow();
-            } 
+            }
+        }
+        else
+        {
+            Debug.Log("uy oe");
         }
     }
 

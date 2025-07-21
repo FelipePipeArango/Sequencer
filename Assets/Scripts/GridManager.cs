@@ -16,6 +16,7 @@ public class GridManager : MonoBehaviour
     public TileScript[,] grid;
     TileScript[] tiles;
     private bool lastPickUpHighlightSucceeded = false;
+    private bool lastThrowHighlightSucceeded = false;
 
     [Header("MANDATORY PIECES IN A LEVEL")]
     public GameObject player;
@@ -281,6 +282,7 @@ public class GridManager : MonoBehaviour
 
     public void ThrowHighLight(int amount)
     {
+        bool found = false;
         int distance;
         foreach (var tile in tiles)
         {
@@ -292,13 +294,21 @@ public class GridManager : MonoBehaviour
                 if (tile.tileType == TileTypes.EmptyTile)
                 {
                     HighlightTile(tile);
+                    found = true;
                 }
                 else if (tile.tileType == TileTypes.GoalTile)
                 {
                     HighlightTile(tile);
+                    found = true;
                 }
             }
         }
+        lastThrowHighlightSucceeded = found;
+    }
+
+    public bool WasThrowHighlightSuccessful()
+    {
+        return lastThrowHighlightSucceeded;
     }
 
 

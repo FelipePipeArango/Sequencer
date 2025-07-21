@@ -7,11 +7,21 @@ public class UIMessages : MonoBehaviour
     [SerializeField] GameObject usbMissingMessage;
     [SerializeField] GameObject clickToConfirmMessage;
     [SerializeField] GameObject noUSBInRangeMessage;
+    [SerializeField] GameObject noValidCell;
 
     public void RecieveNoItemMessage(bool isThrow)
     {
         if (isThrow) NoItemToThrowMessage();
         else ShowNoItemToPickUpMessage();
+    }
+
+    public void RecieveNoValidCellMessage()
+    {
+        if (noValidCell != null)
+        {
+            noValidCell.SetActive(true);
+            StartCoroutine(HideMessage(noValidCell, 1f));
+        }
     }
 
     public void RecieveConfirmClickMessage(bool isComplete)

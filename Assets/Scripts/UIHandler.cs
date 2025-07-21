@@ -61,6 +61,11 @@ public class UIHandler : MonoBehaviour
         uiMessanger.RecieveNoItemMessage(isThrowAction);
     }
 
+    public void TriggerNoValidCell()
+    {
+        uiMessanger.RecieveNoValidCellMessage();
+    }
+
     public void TriggerConfirmClickMessage(bool completed)
     {
         uiMessanger.RecieveConfirmClickMessage(completed);
