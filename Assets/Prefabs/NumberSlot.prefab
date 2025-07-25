@@ -67,8 +67,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: ce2fbec3dea83d74c9c886932c2bacc0, type: 2}
+  m_sharedMaterial: {fileID: -3469886307593827793, guid: ce2fbec3dea83d74c9c886932c2bacc0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -222,6 +222,7 @@ GameObject:
   - component: {fileID: 9035540372112879775}
   - component: {fileID: 6266694025930799847}
   - component: {fileID: 5314285981692923203}
+  - component: {fileID: 1007426560037418877}
   m_Layer: 5
   m_Name: NumberSlot
   m_TagString: Interactable
@@ -319,6 +320,27 @@ MonoBehaviour:
   yAmplitude: 8
   zAmplitude: 8
   tiltSpeed: 2
+--- !u!95 &1007426560037418877
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5131192903137520530}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a8f4881711310524e93551d4d3bd2064, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &5596116490235334550
 GameObject:
   m_ObjectHideFlags: 0

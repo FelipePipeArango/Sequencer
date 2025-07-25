@@ -1566,7 +1566,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardsInLevel: {fileID: 5036883689859713858}
-  cardAnimator: []
+  numbersInLevel: {fileID: 1601730299396379067}
 --- !u!1 &5036883689859713858
 GameObject:
   m_ObjectHideFlags: 0
@@ -1691,10 +1691,10 @@ MonoBehaviour:
   enableWiggle: 1
   wiggleAmount: 1
   wiggleSpeed: 2
-  enableColorShift: 1
+  enableColorShift: 0
   colorA: {r: 1, g: 1, b: 1, a: 1}
   colorB: {r: 0, g: 1, b: 1, a: 1}
-  colorLerpSpeed: 2
+  colorLerpSpeed: 0.72
   enableParallax: 1
   parallaxStrength: 5
 --- !u!1 &5689879239888120043

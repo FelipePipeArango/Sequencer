@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using TMPro;
-using static GridManager;
 using static GameActions;
 using static GameDirections;
+using static GridManager;
+using static UnityEngine.Rendering.DebugUI;
 
 public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
@@ -138,6 +139,12 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     {
         gridManager.TurnOffHighlight();
         cabbleConnecting.CancelCable(false);
+
+        if (this != null)
+        {
+            DroppedNumber?.Invoke(hoveredNumberItem.value, false); 
+        }
+
         hoveredNumberItem = null;
         isInUse = false;
 
@@ -175,8 +182,8 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         }
         if (usedText != null) usedText.gameObject.SetActive(false);
 
-        DroppedNumber?.Invoke(0, false);
-        
+        DroppedNumber?.Invoke(draggableItem.value, true);
+
         StartDissolve();
         isUsed = true;
     }
