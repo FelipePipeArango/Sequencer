@@ -254,13 +254,13 @@ public class Player : UnitController
         }
         else if (nextTileType == TileTypes.PawnTile)            
         {
-            if (push == 1)
+            /*if (push == 1)
             {
                 gridManager.AIActions.PushCompanion(direction);
                 MoveTo(direction, TileTypes.PlayerTile);
                 moveNumber--;
                 push = 0;
-            }
+            }*/
         }
         else if (nextTileType == TileTypes.KeyTile)
         {

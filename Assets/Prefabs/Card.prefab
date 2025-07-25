@@ -303,6 +303,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5610801331343184543}
   - component: {fileID: 1784470278596650940}
+  - component: {fileID: 7315590146963343756}
   m_Layer: 5
   m_Name: Card
   m_TagString: Card
@@ -371,6 +372,27 @@ MonoBehaviour:
   arrowDirection: 4
   slot: 0
   cabbleConnecting: {fileID: 0}
+--- !u!95 &7315590146963343756
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2394595093392532507}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 41625871cd9919749bf51f5464522559, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &3031628352871253275
 GameObject:
   m_ObjectHideFlags: 0
@@ -671,7 +693,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4293055489
+    rgba: 4294962944
   m_fontColor: {r: 0.0039215437, g: 0.83296925, b: 0.8862745, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3

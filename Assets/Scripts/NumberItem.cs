@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 
 public class NumberItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
@@ -11,15 +12,13 @@ public class NumberItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDr
     [HideInInspector] public Transform parentTransform;
     [SerializeField] TextMeshProUGUI numberText;
 
-    public delegate void DragActions(int number, bool isGrabing);
-    public static event DragActions OnDragAction;
-
     [SerializeField] Camera UiCamera;
     public Vector3 mousePosition;
     public Vector3 world;
     Canvas canvas;
 
     private RectTransform thisRectTransform;
+    public static event Action<int, bool> DragingNumber;
 
     void Awake()
     {
@@ -43,8 +42,6 @@ public class NumberItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDr
                 canvas = canvasObj.GetComponent<Canvas>();
             }
         }
-
-
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -55,10 +52,7 @@ public class NumberItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDr
         image.raycastTarget = false;
         transform.SetAsLastSibling();
 
-        if (OnDragAction != null)
-        {
-            OnDragAction(value, true);
-        }
+        DragingNumber?.Invoke(value, true);
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -88,10 +82,6 @@ public class NumberItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDr
     {
         transform.SetParent(parentTransform);
         image.raycastTarget = true;
-
-        if (OnDragAction != null)
-        {
-            OnDragAction(value, false);
-        }
+        DragingNumber?.Invoke(value, false);
     }
 }

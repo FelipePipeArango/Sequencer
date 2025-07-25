@@ -25,11 +25,10 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     public bool available = true;
     public Actions cardAction;
 
-    public delegate void GrabActions(int number, bool isGrabbing);
-    public static event GrabActions OnGrab;
-
     public delegate void DropAction(NumberItem item, Actions action);
     public static event DropAction OnDropAction;
+
+    public static event Action<int, bool> DroppedNumber;
 
     private Action<NumberItem> executeAction;
     private NumberItem hoveredNumberItem;
@@ -122,7 +121,6 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
                 if (cardAction == Actions.Move)
                 {
                     gridManager.TurnOnHighlight(Actions.Move, hoveredNumberItem.value);
-                    Debug.Log("" + hoveredNumberItem.value);
                 }
                 else if (cardAction == Actions.Pick_Up) gridManager.TurnOnHighlight(Actions.Pick_Up, hoveredNumberItem.value);
                 else if (cardAction == Actions.Throw) gridManager.TurnOnHighlight(Actions.Throw, hoveredNumberItem.value);
@@ -168,7 +166,6 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         }
 
         Sequencer.sequencer.CommunicateAction(draggableItem, cardAction);
-        OnGrab?.Invoke(0, false);
 
         // Mark as used
         available = false;
@@ -178,14 +175,9 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         }
         if (usedText != null) usedText.gameObject.SetActive(false);
 
-
+        DroppedNumber?.Invoke(0, false);
         
         StartDissolve();
-
-        if (hoveredNumberItem != null)
-        {
-            Debug.Log("Dropped " + hoveredNumberItem.value + " on " + cardAction + " action.");
-        }
         isUsed = true;
     }
 
