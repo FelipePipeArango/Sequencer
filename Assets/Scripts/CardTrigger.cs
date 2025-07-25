@@ -140,7 +140,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         gridManager.TurnOffHighlight();
         cabbleConnecting.CancelCable(false);
 
-        if (this != null)
+        if (this.gameObject.activeSelf == true)
         {
             DroppedNumber?.Invoke(hoveredNumberItem.value, false); 
         }
