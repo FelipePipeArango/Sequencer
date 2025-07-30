@@ -8,6 +8,7 @@ public class UIMessages : MonoBehaviour
     [SerializeField] GameObject clickToConfirmMessage;
     [SerializeField] GameObject noUSBInRangeMessage;
     [SerializeField] GameObject noValidCell;
+    [SerializeField] GameObject companionMovingMessage;
 
     public void RecieveNoItemMessage(bool isThrow)
     {
@@ -28,6 +29,12 @@ public class UIMessages : MonoBehaviour
     {
         if (!isComplete) ShowClickToConfirmMessage();
         else HideClickToConfirmMessage();
+    }
+
+    public void RecieveCompanionMovingMessage(bool isMoving)
+    {
+        if (isMoving) companionMovingMessage.SetActive(true);
+        else companionMovingMessage.SetActive(false);
     }
 
     private void NoItemToThrowMessage()

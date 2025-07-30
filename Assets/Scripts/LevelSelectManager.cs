@@ -7,6 +7,8 @@ public class LevelSelectManager : MonoBehaviour
 {
     public static LevelSelectManager levelSelectManagerInstance;
 
+    [SerializeField] bool unlockedMode;
+
     int dontReset;
     GameObject mainLevelMenu;
     int[] levelGroupTracker;
@@ -67,6 +69,14 @@ public class LevelSelectManager : MonoBehaviour
                 unlockedGroups.Add(levelGroups[0].levelGroupNumber);
             }
 
+            if(unlockedMode)
+            {
+                foreach (var group in unlockedGroups)
+                {
+                    levelGroups[group].EnableEverything(); 
+                }
+            }
+
             FillValues();
         }
     }
@@ -75,7 +85,7 @@ public class LevelSelectManager : MonoBehaviour
     {
         foreach (var group in unlockedGroups) //every unlocked group
         {
-            levelGroups[group].RefillProgress(levelGroupTracker[group]); //has it's progress refilled
+            levelGroups[group].RefillProgress(levelGroupTracker[group]); //has it's progress refilled 
         }
 
         CheckCompletedLevelGroups();
@@ -97,13 +107,16 @@ public class LevelSelectManager : MonoBehaviour
 
     void UnlockNextGroups()
     {
-        foreach (var levelGroup in levelGroups[currentLevelGroup].nextNodes) // each group that is next to the current one
+        if (levelGroups[currentLevelGroup].nextNodes.Count > 0)
         {
-            if (!unlockedGroups.Contains(levelGroup.levelGroupNumber))
+            foreach (var levelGroup in levelGroups[currentLevelGroup].nextNodes) // checks each group that is next to the current one
             {
-                unlockedGroups.Add(levelGroup.levelGroupNumber); //And add it to the list of unlocked groups 
-            }
-            levelGroup.subLevelNodes[0].isUnlocked = true; //makes sure the first level of each group is unlocked
+                if (!unlockedGroups.Contains(levelGroup.levelGroupNumber))
+                {
+                    unlockedGroups.Add(levelGroup.levelGroupNumber); //And adds them to the list of unlocked groups 
+                }
+                levelGroup.subLevelNodes[0].isUnlocked = true; //makes sure the first level of each group is unlocked
+            } 
         }
     }
 

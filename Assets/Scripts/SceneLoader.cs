@@ -18,7 +18,6 @@ public class SceneLoader : MonoBehaviour
     {
         if (targetScene.Status == AsyncOperationStatus.Succeeded)
         {
-            Debug.Log("Scene loaded");
             OnSceneLoad?.Invoke(scene.AssetGUID);
         }
     }

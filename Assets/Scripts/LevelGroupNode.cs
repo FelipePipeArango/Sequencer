@@ -10,6 +10,7 @@ using static Difficulties;
 [System.Serializable]
 public class LevelGroupNode : MonoBehaviour
 {
+    bool unlockEverything;
     string levelGroupName;
     
     [HideInInspector] public int levelGroupNumber;
@@ -39,22 +40,33 @@ public class LevelGroupNode : MonoBehaviour
     public Image hoverImage; 
     public Image levelThumbnail;
     public Button levelButton;
-    [SerializeField] Image difficultyImage;
+    [SerializeField] GameObject completedImage;
+    [SerializeField] TextMeshProUGUI groupLevelsText;
+    [SerializeField] TextMeshProUGUI completedGroupLevelsText;
+    [SerializeField] GameObject completedGroup;
 
 
     private void Awake()
     {
-        Color nodeColor;
+        //Color nodeColor;
         subLevelNodes = containedLevels.GetComponentsInChildren<LevelNode>();
+        groupLevelsText.text = " | " + subLevelNodes.Length.ToString();
         levelThumbnail.color = groupColor;
         hoverImage.color = groupColor;
-        nodeColor = difficultyDB.AssignColorDifficulty(nodeDifficulty);
-        difficultyImage.color = nodeColor;
+        //nodeColor = difficultyDB.AssignColorDifficulty(nodeDifficulty);
+        //difficultyImage.color = nodeColor;
     }
 
     public void RefillProgress(int amountLevelsCompleted)
     {
         completedLevels = amountLevelsCompleted;
+        completedGroupLevelsText.text = completedLevels.ToString();
+        if (completedLevels == subLevelNodes.Length)
+        {
+            completedImage.SetActive(true); 
+            completedGroup.SetActive(true);
+        }
+
         for (int i = 0; i < amountLevelsCompleted; i++)
         {
             subLevelNodes[i].isCleared = true;
@@ -64,10 +76,8 @@ public class LevelGroupNode : MonoBehaviour
 
     public void UpdateLevelGroupUI()
     {
-        Debug.Log("first");
         if (isUnlocked)
         {
-            Debug.Log("second");
             levelGroupName = this.name;
             int i = 0;
             foreach (var level in subLevelNodes)
@@ -80,14 +90,29 @@ public class LevelGroupNode : MonoBehaviour
         }
     }
 
+    public void EnableEverything()
+    {
+        unlockEverything = true;
+    }
+
     void UnlockInternalLevels()
     {
-        foreach (var level in subLevelNodes)
+        if (!unlockEverything)
         {
-            if (completedLevels >= 0)
+            foreach (var level in subLevelNodes)
+            {
+                if (completedLevels >= 0)
+                {
+                    Unlock(level);
+                    completedLevels--;
+                }
+            }
+        }
+        else
+        {
+            foreach (var level in subLevelNodes)
             {
                 Unlock(level);
-                completedLevels--;
             }
         }
     }

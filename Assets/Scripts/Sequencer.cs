@@ -8,7 +8,7 @@ public class Sequencer : MonoBehaviour
 {
     public static Sequencer sequencer { get; private set; }
 
-    Image cardBackground;
+    //Image cardBackground;
     Image notNextCardCover;
 
     CardTrigger[] levelCards;
@@ -48,7 +48,7 @@ public class Sequencer : MonoBehaviour
     {
         for (int i = 0; i < levelCards.Length; i++)
         {
-            cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
+            //cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
             notNextCardCover = levelCards[i].notNextCover;
 
             if (i == recievedValue - 1)
@@ -107,11 +107,12 @@ public class Sequencer : MonoBehaviour
     }
     private void LockAll()
     {
+        Debug.Log("locked");
         foreach (var card in levelCards)
         {
             if (card.isUsed == false)
             {
-                cardBackground = card.gameObject.GetComponentInChildren<Image>();
+                //cardBackground = card.gameObject.GetComponentInChildren<Image>();
                 notNextCardCover = card.notNextCover;
                 notNextCardCover.gameObject.SetActive(true);
             }
@@ -154,6 +155,7 @@ public class Sequencer : MonoBehaviour
 
                 if (!levelCards[i].hasArrow)
                 {
+                    Debug.Log("No arrow");
                     if (levelCards[i].cardAction == Actions.Enable) 
                     { 
                         levelCards[recievedNumber.value - 1].Enable();
@@ -169,6 +171,7 @@ public class Sequencer : MonoBehaviour
                 {
                     if (!levelCards[i].isAIBefore)
                     {
+                        Debug.Log("Action First");
                         if (levelCards[i].cardAction == Actions.Enable)
                         {
                             levelCards[recievedNumber.value - 1].Enable();
@@ -191,6 +194,7 @@ public class Sequencer : MonoBehaviour
                         }
                         levelCards[i].Disable(recievedNumber);
                         NextCard(recievedNumber.value);
+                        Debug.Log("Ai First");
                         break;
                     }
                 }

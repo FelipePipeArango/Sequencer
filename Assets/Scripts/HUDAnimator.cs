@@ -9,8 +9,8 @@ public class HUDAnimator : MonoBehaviour
     Animator[] cardAnimator;
 
     [SerializeField] GameObject numbersInLevel;
-    public Animator[] numberAnimator;
-    public NumberItem[] numberItems;
+    Animator[] numberAnimator;
+    NumberItem[] numberItems;
 
     private void OnEnable()
     {

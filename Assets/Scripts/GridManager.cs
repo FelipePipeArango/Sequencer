@@ -84,7 +84,6 @@ public class GridManager : MonoBehaviour
                 x + gridManager.size.x,
                 z + gridManager.size.y + 1
                 );
-            Debug.Log( pos.ToString() );
             if (size.x > pos.x && pos.x >= 0
                 && size.y > pos.y && pos.y >= 0)
             {
@@ -120,7 +119,6 @@ public class GridManager : MonoBehaviour
         {
             case GameActions.Actions.Move:
                 MoveDistanceHighLight(value, playerActions.transform.position);
-                Debug.Log("second: " + value);
                 break;
 
             case GameActions.Actions.Pick_Up:
@@ -214,18 +212,13 @@ public class GridManager : MonoBehaviour
             if (grid[(int)pos.x, (int)pos.z] != null)
             {
                 grid[(int)pos.x, (int)pos.z].isHighLight = true;
-                MoveDistanceHighLight(amount - 1, grid[(int)pos.x, (int)pos.z].transform.position);
+                //MoveDistanceHighLight(amount - 1, grid[(int)pos.x, (int)pos.z].transform.position);
             }
         }
     }
 
     private void MoveDistanceHighLight(int amount, Vector3 start)
     {
-        if (amount == 0)
-        {
-            Debug.Log("third: " + amount);
-            return;
-        }
 
         Vector3 right = new Vector3(start.x - 1, start.y, start.z);
         Vector3 left = new Vector3(start.x + 1, start.y, start.z);

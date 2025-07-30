@@ -117,7 +117,6 @@ public class Player : UnitController
         }
         else
         {
-            Debug.Log("Nothing to throw");
             canThrow = false;
             SetStateChange(false);
         }
@@ -221,8 +220,7 @@ public class Player : UnitController
         moveNumber += receivedNumber;
         canMove = true;
 
-        PlayerManager.playerManagerInstance.PlayerPreMove(moveNumber);
-        UIHandler.UIHandlerInstance.UpdateMovementPointsText(moveNumber);
+        PlayerManager.playerManagerInstance.PlayerEarnedMovePoints(moveNumber);
     }
     public void ThrowReceiver(int receivedNumber)
     {

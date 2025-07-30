@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.SceneManagement;
 using static GameTiles;
 using static GridManager;
@@ -8,7 +9,7 @@ public class UnitController : MonoBehaviour
 {
     //[SerializeField] public CompleteScreen goalSequence;
 
-    [HideInInspector] public float fallSpeed = 1.0f;
+    [HideInInspector] public float fallSpeed = 3f;
     [HideInInspector] public bool hasItem = false;
     [HideInInspector] public bool hasNumber = false;
     [HideInInspector] public int moveNumber = 0;
@@ -91,7 +92,7 @@ public class UnitController : MonoBehaviour
 
             if (transform.position.y <= -0.99f)
             {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                Addressables.LoadSceneAsync(SceneHolder.sceneHolderInstance.GetCurrentScene());
             }
         }
     }
@@ -130,10 +131,8 @@ public class UnitController : MonoBehaviour
 
     protected void ThrowKey(TileScript tile)
     {
-            Debug.Log("Key");
         if (hasItem != false)
         {
-            Debug.Log("Two");
             hasItem = false;
             
             gridManager.keyItem.transform.position =

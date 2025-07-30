@@ -14,8 +14,8 @@ public class AICompanion : UnitController
     [HideInInspector] public bool canMove = false;
     [HideInInspector] public bool isMoving = false;
 
-    public delegate void AIisMoving(bool isMoving);
-    public static event AIisMoving OnMove;
+    //public delegate void AIisMoving(bool isMoving);
+    //public static event AIisMoving OnMove;
 
     private void Start()
     {
@@ -34,11 +34,11 @@ public class AICompanion : UnitController
 
             if (direction == Directions.Left) StartCoroutine(Movement(Vector2Int.left));
         }
-        if(isIAActive == true && !canMove) 
+        /*if(isIAActive == true && !canMove) 
         {
             Sequencer.sequencer.HandleStateChange(canMove);
-        }
-        IfFall();
+        }*/
+        //IfFall();
     }
 
     //Changed the previous movement implementation to make it more easy to calculate
@@ -51,13 +51,15 @@ public class AICompanion : UnitController
             0, 
             transform.position.z + direction.y);
 
-        if (OnMove != null)
-            OnMove(canMove);
+        /*if (OnMove != null)
+            OnMove(canMove);*/
 
         if (canMove)
         {
             while (gridManager.CheckWhatNextTileIs(checkPos) != TileTypes.None)
             {
+                Sequencer.sequencer.HandleStateChange(canMove);
+                UIHandler.UIHandlerInstance.TriggerCompanionMovingMessage(canMove);
                 yield return new WaitForSeconds(0.5f);
                 MoveTo(direction, TileTypes.PawnTile);
 
@@ -69,9 +71,11 @@ public class AICompanion : UnitController
 
         canMove = false;
         isIAActive = false;
+        Sequencer.sequencer.HandleStateChange(canMove);
+        UIHandler.UIHandlerInstance.TriggerCompanionMovingMessage(canMove);
 
-        if(OnMove != null)
-            OnMove(canMove);
+        /*if(OnMove != null)
+            OnMove(canMove);*/
     }
     
     public void PushCompanion(Vector2Int direction)
