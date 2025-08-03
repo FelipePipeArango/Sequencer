@@ -10,51 +10,20 @@ public class CompleteScreen : MonoBehaviour
     public GameObject NumberSlot;
     public GameObject HUDIcons;
 
-    bool isPaused = false;
-    float seconds;
-
     public void OpenCompleteScreen()
     {
-        CardsInLevel.GameObject().SetActive(false);
-        NumberSlot.GameObject().SetActive(false);
-        HUDIcons.GameObject().SetActive(false);
+        CardsInLevel.SetActive(false);
+        NumberSlot.SetActive(false);
+        HUDIcons.SetActive(false);
         this.GameObject().SetActive(true);
-        
-        StartCoroutine(ifPaused());
+
+        ifPaused();
     }
-    private IEnumerator ifPaused()
+    private void ifPaused()
     {
-        if(!isPaused)
-        {
-            NextScene();
-        }
-        else
-        {
-            CardsInLevel.GameObject().SetActive(false);
-            NumberSlot.GameObject().SetActive(false);
-            HUDIcons.GameObject().SetActive(false);
-            this.GameObject().SetActive(true);
-
-            yield return null;
-        }
-    }
-
-   
-
-    void NextScene()
-    {
-        /*int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        int nextSceneIndex = currentSceneIndex + 1;
-
-        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
-        {
-            SceneManager.LoadScene(nextSceneIndex);
-        }*/
-    }
-
-    public void PauseButton()
-    {
-        isPaused = true;
-        Debug.Log("PAUSE!");
+        CardsInLevel.SetActive(false);
+        NumberSlot.SetActive(false);
+        HUDIcons.SetActive(false);
+        this.GameObject().SetActive(true);
     }
 }

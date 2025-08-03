@@ -9,6 +9,9 @@ public class LevelSelectManager : MonoBehaviour
 
     [SerializeField] bool unlockedMode;
 
+    [SerializeField] LevelOrganizer[] levelCollector;
+
+    int currentLevelID;
     int dontReset;
     GameObject mainLevelMenu;
     int[] levelGroupTracker;
@@ -48,6 +51,30 @@ public class LevelSelectManager : MonoBehaviour
         GetReferences("Level_Selector"); //This will change once the main menu loads the LevelSelector
     }
 
+    public void RecieveCurrentLevel(int currentLevel)
+    {
+        currentLevelID = currentLevel;
+    }
+
+    public int GetCurrentLevel()
+    {
+        return currentLevelID;
+    }
+
+    public string GetNextLevel()
+    {
+        if (currentLevelID < levelGroups[currentLevelGroup].subLevelNodes.Length)
+        {
+            currentLevelID++;
+            string nextLevel = levelCollector[currentLevelGroup].levelOrder[currentLevelID].AssetGUID;
+            return nextLevel;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     void GetReferences(string currentScene)
     {
         mainLevelMenu = GameObject.FindGameObjectWithTag("MainLevelMenu");
@@ -85,7 +112,7 @@ public class LevelSelectManager : MonoBehaviour
     {
         foreach (var group in unlockedGroups) //every unlocked group
         {
-            levelGroups[group].RefillProgress(levelGroupTracker[group]); //has it's progress refilled 
+            levelGroups[group].RefillProgress(levelGroupTracker[group], 0); //has it's progress refilled 
         }
 
         CheckCompletedLevelGroups();

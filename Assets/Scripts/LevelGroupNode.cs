@@ -26,9 +26,8 @@ public class LevelGroupNode : MonoBehaviour
     [Header("Visual Color")]
     [SerializeField] Color groupColor;
 
-    [Header("Difficulty of the node")]
-    [SerializeField] difficultyLevel nodeDifficulty;
-    [SerializeField] Difficulties difficultyDB;
+    [Header("Assigned Group")]
+    [SerializeField] LevelOrganizer levelOrder;
 
     [HideInInspector] public LevelNode[] subLevelNodes;
 
@@ -57,7 +56,16 @@ public class LevelGroupNode : MonoBehaviour
         //difficultyImage.color = nodeColor;
     }
 
-    public void RefillProgress(int amountLevelsCompleted)
+    private void Start()
+    {
+        for (int i = 0; i < subLevelNodes.Length; i++)
+        {
+            subLevelNodes[i].gameObject.GetComponent<SceneLoader>().scene = levelOrder.levelOrder[i];
+            subLevelNodes[i].levelID = i;
+        }
+    }
+
+    public void RefillProgress(int amountLevelsCompleted, int completedLevels)
     {
         completedLevels = amountLevelsCompleted;
         completedGroupLevelsText.text = completedLevels.ToString();
@@ -67,10 +75,7 @@ public class LevelGroupNode : MonoBehaviour
             completedGroup.SetActive(true);
         }
 
-        for (int i = 0; i < amountLevelsCompleted; i++)
-        {
-            subLevelNodes[i].isCleared = true;
-        }
+        subLevelNodes[completedLevels].isCleared = true;
         UnlockInternalLevels();
     }
 

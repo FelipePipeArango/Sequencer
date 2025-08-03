@@ -45,10 +45,6 @@ public class GameButtons : MonoBehaviour
             SceneManager.LoadScene(availableBuilds.WebCredits.ToString());
         }
     }
-    public void MainMenuButton()
-    {
-        SceneManager.LoadScene("MainMenu");
-    }
    
     public void ContinueButton()
     {
