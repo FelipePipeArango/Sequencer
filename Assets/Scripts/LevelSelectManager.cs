@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static GameStates;
 
 public class LevelSelectManager : MonoBehaviour
@@ -14,7 +15,7 @@ public class LevelSelectManager : MonoBehaviour
     int currentLevelID;
     int dontReset;
     GameObject mainLevelMenu;
-    int[] levelGroupTracker;
+    int[,] levelGroupTracker;
     LevelGroupNode[] levelGroups;
     HashSet<int> unlockedGroups = new HashSet<int>();
 
@@ -82,10 +83,9 @@ public class LevelSelectManager : MonoBehaviour
         {
             levelGroups = mainLevelMenu.GetComponentsInChildren<LevelGroupNode>();
 
-            if (dontReset == 0) levelGroupTracker = new int[levelGroups.Length]; dontReset++;
-
             for (int i = 0; i < levelGroups.Length; i++)
             {
+                if (dontReset == 0) levelGroupTracker = new int[levelGroups.Length, levelGroups[i].subLevelNodes.Length]; dontReset++;
                 levelGroups[i].levelGroupNumber = i;
                 if (levelGroups[i].isUnlocked) unlockedGroups.Add(levelGroups[i].levelGroupNumber);
 
@@ -110,9 +110,12 @@ public class LevelSelectManager : MonoBehaviour
 
     public void FillValues() //back in the LevelSelection scene,
     {
-        foreach (var group in unlockedGroups) //every unlocked group
+        for (int i = 0; i < levelGroupTracker.GetLength(0); i++)
         {
-            levelGroups[group].RefillProgress(levelGroupTracker[group], 0); //has it's progress refilled 
+            for (int j = 0; j < levelGroupTracker.GetLength(1); j++)
+            {
+                levelGroups[i].RefillProgress(j, i); //has it's progress refilled   
+            }
         }
 
         CheckCompletedLevelGroups();
@@ -157,7 +160,7 @@ public class LevelSelectManager : MonoBehaviour
                 {
                     if (i == currentLevelGroup) //and in its correspondent group
                     {
-                        levelGroupTracker[i]++; //the value of completed levels increases
+                        //levelGroupTracker[i]++; //the value of completed levels increases
                     }
                 }
                 trackLevelCompletion = false;
