@@ -7,7 +7,6 @@ using UnityEngine.UI;
 using static GameActions;
 using static GameDirections;
 using static GridManager;
-using static UnityEngine.Rendering.DebugUI;
 
 public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
@@ -317,11 +316,9 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         }
     }
 
-    public void Lockdown()
+    public void Lockdown(bool locked)
     {
-        if (slotImage != null) slotImage.gameObject.SetActive(false);
-
-        available = false;
+        if (slotImage != null) slotImage.gameObject.SetActive(!locked);
     }
 
     public void SetSlotNumber(int number)

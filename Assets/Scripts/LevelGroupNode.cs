@@ -17,7 +17,7 @@ public class LevelGroupNode : MonoBehaviour
 
     [Header("DON'T MODIFY")]
     public GameObject containedLevels;
-    int completedLevels;
+    int completedLevels = 0;
 
     [Header("State")]
     public bool isUnlocked;
@@ -63,11 +63,12 @@ public class LevelGroupNode : MonoBehaviour
             subLevelNodes[i].gameObject.GetComponent<SceneLoader>().scene = levelOrder.levelOrder[i];
             subLevelNodes[i].levelID = i;
         }
+        UnlockInternalLevels();
     }
 
-    public void RefillProgress(int amountLevelsCompleted, int completedLevels)
+    public void RefillProgress(int levelsCleared)
     {
-        completedLevels = amountLevelsCompleted;
+        completedLevels++;
         completedGroupLevelsText.text = completedLevels.ToString();
         if (completedLevels == subLevelNodes.Length)
         {
@@ -75,8 +76,7 @@ public class LevelGroupNode : MonoBehaviour
             completedGroup.SetActive(true);
         }
 
-        subLevelNodes[completedLevels].isCleared = true;
-        UnlockInternalLevels();
+        subLevelNodes[levelsCleared].isCleared = true;
     }
 
     public void UpdateLevelGroupUI()

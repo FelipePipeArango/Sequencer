@@ -8,7 +8,7 @@ public class LevelNode : MonoBehaviour
 {
     [HideInInspector] public string levelName;
 
-    [HideInInspector] public bool isUnlocked;
+    [HideInInspector] public bool isUnlocked =true;
     [HideInInspector] public bool isCleared = false;
 
     public int levelID;

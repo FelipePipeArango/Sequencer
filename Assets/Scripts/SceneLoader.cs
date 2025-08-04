@@ -20,6 +20,7 @@ public class SceneLoader : MonoBehaviour
     public void LoadNextScene()
     {
         sceneID = LevelSelectManager.levelSelectManagerInstance.GetNextLevel();
+        LevelSelectManager.levelSelectManagerInstance.trackLevelCompletion = true;
 
         if (sceneID == null)
         {

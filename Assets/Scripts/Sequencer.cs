@@ -48,7 +48,6 @@ public class Sequencer : MonoBehaviour
     {
         for (int i = 0; i < levelCards.Length; i++)
         {
-            //cardBackground = levelCards[i].gameObject.GetComponentInChildren<Image>();
             notNextCardCover = levelCards[i].notNextCover;
 
             if (i == recievedValue - 1)
@@ -81,57 +80,13 @@ public class Sequencer : MonoBehaviour
         }
     }
 
-    public void HandleStateChange(bool isMoving)
-    {
-        if (isMoving)
-        {
-            LockAll();
-        }
-        else
-        {
-            EnableNextCard();
-            EnableCard();
-        }
-        state = isMoving;
-    }
-    private void EnableCard()
+    public void ManageLockState(bool locked)
     {
         foreach (var card in levelCards)
         {
-            if (card.available || card.isUsed == false)
-            {
-                card.Enable();
-            }
+            card.Lockdown(locked);
         }
-        NextCard(lastNumber.value);
-    }
-    private void LockAll()
-    {
-        Debug.Log("locked");
-        foreach (var card in levelCards)
-        {
-            if (card.isUsed == false)
-            {
-                //cardBackground = card.gameObject.GetComponentInChildren<Image>();
-                notNextCardCover = card.notNextCover;
-                notNextCardCover.gameObject.SetActive(true);
-            }
-            card.Lockdown();
-        }
-    }
-
-    private void EnableNextCard()
-    {
-        foreach (var card in levelCards)
-        {
-            if (card.nextInSequence && 
-                card != lastCard && 
-                card.isUsed != true)
-            {
-                card.Enable();
-            }
-        }
-        NextCard(lastNumber.value);
+        if (locked == false) NextCard(lastNumber.value);
     }
 
     public void AICanMoveNow()
@@ -155,7 +110,6 @@ public class Sequencer : MonoBehaviour
 
                 if (!levelCards[i].hasArrow)
                 {
-                    Debug.Log("No arrow");
                     if (levelCards[i].cardAction == Actions.Enable) 
                     { 
                         levelCards[recievedNumber.value - 1].Enable();
@@ -171,7 +125,6 @@ public class Sequencer : MonoBehaviour
                 {
                     if (!levelCards[i].isAIBefore)
                     {
-                        Debug.Log("Action First");
                         if (levelCards[i].cardAction == Actions.Enable)
                         {
                             levelCards[recievedNumber.value - 1].Enable();
@@ -194,7 +147,6 @@ public class Sequencer : MonoBehaviour
                         }
                         levelCards[i].Disable(recievedNumber);
                         NextCard(recievedNumber.value);
-                        Debug.Log("Ai First");
                         break;
                     }
                 }

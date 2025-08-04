@@ -7,8 +7,6 @@ using static GridManager;
 
 public class UnitController : MonoBehaviour
 {
-    //[SerializeField] public CompleteScreen goalSequence;
-
     [HideInInspector] public float fallSpeed = 3f;
     [HideInInspector] public bool hasItem = false;
     [HideInInspector] public bool hasNumber = false;
@@ -29,16 +27,6 @@ public class UnitController : MonoBehaviour
             case TileTypes.GoalTile:
                 { 
                     MoveToGoal(direction, spawnTileType);
-                }
-                break;
-            case TileTypes.PlayerTile:
-                { 
-                    Debug.Log("Player");
-                }
-                break;
-            case TileTypes.PawnTile:
-                { 
-                    Debug.Log("Companion");
                 }
                 break;
             case TileTypes.KeyTile:
@@ -64,24 +52,6 @@ public class UnitController : MonoBehaviour
         }
 
     }
-
-    /*protected bool IsSomethingWithinPickUpRadiusOfPlayer(int radius)
-    {
-        if (radius == gridManager.CalculateDistance(
-            transform.position,
-            gridManager.keyItem.transform.position))
-        {
-            return true;
-        }
-        else if (radius == gridManager.CalculateDistance(
-            transform.position,
-            gridManager.numberPickUp.transform.position))
-        {
-            return true;
-        }
-        else
-            return false;
-    }*/
 
     protected void IfFall()
     {
@@ -144,14 +114,6 @@ public class UnitController : MonoBehaviour
                 TileTypes.KeyTile
                 );
         }
-    }
-    public bool HasAnything()
-    {
-        if (hasNumber)
-            return true;
-        else if (hasItem)
-            return true;
-        else return false;
     }
 
     protected void NumberItemCheck(Vector3 pos)

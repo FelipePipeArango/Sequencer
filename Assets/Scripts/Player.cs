@@ -48,16 +48,9 @@ public class Player : UnitController
         selectedTile = recievedTile;
     }
 
-    private void SetStateChange(bool state)
-    {
-        if (state != Sequencer.sequencer.state)   
-            Sequencer.sequencer.HandleStateChange(state);
-        else
-            return;
-    }
     private void ClickToPickUp()
     {
-        SetStateChange(true);
+        Sequencer.sequencer.ManageLockState(true);
 
         gridManager.PickUpHighLight(pickUpNumber);
 
@@ -66,7 +59,7 @@ public class Player : UnitController
             UIHandler.UIHandlerInstance.TriggerNoItemMessage(false);
             gridManager.TurnOffHighlight();
             canPickUp = false;
-            SetStateChange(false);
+            Sequencer.sequencer.ManageLockState(false);
             return;
         }
 
@@ -77,6 +70,7 @@ public class Player : UnitController
             PickUpFrom(selectedTile);
             gridManager.TurnOffHighlight();
             UIHandler.UIHandlerInstance.TriggerConfirmClickMessage(true);
+            Sequencer.sequencer.ManageLockState(false);
             selectedTile = null;
         }
     }
@@ -89,7 +83,7 @@ public class Player : UnitController
             UIHandler.UIHandlerInstance.TriggerNoItemMessage(true);
             UIHandler.UIHandlerInstance.HideKeyItemHUD();
             canThrow = false;
-            SetStateChange(false);
+            Sequencer.sequencer.ManageLockState(false);
             return;
         }
 
@@ -97,13 +91,13 @@ public class Player : UnitController
         {
             UIHandler.UIHandlerInstance.TriggerNoValidCell();
             canThrow = false;
-            SetStateChange(false);
+            Sequencer.sequencer.ManageLockState(false);
             return;
         }
 
         if (hasItem)
         {
-            SetStateChange(true);
+            Sequencer.sequencer.ManageLockState(true);
             gridManager.ThrowHighLight(throwNumber);
             UIHandler.UIHandlerInstance.TriggerConfirmClickMessage(false);
 
@@ -118,7 +112,7 @@ public class Player : UnitController
         else
         {
             canThrow = false;
-            SetStateChange(false);
+            Sequencer.sequencer.ManageLockState(false);
         }
     }
 
@@ -250,16 +244,6 @@ public class Player : UnitController
             isBoardBelow = false;
 
         }
-        else if (nextTileType == TileTypes.PawnTile)            
-        {
-            /*if (push == 1)
-            {
-                gridManager.AIActions.PushCompanion(direction);
-                MoveTo(direction, TileTypes.PlayerTile);
-                moveNumber--;
-                push = 0;
-            }*/
-        }
         else if (nextTileType == TileTypes.KeyTile)
         {
             MoveTo(direction, TileTypes.PlayerTile);
@@ -302,14 +286,10 @@ public class Player : UnitController
                 hasUSB = false;
                 UIHandler.UIHandlerInstance.CheckForKeyItem(hasUSB);
                 canThrow = false;
-                SetStateChange(false);
+                Sequencer.sequencer.ManageLockState(false);
                 UIHandler.UIHandlerInstance.HideKeyItemHUD(); // hide HUD
                 Sequencer.sequencer.AICanMoveNow();
             }
-        }
-        else
-        {
-            Debug.Log("uy oe");
         }
     }
 
@@ -323,7 +303,7 @@ public class Player : UnitController
             hasUSB = true;
             UIHandler.UIHandlerInstance.CheckForKeyItem(hasUSB);
             canPickUp = false;
-            SetStateChange(false);
+            Sequencer.sequencer.ManageLockState(false);
             Sequencer.sequencer.AICanMoveNow();
         }
         else if (tile.tileType == TileTypes.ItemTile)
@@ -331,7 +311,7 @@ public class Player : UnitController
             NumberItemCheck(tile.transform.position);
             gridManager.ResetTileType(TileTypes.ItemTile);
             canPickUp = false;
-            SetStateChange(false);
+            Sequencer.sequencer.ManageLockState(false);
             Sequencer.sequencer.AICanMoveNow();
         }
         else
