@@ -35,7 +35,7 @@ public class CameraSwitcher : MonoBehaviour
     public void OnLevelSelectClicked()
     {
         SetCamera(mainMenuCamera: false, levelSelectCamera: false, exitCamera: false, tableCamera: true);
-        StartCoroutine(DelayedSceneLoad("Level_1", 2f)); // Wait 2 seconds before switching scenes
+        StartCoroutine(DelayedSceneLoad("Level_1", 0.5f)); // Wait 2 seconds before switching scenes
     }
 
 

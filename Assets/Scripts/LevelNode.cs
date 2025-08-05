@@ -16,7 +16,7 @@ public class LevelNode : MonoBehaviour
     [Header("Visuals - don't modify")]
     public TextMeshProUGUI levelTitleText;
     public GameObject completeText; 
-    public Image levelThumbnail;
+    public Sprite levelThumbnail;
     public Button levelButton;
 
     void Start()
