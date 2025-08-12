@@ -226,7 +226,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -9.999939, y: 82}
+  m_AnchoredPosition: {x: -9, y: -322}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3735298957967032232
@@ -978,7 +978,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -9.999939, y: 82}
+  m_AnchoredPosition: {x: -10, y: -322}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1344001804590973709
@@ -2820,7 +2820,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -9.999939, y: 82}
+  m_AnchoredPosition: {x: -10, y: -322}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4477230485185172282
@@ -3366,7 +3366,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3035722585940310870, guid: 834e8d97885f3cf4a914430f9900e225, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3895509853906171830, guid: 834e8d97885f3cf4a914430f9900e225, type: 3}
       propertyPath: m_SortingLayer
@@ -3694,13 +3694,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4450947157103963157, guid: a265c7b9f92c91946ad66efdb4416982, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5042242922331972986, guid: a265c7b9f92c91946ad66efdb4416982, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6021094043693954136, guid: a265c7b9f92c91946ad66efdb4416982, type: 3}
       propertyPath: scene.m_AssetGUID
-      value: af369a3dfd94d4d4fab61937266e63c8
+      value: d6b30e336ec390348ba81609ba7c3bf6
       objectReference: {fileID: 0}
     - target: {fileID: 6534360576771574954, guid: a265c7b9f92c91946ad66efdb4416982, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size

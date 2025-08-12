@@ -21,7 +21,7 @@ public class UIMessages : MonoBehaviour
         if (noValidCell != null)
         {
             noValidCell.SetActive(true);
-            StartCoroutine(HideMessage(noValidCell, 1f));
+            StartCoroutine(HideMessage(noValidCell, 1.7f));
         }
     }
 
@@ -42,7 +42,7 @@ public class UIMessages : MonoBehaviour
         if (usbMissingMessage != null)
         {
             usbMissingMessage.SetActive(true);
-            StartCoroutine(HideMessage(usbMissingMessage, 1f));
+            StartCoroutine(HideMessage(usbMissingMessage, 1.7f));
         }
     }
 
@@ -63,7 +63,7 @@ public class UIMessages : MonoBehaviour
         if (noUSBInRangeMessage != null)
         {
             noUSBInRangeMessage.SetActive(true);
-            StartCoroutine(HideMessage(noUSBInRangeMessage, 1f));
+            StartCoroutine(HideMessage(noUSBInRangeMessage, 1.7f));
         }
     }
 

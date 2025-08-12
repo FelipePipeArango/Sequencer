@@ -84,6 +84,7 @@ public class Player : UnitController
             UIHandler.UIHandlerInstance.HideKeyItemHUD();
             canThrow = false;
             Sequencer.sequencer.ManageLockState(false);
+            Sequencer.sequencer.AICanMoveNow();
             return;
         }
 
