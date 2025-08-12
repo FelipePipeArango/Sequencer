@@ -26,7 +26,6 @@ public class PlayerManager : MonoBehaviour
     //Observes Player win
     public void PlayerWon()
     {
-        Debug.Log("GOAL");
         currentPlayerState = playerStates.Celebrating;
 
         if (playerDidSomething != null)
@@ -35,7 +34,7 @@ public class PlayerManager : MonoBehaviour
         UIHandler.UIHandlerInstance.OpenWinScreen();        
     }
 
-    public void PlayerPreMove(int movePoints)
+    public void PlayerEarnedMovePoints(int movePoints)
     {
         currentPlayerState = playerStates.PreMove;
 

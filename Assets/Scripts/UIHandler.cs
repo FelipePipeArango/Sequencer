@@ -12,6 +12,7 @@ public class UIHandler : MonoBehaviour
     [SerializeField] GameObject keyItemHUD;
 
     private bool isHoveringOverInteractable = false;
+    int movePointsHUD;
 
     void Awake()
     {
@@ -44,10 +45,20 @@ public class UIHandler : MonoBehaviour
         isHoveringOverInteractable = isHovering;
     }
 
+    public void UITemporalMovePoints(int uiMovePoints)
+    {
+        movePointsHUD += uiMovePoints;
+
+        if (characterMoveUI)
+            characterMoveUI.text = movePointsHUD.ToString();
+    }
+
     public void UpdateMovementPointsText(int numberValue)
     {
+        movePointsHUD = numberValue;
+
         if (characterMoveUI)
-            characterMoveUI.text = numberValue.ToString();
+            characterMoveUI.text = movePointsHUD.ToString();
     }
 
     public void HideKeyItemHUD()
@@ -61,9 +72,19 @@ public class UIHandler : MonoBehaviour
         uiMessanger.RecieveNoItemMessage(isThrowAction);
     }
 
+    public void TriggerNoValidCell()
+    {
+        uiMessanger.RecieveNoValidCellMessage();
+    }
+
     public void TriggerConfirmClickMessage(bool completed)
     {
         uiMessanger.RecieveConfirmClickMessage(completed);
+    }
+
+    public void TriggerCompanionMovingMessage(bool isCompanionMoving)
+    {
+        uiMessanger.RecieveCompanionMovingMessage(isCompanionMoving);
     }
 
 }

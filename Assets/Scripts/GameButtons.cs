@@ -1,9 +1,6 @@
 using Unity.VisualScripting;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 using static GameStates;
 
@@ -31,7 +28,6 @@ public class GameButtons : MonoBehaviour
     }
     public void QuitButton()
     {
-        Debug.Log("QUIT!");
         Application.Quit();
     }
     public void CreditButton()
@@ -44,10 +40,6 @@ public class GameButtons : MonoBehaviour
         {
             SceneManager.LoadScene(availableBuilds.WebCredits.ToString());
         }
-    }
-    public void MainMenuButton()
-    {
-        SceneManager.LoadScene("MainMenu");
     }
    
     public void ContinueButton()

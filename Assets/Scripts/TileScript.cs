@@ -38,6 +38,5 @@ public class TileScript : MonoBehaviour
     public void TileSelectedButton()
     {
         OnTileArrowClicked?.Invoke(this);
-        Debug.Log("Selected");
     }
 }

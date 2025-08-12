@@ -67,14 +67,14 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: ce2fbec3dea83d74c9c886932c2bacc0, type: 2}
+  m_sharedMaterial: {fileID: -3469886307593827793, guid: ce2fbec3dea83d74c9c886932c2bacc0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4280304997
+    rgba: 4280155904
   m_fontColor: {r: 0, g: 0.80392164, b: 0.89019614, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -219,8 +219,10 @@ GameObject:
   m_Component:
   - component: {fileID: 3767215707280523383}
   - component: {fileID: 154131852695811383}
+  - component: {fileID: 9035540372112879775}
   - component: {fileID: 6266694025930799847}
   - component: {fileID: 5314285981692923203}
+  - component: {fileID: 1007426560037418877}
   m_Layer: 5
   m_Name: NumberSlot
   m_TagString: Interactable
@@ -256,6 +258,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5131192903137520530}
   m_CullTransparentMesh: 1
+--- !u!114 &9035540372112879775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5131192903137520530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25da8c29197087b4eb80b3b7f66707b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 1292207020091880484}
+  value: 0
+  parentTransform: {fileID: 0}
+  numberText: {fileID: 7774656382515588725}
+  UiCamera: {fileID: 0}
+  mousePosition: {x: 0, y: 0, z: 0}
+  world: {x: 0, y: 0, z: 0}
 --- !u!114 &6266694025930799847
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -292,12 +313,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 970382d04dbc8f04ca0c1cd8aca4b892, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableEffects: 1
   hoverScale: {x: 1.4, y: 1.4, z: 1.4}
   scaleLerpSpeed: 5
   xAmplitude: 8
   yAmplitude: 8
   zAmplitude: 8
   tiltSpeed: 2
+--- !u!95 &1007426560037418877
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5131192903137520530}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a8f4881711310524e93551d4d3bd2064, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &5596116490235334550
 GameObject:
   m_ObjectHideFlags: 0
@@ -307,7 +350,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8197302704326047218}
-  - component: {fileID: 6426200500595082626}
   - component: {fileID: 1822725243496378402}
   m_Layer: 5
   m_Name: Number
@@ -337,25 +379,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &6426200500595082626
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5596116490235334550}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25da8c29197087b4eb80b3b7f66707b9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  image: {fileID: 1292207020091880484}
-  value: 0
-  parentTransform: {fileID: 0}
-  numberText: {fileID: 7774656382515588725}
-  UiCamera: {fileID: 0}
-  mousePosition: {x: 0, y: 0, z: 0}
-  world: {x: 0, y: 0, z: 0}
 --- !u!114 &1822725243496378402
 MonoBehaviour:
   m_ObjectHideFlags: 0

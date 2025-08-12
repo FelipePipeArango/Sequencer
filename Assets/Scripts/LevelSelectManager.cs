@@ -1,15 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static GameStates;
 
 public class LevelSelectManager : MonoBehaviour
 {
     public static LevelSelectManager levelSelectManagerInstance;
 
+    [SerializeField] bool unlockedMode;
+
+    [SerializeField] LevelOrganizer[] levelCollector;
+
+    int currentLevelID;
     int dontReset;
     GameObject mainLevelMenu;
-    int[] levelGroupTracker;
+    HashSet <int>[] levelGroupTracker;
     LevelGroupNode[] levelGroups;
     HashSet<int> unlockedGroups = new HashSet<int>();
 
@@ -40,10 +46,46 @@ public class LevelSelectManager : MonoBehaviour
             levelSelectManagerInstance = this;
             DontDestroyOnLoad(gameObject);
         }
+
+        mainLevelMenu = GameObject.FindGameObjectWithTag("MainLevelMenu");
+        if (mainLevelMenu != null)
+        {
+            levelGroups = mainLevelMenu.GetComponentsInChildren<LevelGroupNode>();
+
+            if (unlockedMode)
+            {
+                foreach (var group in levelGroups)
+                {
+                    group.EnableEverything();
+                }
+            }
+
+            GetReferences("Level_Selector"); //This will change once the main menu loads the LevelSelector
+        }
     }
-    private void Start()
+
+    public void RecieveCurrentLevel(int currentLevel)
     {
-        GetReferences("Level_Selector"); //This will change once the main menu loads the LevelSelector
+        currentLevelID = currentLevel;
+    }
+
+    public int GetCurrentLevel()
+    {
+        return currentLevelID;
+    }
+
+    public string GetNextLevel()
+    {
+        if (currentLevelID < levelGroups[currentLevelGroup].subLevelNodes.Length - 1)
+        {
+            currentLevelID++;
+            string nextLevel = levelCollector[currentLevelGroup].levelOrder[currentLevelID].AssetGUID;
+            return nextLevel;
+        }
+        else
+        {
+            return null;
+        }
     }
 
     void GetReferences(string currentScene)
@@ -53,13 +95,20 @@ public class LevelSelectManager : MonoBehaviour
         {
             levelGroups = mainLevelMenu.GetComponentsInChildren<LevelGroupNode>();
 
-            if (dontReset == 0) levelGroupTracker = new int[levelGroups.Length]; dontReset++;
+            if (dontReset == 0)
+            {
+                levelGroupTracker = new HashSet<int>[levelGroups.Length];
+                for (int i = 0; i < levelGroupTracker.Length; i++)
+                {
+                    levelGroupTracker[i] = new HashSet<int>();
+                }
+                dontReset++;
+            }
 
             for (int i = 0; i < levelGroups.Length; i++)
             {
                 levelGroups[i].levelGroupNumber = i;
                 if (levelGroups[i].isUnlocked) unlockedGroups.Add(levelGroups[i].levelGroupNumber);
-
             }
 
             if (unlockedGroups.Count <= 0)
@@ -73,9 +122,15 @@ public class LevelSelectManager : MonoBehaviour
 
     public void FillValues() //back in the LevelSelection scene,
     {
-        foreach (var group in unlockedGroups) //every unlocked group
+        for (int i = 0; i < levelGroupTracker.Length; i++)
         {
-            levelGroups[group].RefillProgress(levelGroupTracker[group]); //has it's progress refilled
+            if (levelGroupTracker[i].Count > 0)
+            {
+                foreach (var item in levelGroupTracker[i])
+                {
+                    levelGroups[i].RefillProgress(item);
+                } 
+            }
         }
 
         CheckCompletedLevelGroups();
@@ -83,7 +138,7 @@ public class LevelSelectManager : MonoBehaviour
 
     void CheckCompletedLevelGroups()
     {
-        if (levelGroups[currentLevelGroup].IsGroupCompleted()) //if the level group is clear
+        if (levelGroups[currentLevelGroup].IsGroupCompleted() && !unlockedMode) //if the level group is clear
         {
             UnlockNextGroups(); //Also unlock the ones connected
         }
@@ -97,13 +152,16 @@ public class LevelSelectManager : MonoBehaviour
 
     void UnlockNextGroups()
     {
-        foreach (var levelGroup in levelGroups[currentLevelGroup].nextNodes) // each group that is next to the current one
+        if (levelGroups[currentLevelGroup].nextNodes.Count > 0)
         {
-            if (!unlockedGroups.Contains(levelGroup.levelGroupNumber))
+            foreach (var levelGroup in levelGroups[currentLevelGroup].nextNodes) // checks each group that is next to the current one
             {
-                unlockedGroups.Add(levelGroup.levelGroupNumber); //And add it to the list of unlocked groups 
-            }
-            levelGroup.subLevelNodes[0].isUnlocked = true; //makes sure the first level of each group is unlocked
+                if (!unlockedGroups.Contains(levelGroup.levelGroupNumber))
+                {
+                    unlockedGroups.Add(levelGroup.levelGroupNumber); //And adds them to the list of unlocked groups 
+                }
+                levelGroup.subLevelNodes[0].isUnlocked = true; //makes sure the first level of each group is unlocked
+            } 
         }
     }
 
@@ -113,13 +171,8 @@ public class LevelSelectManager : MonoBehaviour
         {
             if (completed == gameStates.Completed) //each time a level is completed
             {
-                for (int i = 0; i < levelGroupTracker.Length; i++) //it searches for all the levelGroups
-                {
-                    if (i == currentLevelGroup) //and in its correspondent group
-                    {
-                        levelGroupTracker[i]++; //the value of completed levels increases
-                    }
-                }
+                levelGroupTracker[currentLevelGroup].Add(currentLevelID); //adds the levelID in its corresponding group
+
                 trackLevelCompletion = false;
             } 
         }

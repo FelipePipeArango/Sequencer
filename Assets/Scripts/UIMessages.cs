@@ -7,11 +7,22 @@ public class UIMessages : MonoBehaviour
     [SerializeField] GameObject usbMissingMessage;
     [SerializeField] GameObject clickToConfirmMessage;
     [SerializeField] GameObject noUSBInRangeMessage;
+    [SerializeField] GameObject noValidCell;
+    [SerializeField] GameObject companionMovingMessage;
 
     public void RecieveNoItemMessage(bool isThrow)
     {
         if (isThrow) NoItemToThrowMessage();
         else ShowNoItemToPickUpMessage();
+    }
+
+    public void RecieveNoValidCellMessage()
+    {
+        if (noValidCell != null)
+        {
+            noValidCell.SetActive(true);
+            StartCoroutine(HideMessage(noValidCell, 1.7f));
+        }
     }
 
     public void RecieveConfirmClickMessage(bool isComplete)
@@ -20,12 +31,18 @@ public class UIMessages : MonoBehaviour
         else HideClickToConfirmMessage();
     }
 
+    public void RecieveCompanionMovingMessage(bool isMoving)
+    {
+        if (isMoving) companionMovingMessage.SetActive(true);
+        else companionMovingMessage.SetActive(false);
+    }
+
     private void NoItemToThrowMessage()
     {
         if (usbMissingMessage != null)
         {
             usbMissingMessage.SetActive(true);
-            StartCoroutine(HideMessage(usbMissingMessage, 1f));
+            StartCoroutine(HideMessage(usbMissingMessage, 1.7f));
         }
     }
 
@@ -46,7 +63,7 @@ public class UIMessages : MonoBehaviour
         if (noUSBInRangeMessage != null)
         {
             noUSBInRangeMessage.SetActive(true);
-            StartCoroutine(HideMessage(noUSBInRangeMessage, 1f));
+            StartCoroutine(HideMessage(noUSBInRangeMessage, 1.7f));
         }
     }
 

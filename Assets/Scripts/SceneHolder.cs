@@ -6,6 +6,7 @@ public class SceneHolder : MonoBehaviour
 {
     public static SceneHolder sceneHolderInstance;
     string currenteScene;
+
     private void OnEnable()
     {
         SceneLoader.OnSceneLoad += HoldCurrentScene;

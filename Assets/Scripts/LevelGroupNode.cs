@@ -10,13 +10,14 @@ using static Difficulties;
 [System.Serializable]
 public class LevelGroupNode : MonoBehaviour
 {
+    bool unlockEverything;
     string levelGroupName;
     
     [HideInInspector] public int levelGroupNumber;
 
     [Header("DON'T MODIFY")]
     public GameObject containedLevels;
-    int completedLevels;
+    int completedLevels = 0;
 
     [Header("State")]
     public bool isUnlocked;
@@ -25,9 +26,8 @@ public class LevelGroupNode : MonoBehaviour
     [Header("Visual Color")]
     [SerializeField] Color groupColor;
 
-    [Header("Difficulty of the node")]
-    [SerializeField] difficultyLevel nodeDifficulty;
-    [SerializeField] Difficulties difficultyDB;
+    [Header("Assigned Group")]
+    [SerializeField] LevelOrganizer levelOrder;
 
     [HideInInspector] public LevelNode[] subLevelNodes;
 
@@ -39,35 +39,50 @@ public class LevelGroupNode : MonoBehaviour
     public Image hoverImage; 
     public Image levelThumbnail;
     public Button levelButton;
-    [SerializeField] Image difficultyImage;
+    [SerializeField] GameObject completedImage;
+    [SerializeField] TextMeshProUGUI groupLevelsText;
+    [SerializeField] TextMeshProUGUI completedGroupLevelsText;
+    [SerializeField] GameObject completedGroup;
 
 
     private void Awake()
     {
-        Color nodeColor;
+        //Color nodeColor;
         subLevelNodes = containedLevels.GetComponentsInChildren<LevelNode>();
+        groupLevelsText.text = " | " + subLevelNodes.Length.ToString();
         levelThumbnail.color = groupColor;
         hoverImage.color = groupColor;
-        nodeColor = difficultyDB.AssignColorDifficulty(nodeDifficulty);
-        difficultyImage.color = nodeColor;
+        //nodeColor = difficultyDB.AssignColorDifficulty(nodeDifficulty);
+        //difficultyImage.color = nodeColor;
     }
 
-    public void RefillProgress(int amountLevelsCompleted)
+    private void Start()
     {
-        completedLevels = amountLevelsCompleted;
-        for (int i = 0; i < amountLevelsCompleted; i++)
+        for (int i = 0; i < subLevelNodes.Length; i++)
         {
-            subLevelNodes[i].isCleared = true;
+            subLevelNodes[i].gameObject.GetComponent<SceneLoader>().scene = levelOrder.levelOrder[i];
+            subLevelNodes[i].levelID = i;
         }
         UnlockInternalLevels();
     }
 
+    public void RefillProgress(int levelsCleared)
+    {
+        completedLevels++;
+        completedGroupLevelsText.text = completedLevels.ToString();
+        if (completedLevels == subLevelNodes.Length)
+        {
+            completedImage.SetActive(true); 
+            completedGroup.SetActive(true);
+        }
+
+        subLevelNodes[levelsCleared].isCleared = true;
+    }
+
     public void UpdateLevelGroupUI()
     {
-        Debug.Log("first");
         if (isUnlocked)
         {
-            Debug.Log("second");
             levelGroupName = this.name;
             int i = 0;
             foreach (var level in subLevelNodes)
@@ -80,14 +95,29 @@ public class LevelGroupNode : MonoBehaviour
         }
     }
 
+    public void EnableEverything()
+    {
+        unlockEverything = true;
+    }
+
     void UnlockInternalLevels()
     {
-        foreach (var level in subLevelNodes)
+        if (!unlockEverything)
         {
-            if (completedLevels >= 0)
+            foreach (var level in subLevelNodes)
+            {
+                if (completedLevels >= 0)
+                {
+                    Unlock(level);
+                    completedLevels--;
+                }
+            }
+        }
+        else
+        {
+            foreach (var level in subLevelNodes)
             {
                 Unlock(level);
-                completedLevels--;
             }
         }
     }

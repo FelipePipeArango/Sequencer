@@ -252,15 +252,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: 2
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: bd91a0aa921a8da4fa7b21411937289c, type: 2}
+  m_sharedMaterial: {fileID: -3469886307593827793, guid: bd91a0aa921a8da4fa7b21411937289c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 3875536895
+  m_fontColor: {r: 1, g: 1, b: 1, a: 0.9019608}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -330,7 +330,7 @@ GameObject:
   - component: {fileID: 790054906033433118}
   - component: {fileID: 5979691997627394624}
   - component: {fileID: 3396101053969899950}
-  - component: {fileID: 5180425433985363534}
+  - component: {fileID: 1265647324105023471}
   m_Layer: 0
   m_Name: NumberItem
   m_TagString: NumberItem
@@ -406,24 +406,18 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &5180425433985363534
-BoxCollider:
+--- !u!114 &1265647324105023471
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5002639537613505352}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a2139e0128df9644859153ee57159f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_TextMeshPro: {fileID: 5805962489780699573}
+  assignedNumberValue: 2
+  assignedNumberHUD: {fileID: 0}

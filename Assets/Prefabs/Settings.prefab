@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4263018079554248002}
   - component: {fileID: 1564447976425966879}
   - component: {fileID: 2443269708330969512}
+  - component: {fileID: 9133874847573882525}
   m_Layer: 5
   m_Name: Credits
   m_TagString: Untagged
@@ -121,9 +122,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: GameButtons, Assembly-CSharp
-        m_MethodName: CreditButton
+      - m_Target: {fileID: 9133874847573882525}
+        m_TargetAssemblyTypeName: SceneLoader, Assembly-CSharp
+        m_MethodName: LoadScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -133,6 +134,23 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &9133874847573882525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 941648351180015636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ea3fb38ff2ea1848a42c0fb19383587, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scene:
+    m_AssetGUID: 6da606be6254a5d4fbbcf8fa799ef23d
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
 --- !u!1 &1058750993773797793
 GameObject:
   m_ObjectHideFlags: 0
@@ -812,6 +830,7 @@ GameObject:
   - component: {fileID: 8549421197937967109}
   - component: {fileID: 8431266783448194240}
   - component: {fileID: 6534360576771574954}
+  - component: {fileID: 6021094043693954136}
   m_Layer: 5
   m_Name: MainMenu
   m_TagString: Untagged
@@ -921,9 +940,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: GameButtons, Assembly-CSharp
-        m_MethodName: BackButton
+      - m_Target: {fileID: 6021094043693954136}
+        m_TargetAssemblyTypeName: SceneLoader, Assembly-CSharp
+        m_MethodName: LoadScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -933,6 +952,23 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &6021094043693954136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7962097804378543066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ea3fb38ff2ea1848a42c0fb19383587, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scene:
+    m_AssetGUID: af369a3dfd94d4d4fab61937266e63c8
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
 --- !u!1 &8618797435722813756
 GameObject:
   m_ObjectHideFlags: 0

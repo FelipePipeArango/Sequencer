@@ -1,14 +1,13 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.SceneManagement;
 using static GameTiles;
 using static GridManager;
 
 public class UnitController : MonoBehaviour
 {
-    //[SerializeField] public CompleteScreen goalSequence;
-
-    [HideInInspector] public float fallSpeed = 1.0f;
+    [HideInInspector] public float fallSpeed = 3f;
     [HideInInspector] public bool hasItem = false;
     [HideInInspector] public bool hasNumber = false;
     [HideInInspector] public int moveNumber = 0;
@@ -30,16 +29,6 @@ public class UnitController : MonoBehaviour
                     MoveToGoal(direction, spawnTileType);
                 }
                 break;
-            case TileTypes.PlayerTile:
-                { 
-                    Debug.Log("Player");
-                }
-                break;
-            case TileTypes.PawnTile:
-                { 
-                    Debug.Log("Companion");
-                }
-                break;
             case TileTypes.KeyTile:
                 {
                     MoveToTile(direction, spawnTileType);
@@ -50,8 +39,7 @@ public class UnitController : MonoBehaviour
             case TileTypes.ItemTile:
                 {
                     MoveToTile(direction, spawnTileType);
-
-                    NumberItemCheck();
+                    NumberItemCheck(checkPos);
                 }
                 break;
             case TileTypes.EmptyTile:
@@ -65,24 +53,6 @@ public class UnitController : MonoBehaviour
 
     }
 
-    protected bool IsSomethingWithinPickUpRadiusOfPlayer(int radius)
-    {
-        if (radius == gridManager.CalculateDistance(
-            transform.position,
-            gridManager.keyItem.transform.position))
-        {
-            return true;
-        }
-        else if (radius == gridManager.CalculateDistance(
-            transform.position,
-            gridManager.numberPickUp.transform.position))
-        {
-            return true;
-        }
-        else
-            return false;
-    }
-
     protected void IfFall()
     {
         if (!isBoardBelow)
@@ -92,7 +62,7 @@ public class UnitController : MonoBehaviour
 
             if (transform.position.y <= -0.99f)
             {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                Addressables.LoadSceneAsync(SceneHolder.sceneHolderInstance.GetCurrentScene());
             }
         }
     }
@@ -131,10 +101,8 @@ public class UnitController : MonoBehaviour
 
     protected void ThrowKey(TileScript tile)
     {
-            Debug.Log("Key");
         if (hasItem != false)
         {
-            Debug.Log("Two");
             hasItem = false;
             
             gridManager.keyItem.transform.position =
@@ -147,20 +115,14 @@ public class UnitController : MonoBehaviour
                 );
         }
     }
-    public bool HasAnything()
-    {
-        if (hasNumber)
-            return true;
-        else if (hasItem)
-            return true;
-        else return false;
-    }
 
-    protected void NumberItemCheck()
+    protected void NumberItemCheck(Vector3 pos)
     {
         if(gridManager.numberPickUp != null)
-            gridManager.numberPickUp.SetActive(false);
-        gridManager.numberHUD.SetActive(true);
+        {
+            gridManager.DetermineItem(pos).PickedUp();
+        }
+
         hasNumber = true;
     }
 }

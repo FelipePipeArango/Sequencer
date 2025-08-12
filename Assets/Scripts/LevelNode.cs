@@ -1,23 +1,22 @@
 using System.Collections;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using static Difficulties;
 
 [System.Serializable]
 public class LevelNode : MonoBehaviour
 {
-    Color nodeColor;
     [HideInInspector] public string levelName;
 
-    [HideInInspector] public bool isUnlocked;
+    [HideInInspector] public bool isUnlocked =true;
     [HideInInspector] public bool isCleared = false;
+
+    public int levelID;
 
     [Header("Visuals - don't modify")]
     public TextMeshProUGUI levelTitleText;
     public GameObject completeText; 
-    public Image levelThumbnail;
+    public Sprite levelThumbnail;
     public Button levelButton;
 
     void Start()
@@ -35,6 +34,8 @@ public class LevelNode : MonoBehaviour
 
     public void OnLevelSelect()
     {
+        LevelSelectManager.levelSelectManagerInstance.RecieveCurrentLevel(levelID);
+
         if (!isUnlocked) return;
 
         if (!isCleared) LevelSelectManager.levelSelectManagerInstance.trackLevelCompletion = true;

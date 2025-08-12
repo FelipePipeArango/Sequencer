@@ -1,16 +1,15 @@
 using System;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using TMPro;
-using static GridManager;
 using static GameActions;
 using static GameDirections;
+using static GridManager;
 
 public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    [SerializeField] private TextMeshProUGUI usedText;
     [SerializeField] private TextMeshProUGUI cardActionText;
     [SerializeField] private Image slotImage;
     [SerializeField] private Image cardBackground;
@@ -25,11 +24,10 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     public bool available = true;
     public Actions cardAction;
 
-    public delegate void GrabActions(int number, bool isGrabbing);
-    public static event GrabActions OnGrab;
-
     public delegate void DropAction(NumberItem item, Actions action);
     public static event DropAction OnDropAction;
+
+    public static event Action<int, bool> DroppedNumber;
 
     private Action<NumberItem> executeAction;
     private NumberItem hoveredNumberItem;
@@ -41,6 +39,8 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
     [HideInInspector] public int slot;
     [SerializeField] CabbleConnecting cabbleConnecting;
+
+    bool temporalMove = false;
 
     void Awake()
     {
@@ -121,8 +121,9 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             {
                 if (cardAction == Actions.Move)
                 {
+                    UIHandler.UIHandlerInstance.UITemporalMovePoints(hoveredNumberItem.value);
+                    temporalMove = true;
                     gridManager.TurnOnHighlight(Actions.Move, hoveredNumberItem.value);
-                    Debug.Log("" + hoveredNumberItem.value);
                 }
                 else if (cardAction == Actions.Pick_Up) gridManager.TurnOnHighlight(Actions.Pick_Up, hoveredNumberItem.value);
                 else if (cardAction == Actions.Throw) gridManager.TurnOnHighlight(Actions.Throw, hoveredNumberItem.value);
@@ -140,6 +141,18 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     {
         gridManager.TurnOffHighlight();
         cabbleConnecting.CancelCable(false);
+
+        if (temporalMove)
+        {
+            temporalMove = false;
+            UIHandler.UIHandlerInstance.UITemporalMovePoints(-hoveredNumberItem.value);
+        }
+
+        if (this.gameObject.activeSelf == true && hoveredNumberItem)
+        {
+            DroppedNumber?.Invoke(hoveredNumberItem.value, false); 
+        }
+
         hoveredNumberItem = null;
         isInUse = false;
 
@@ -152,6 +165,7 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
     public void OnDrop(PointerEventData eventData)
     {
+        temporalMove = false;
         // If not truly available or nextInSequence not true, do nothing
         if (!available || !nextInSequence) return;
 
@@ -168,7 +182,6 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         }
 
         Sequencer.sequencer.CommunicateAction(draggableItem, cardAction);
-        OnGrab?.Invoke(0, false);
 
         // Mark as used
         available = false;
@@ -176,16 +189,10 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         {
             usedBackground.transform.SetAsFirstSibling();
         }
-        if (usedText != null) usedText.gameObject.SetActive(false);
 
+        DroppedNumber?.Invoke(draggableItem.value, true);
 
-        
         StartDissolve();
-
-        if (hoveredNumberItem != null)
-        {
-            Debug.Log("Dropped " + hoveredNumberItem.value + " on " + cardAction + " action.");
-        }
         isUsed = true;
     }
 
@@ -282,7 +289,6 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
                 cardBackground.color = new Color(cbColor.r, cbColor.g, cbColor.b, 1f);
             }
 
-            if (usedText != null) usedText.gameObject.SetActive(false);
             if (slotImage != null) slotImage.gameObject.SetActive(true);
         }
     }
@@ -292,11 +298,6 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     {
         if (available)
         {
-            if (usedText != null)
-            {
-                usedText.gameObject.SetActive(true);
-                usedText.text = number.value.ToString();
-            }
             if (slotImage != null) slotImage.gameObject.SetActive(false);
 
             number.transform.SetParent(number.parentTransform);
@@ -315,12 +316,9 @@ public class CardTrigger : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         }
     }
 
-    public void Lockdown()
+    public void Lockdown(bool locked)
     {
-        if (usedText != null) usedText.gameObject.SetActive(true);
-        if (slotImage != null) slotImage.gameObject.SetActive(false);
-
-        available = false;
+        if (slotImage != null) slotImage.gameObject.SetActive(!locked);
     }
 
     public void SetSlotNumber(int number)

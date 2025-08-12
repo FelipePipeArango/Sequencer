@@ -16,6 +16,7 @@ public class GridManager : MonoBehaviour
     public TileScript[,] grid;
     TileScript[] tiles;
     private bool lastPickUpHighlightSucceeded = false;
+    private bool lastThrowHighlightSucceeded = false;
 
     [Header("MANDATORY PIECES IN A LEVEL")]
     public GameObject player;
@@ -24,8 +25,7 @@ public class GridManager : MonoBehaviour
 
     [Header("OPTIONAL OBJECTS IN A LEVEL")]
     public GameObject AICompanion;
-    public GameObject numberPickUp;
-    public GameObject numberHUD; //Should at some point go to card manager
+    public PickUpNumber[] numberPickUp;
     [HideInInspector] public Player playerActions;
     [HideInInspector] public AICompanion AIActions;
 
@@ -56,8 +56,11 @@ public class GridManager : MonoBehaviour
     {
         UpdateTileType(keyItem.transform.position, TileTypes.KeyTile);
         if (numberPickUp != null) 
-        { 
-            UpdateTileType(numberPickUp.transform.position, TileTypes.ItemTile);
+        {
+            for (int i = 0; i < numberPickUp.Length; i++)
+            {
+                UpdateTileType(numberPickUp[i].transform.position, TileTypes.ItemTile); 
+            }
         }
         UpdateTileType(goal.transform.position, TileTypes.GoalTile);
     }
@@ -81,7 +84,6 @@ public class GridManager : MonoBehaviour
                 x + gridManager.size.x,
                 z + gridManager.size.y + 1
                 );
-            Debug.Log( pos.ToString() );
             if (size.x > pos.x && pos.x >= 0
                 && size.y > pos.y && pos.y >= 0)
             {
@@ -117,7 +119,6 @@ public class GridManager : MonoBehaviour
         {
             case GameActions.Actions.Move:
                 MoveDistanceHighLight(value, playerActions.transform.position);
-                Debug.Log("second: " + value);
                 break;
 
             case GameActions.Actions.Pick_Up:
@@ -163,6 +164,19 @@ public class GridManager : MonoBehaviour
         return TileTypes.None;
     }
 
+    public PickUpNumber DetermineItem(Vector3 pos)
+    {
+        foreach (PickUpNumber pickUpNumber in numberPickUp)
+        {
+            if(pickUpNumber.transform.position.x == pos.x && pickUpNumber.transform.position.z == pos.z)
+            {
+                return pickUpNumber;
+            }
+        }
+
+        return null;
+    }
+
     private void StoreGrid()
     {
         allTiles = GameObject.FindGameObjectsWithTag("Ground");
@@ -198,18 +212,13 @@ public class GridManager : MonoBehaviour
             if (grid[(int)pos.x, (int)pos.z] != null)
             {
                 grid[(int)pos.x, (int)pos.z].isHighLight = true;
-                MoveDistanceHighLight(amount - 1, grid[(int)pos.x, (int)pos.z].transform.position);
+                //MoveDistanceHighLight(amount - 1, grid[(int)pos.x, (int)pos.z].transform.position);
             }
         }
     }
 
     private void MoveDistanceHighLight(int amount, Vector3 start)
     {
-        if (amount == 0)
-        {
-            Debug.Log("third: " + amount);
-            return;
-        }
 
         Vector3 right = new Vector3(start.x - 1, start.y, start.z);
         Vector3 left = new Vector3(start.x + 1, start.y, start.z);
@@ -266,6 +275,7 @@ public class GridManager : MonoBehaviour
 
     public void ThrowHighLight(int amount)
     {
+        bool found = false;
         int distance;
         foreach (var tile in tiles)
         {
@@ -277,13 +287,21 @@ public class GridManager : MonoBehaviour
                 if (tile.tileType == TileTypes.EmptyTile)
                 {
                     HighlightTile(tile);
+                    found = true;
                 }
                 else if (tile.tileType == TileTypes.GoalTile)
                 {
                     HighlightTile(tile);
+                    found = true;
                 }
             }
         }
+        lastThrowHighlightSucceeded = found;
+    }
+
+    public bool WasThrowHighlightSuccessful()
+    {
+        return lastThrowHighlightSucceeded;
     }
 
 
